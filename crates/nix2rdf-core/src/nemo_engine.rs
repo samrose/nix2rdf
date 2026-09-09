@@ -42,7 +42,10 @@ pub struct DerivedTriple {
 fn to_term(v: &AnyDataValue) -> RdfTerm {
     match v.value_domain() {
         ValueDomain::Iri => RdfTerm::Iri(v.to_iri_unchecked()),
-        ValueDomain::PlainString => RdfTerm::Literal(v.to_plain_string_unchecked(), "http://www.w3.org/2001/XMLSchema#string".into()),
+        ValueDomain::PlainString => RdfTerm::Literal(
+            v.to_plain_string_unchecked(),
+            "http://www.w3.org/2001/XMLSchema#string".into(),
+        ),
         ValueDomain::LanguageTaggedString => {
             let (s, l) = v.to_language_tagged_string_unchecked();
             RdfTerm::LangString(s, l)
@@ -54,8 +57,9 @@ fn to_term(v: &AnyDataValue) -> RdfTerm {
             // derived literals compare equal to asserted ones.
             let dt = v.datatype_iri();
             let dt = match dt.rsplit('#').next().unwrap_or("") {
-                "int" | "long" | "short" | "byte" | "unsignedInt" | "unsignedLong" | "unsignedShort" | "unsignedByte"
-                | "nonNegativeInteger" | "positiveInteger" | "nonPositiveInteger" | "negativeInteger" => {
+                "int" | "long" | "short" | "byte" | "unsignedInt" | "unsignedLong"
+                | "unsignedShort" | "unsignedByte" | "nonNegativeInteger" | "positiveInteger"
+                | "nonPositiveInteger" | "negativeInteger" => {
                     "http://www.w3.org/2001/XMLSchema#integer".to_string()
                 }
                 _ => dt,
@@ -67,22 +71,40 @@ fn to_term(v: &AnyDataValue) -> RdfTerm {
 
 /// Parse and run a complete Nemo program; return the rows of `new/3`.
 pub fn run_program(program: &str) -> Result<RunOutput> {
-    let rt = tokio::runtime::Builder::new_current_thread().enable_all().build().map_err(|e| Error::Reason(e.to_string()))?;
+    let rt = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .map_err(|e| Error::Reason(e.to_string()))?;
     rt.block_on(async {
-        let mut engine: Engine = load_string(program.to_string()).await.map_err(|e| Error::Reason(format!("nemo: {e}")))?;
-        reason(&mut engine).await.map_err(|e| Error::Reason(format!("nemo reasoning: {e}")))?;
+        let mut engine: Engine = load_string(program.to_string())
+            .await
+            .map_err(|e| Error::Reason(format!("nemo: {e}")))?;
+        reason(&mut engine)
+            .await
+            .map_err(|e| Error::Reason(format!("nemo reasoning: {e}")))?;
         let tag = Tag::new("new".to_string());
         let mut triples = Vec::new();
-        if let Some(rows) = engine.predicate_rows(&tag).await.map_err(|e| Error::Reason(format!("nemo output: {e}")))? {
+        if let Some(rows) = engine
+            .predicate_rows(&tag)
+            .await
+            .map_err(|e| Error::Reason(format!("nemo output: {e}")))?
+        {
             for row in rows {
                 if row.len() != 3 {
                     continue;
                 }
-                triples.push(DerivedTriple { s: to_term(&row[0]), p: to_term(&row[1]), o: to_term(&row[2]) });
+                triples.push(DerivedTriple {
+                    s: to_term(&row[0]),
+                    p: to_term(&row[1]),
+                    o: to_term(&row[2]),
+                });
             }
         }
         let derived_facts = engine.count_facts_in_memory_for_derived_predicates();
-        Ok(RunOutput { triples, derived_facts })
+        Ok(RunOutput {
+            triples,
+            derived_facts,
+        })
     })
 }
 
@@ -92,7 +114,9 @@ pub fn validate_program(program: &str) -> Result<()> {
     // A ProgramReport that still parses to a program is fine; otherwise report errors.
     match nemo::api::load_program(program.to_string(), "nix2rdf".to_string()) {
         Ok(_) => Ok(()),
-        Err(e) => Err(Error::Reason(format!("nemo program invalid:\n{e}\n{report:?}"))),
+        Err(e) => Err(Error::Reason(format!(
+            "nemo program invalid:\n{e}\n{report:?}"
+        ))),
     }
 }
 

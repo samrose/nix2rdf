@@ -19,13 +19,22 @@ use std::path::PathBuf;
 use tracing::{info, warn};
 
 #[derive(Parser)]
-#[command(name = "nix2rdf", version, about = "Nix artifacts as a content-addressed RDF dataset")]
+#[command(
+    name = "nix2rdf",
+    version,
+    about = "Nix artifacts as a content-addressed RDF dataset"
+)]
 struct Cli {
     /// The fragment store directory (canonical files + the Oxigraph index).
     #[arg(long, global = true, env = "NIX2RDF_STORE", default_value = "store")]
     store: PathBuf,
     /// Log format: text or json (structured, one line per event).
-    #[arg(long, global = true, env = "NIX2RDF_LOG_FORMAT", default_value = "text")]
+    #[arg(
+        long,
+        global = true,
+        env = "NIX2RDF_LOG_FORMAT",
+        default_value = "text"
+    )]
     log_format: String,
     #[command(subcommand)]
     cmd: Cmd,
@@ -65,7 +74,11 @@ struct CommitArgs {
 
 impl CommitArgs {
     fn info(&self) -> Option<CommitInfo> {
-        Some(CommitInfo { repo: self.repo.clone()?, sha: self.commit.clone()?, committed_at: self.committed_at.clone()? })
+        Some(CommitInfo {
+            repo: self.repo.clone()?,
+            sha: self.commit.clone()?,
+            committed_at: self.committed_at.clone()?,
+        })
     }
 }
 
@@ -323,9 +336,16 @@ fn init_logging(format: &str) {
     use tracing_subscriber::{fmt, EnvFilter};
     let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
     if format == "json" {
-        fmt().json().with_env_filter(filter).with_writer(std::io::stderr).init();
+        fmt()
+            .json()
+            .with_env_filter(filter)
+            .with_writer(std::io::stderr)
+            .init();
     } else {
-        fmt().with_env_filter(filter).with_writer(std::io::stderr).init();
+        fmt()
+            .with_env_filter(filter)
+            .with_writer(std::io::stderr)
+            .init();
     }
 }
 
@@ -336,7 +356,10 @@ fn nix_source(src: &SourceArgs) -> Result<Box<dyn NixSource>> {
     }
     let cli = CliNix::new();
     if let Some(d) = &src.record {
-        return Ok(Box::new(Recording { inner: cli, dir: d.clone() }));
+        return Ok(Box::new(Recording {
+            inner: cli,
+            dir: d.clone(),
+        }));
     }
     Ok(Box::new(cli))
 }
@@ -348,18 +371,33 @@ struct Recording {
 }
 
 impl NixSource for Recording {
-    fn derivation_show(&self, installables: &[String], recursive: bool) -> nix2rdf_core::Result<BTreeMap<String, nix2rdf_core::nix::DrvInfo>> {
+    fn derivation_show(
+        &self,
+        installables: &[String],
+        recursive: bool,
+    ) -> nix2rdf_core::Result<BTreeMap<String, nix2rdf_core::nix::DrvInfo>> {
         let r = self.inner.derivation_show(installables, recursive)?;
-        let name = if recursive { "derivation-show.json" } else { "derivation-show-roots.json" };
+        let name = if recursive {
+            "derivation-show.json"
+        } else {
+            "derivation-show-roots.json"
+        };
         if recursive || !self.dir.join(name).exists() {
             RecordedNix::write_json(&self.dir, name, &serde_json::to_value(&r)?)?;
         }
         Ok(r)
     }
-    fn path_info(&self, paths: &[String]) -> nix2rdf_core::Result<BTreeMap<String, Option<nix2rdf_core::nix::PathInfo>>> {
+    fn path_info(
+        &self,
+        paths: &[String],
+    ) -> nix2rdf_core::Result<BTreeMap<String, Option<nix2rdf_core::nix::PathInfo>>> {
         let r = self.inner.path_info(paths)?;
         let p = self.dir.join("path-info.json");
-        let mut all: BTreeMap<String, Option<nix2rdf_core::nix::PathInfo>> = if p.exists() { serde_json::from_slice(&std::fs::read(&p).unwrap_or_default()).unwrap_or_default() } else { BTreeMap::new() };
+        let mut all: BTreeMap<String, Option<nix2rdf_core::nix::PathInfo>> = if p.exists() {
+            serde_json::from_slice(&std::fs::read(&p).unwrap_or_default()).unwrap_or_default()
+        } else {
+            BTreeMap::new()
+        };
         all.extend(r.clone());
         RecordedNix::write_json(&self.dir, "path-info.json", &serde_json::to_value(&all)?)?;
         Ok(r)
@@ -369,12 +407,18 @@ impl NixSource for Recording {
         RecordedNix::write_json(&self.dir, "flake-metadata.json", &r)?;
         Ok(r)
     }
-    fn eval_json(&self, a: &nix2rdf_core::nix::EvalArgs) -> nix2rdf_core::Result<serde_json::Value> {
+    fn eval_json(
+        &self,
+        a: &nix2rdf_core::nix::EvalArgs,
+    ) -> nix2rdf_core::Result<serde_json::Value> {
         let r = self.inner.eval_json(a)?;
         RecordedNix::write_json(&self.dir, &format!("eval/{}.json", a.label), &r)?;
         Ok(r)
     }
-    fn build_json(&self, installable: &str) -> nix2rdf_core::Result<Vec<nix2rdf_core::nix::BuildResult>> {
+    fn build_json(
+        &self,
+        installable: &str,
+    ) -> nix2rdf_core::Result<Vec<nix2rdf_core::nix::BuildResult>> {
         let r = self.inner.build_json(installable)?;
         RecordedNix::write_json(&self.dir, "build.json", &serde_json::to_value(&r)?)?;
         Ok(r)
@@ -390,7 +434,13 @@ impl NixSource for Recording {
 }
 
 fn extract_opts(src: &SourceArgs) -> ExtractOptions {
-    ExtractOptions { env: if src.env == "full" { EnvMode::Full } else { EnvMode::HashOnly } }
+    ExtractOptions {
+        env: if src.env == "full" {
+            EnvMode::Full
+        } else {
+            EnvMode::HashOnly
+        },
+    }
 }
 
 fn write_and_report(store: &Store, frags: &[Fragment], label: &str) -> Result<()> {
@@ -405,7 +455,11 @@ fn write_and_report(store: &Store, frags: &[Fragment], label: &str) -> Result<()
             e.1 += 1;
         }
     }
-    println!("{label}: {} fragments ({new} new, {} KiB written)", outcomes.len(), bytes / 1024);
+    println!(
+        "{label}: {} fragments ({new} new, {} KiB written)",
+        outcomes.len(),
+        bytes / 1024
+    );
     for (k, (total, newc)) in by_kind {
         println!("  {k:<14} {total:>7} total {newc:>7} new");
     }
@@ -413,7 +467,11 @@ fn write_and_report(store: &Store, frags: &[Fragment], label: &str) -> Result<()
 }
 
 fn pack_dirs_or_default(dirs: &[PathBuf]) -> Vec<PathBuf> {
-    if dirs.is_empty() { packs::default_pack_dirs() } else { dirs.to_vec() }
+    if dirs.is_empty() {
+        packs::default_pack_dirs()
+    } else {
+        dirs.to_vec()
+    }
 }
 
 fn parse_node_map(p: &PathBuf) -> Result<BTreeMap<String, String>> {
@@ -440,12 +498,21 @@ fn main() -> Result<()> {
     let store = Store::open(&cli.store)?;
 
     match cli.cmd {
-        Cmd::Flake { flake_ref, attrs, system, meta, commit, source } => {
+        Cmd::Flake {
+            flake_ref,
+            attrs,
+            system,
+            meta,
+            commit,
+            source,
+        } => {
             let nix = nix_source(&source)?;
             let flake_ref = match (flake_ref, &source.from_recorded) {
                 (Some(r), _) => r,
                 (None, Some(_)) => "recorded".to_string(),
-                (None, None) => bail!("a flake reference is required unless --from-recorded is given"),
+                (None, None) => {
+                    bail!("a flake reference is required unless --from-recorded is given")
+                }
             };
             let opts = FlakeOptions {
                 flake_ref,
@@ -459,11 +526,27 @@ fn main() -> Result<()> {
             write_and_report(&store, &ex.fragments, "flake")?;
             println!("snapshot: {}", ex.snapshot);
         }
-        Cmd::Nixos { installable, all_options, runtime_closure, commit, source } => {
-            let (flake_ref, attr) = installable.split_once('#').context("expected <flake>#nixosConfigurations.<name>")?;
-            let name = attr.strip_prefix("nixosConfigurations.").context("expected nixosConfigurations.<name>")?;
+        Cmd::Nixos {
+            installable,
+            all_options,
+            runtime_closure,
+            commit,
+            source,
+        } => {
+            let (flake_ref, attr) = installable
+                .split_once('#')
+                .context("expected <flake>#nixosConfigurations.<name>")?;
+            let name = attr
+                .strip_prefix("nixosConfigurations.")
+                .context("expected nixosConfigurations.<name>")?;
             let nix = nix_source(&source)?;
-            let opts = NixosOptions { flake_ref: flake_ref.into(), name: name.into(), all_options, with_runtime_closure: runtime_closure, extract: extract_opts(&source) };
+            let opts = NixosOptions {
+                flake_ref: flake_ref.into(),
+                name: name.into(),
+                all_options,
+                with_runtime_closure: runtime_closure,
+                extract: extract_opts(&source),
+            };
             let mut frags = extract::nixos::extract_nixos(nix.as_ref(), &opts)?;
             if let Some(c) = commit.info() {
                 if let Some(g) = frags.last().map(|f| f.graph()) {
@@ -472,10 +555,22 @@ fn main() -> Result<()> {
             }
             write_and_report(&store, &frags, "nixos")?;
         }
-        Cmd::Image { installable, digest, commit, source } => {
-            let (flake_ref, attr) = installable.split_once('#').context("expected <flake>#<attr>")?;
+        Cmd::Image {
+            installable,
+            digest,
+            commit,
+            source,
+        } => {
+            let (flake_ref, attr) = installable
+                .split_once('#')
+                .context("expected <flake>#<attr>")?;
             let nix = nix_source(&source)?;
-            let opts = ImageOptions { flake_ref: flake_ref.into(), attr: attr.into(), digest, extract: extract_opts(&source) };
+            let opts = ImageOptions {
+                flake_ref: flake_ref.into(),
+                attr: attr.into(),
+                digest,
+                extract: extract_opts(&source),
+            };
             let (mut frags, img) = extract::image::extract_image(nix.as_ref(), &opts)?;
             if let Some(c) = commit.info() {
                 frags.push(extract::flake::commit_fragment(&c, &img));
@@ -483,7 +578,11 @@ fn main() -> Result<()> {
             write_and_report(&store, &frags, "image")?;
             println!("image: {img}");
         }
-        Cmd::Drv { installables, reader, source } => {
+        Cmd::Drv {
+            installables,
+            reader,
+            source,
+        } => {
             let nix = nix_source(&source)?;
             let opts = extract_opts(&source);
             let ex = match reader {
@@ -495,7 +594,10 @@ fn main() -> Result<()> {
             };
             write_and_report(&store, &ex.fragments, "drv")?;
         }
-        Cmd::AttachOutputs { installables, source } => {
+        Cmd::AttachOutputs {
+            installables,
+            source,
+        } => {
             let nix = nix_source(&source)?;
             let mut built = Vec::new();
             for i in &installables {
@@ -510,17 +612,38 @@ fn main() -> Result<()> {
                 None => {
                     let nix = CliNix::new();
                     let v = nix.run_json(&["flake", "prefetch", "--json", &from])?;
-                    PathBuf::from(v.get("storePath").and_then(|s| s.as_str()).context("nix flake prefetch gave no storePath")?)
+                    PathBuf::from(
+                        v.get("storePath")
+                            .and_then(|s| s.as_str())
+                            .context("nix flake prefetch gave no storePath")?,
+                    )
                 }
             };
             let files = IndexFiles::read(&dir)?;
             let frag = index_fragment(&files)?;
             write_and_report(&store, &[frag], "nixpkgs-index")?;
         }
-        Cmd::NixpkgsEval { rev, index_dir, nar_hash, system, expr, workers, max_memory_mb, allow_unfree, reader, source } => {
+        Cmd::NixpkgsEval {
+            rev,
+            index_dir,
+            nar_hash,
+            system,
+            expr,
+            workers,
+            max_memory_mb,
+            allow_unfree,
+            reader,
+            source,
+        } => {
             let revision = match &index_dir {
-                Some(d) => extract::nixpkgs_index::find_revision(&IndexFiles::read(d)?, &rev)?.context("revision not in index")?,
-                None => extract::nixpkgs_index::Revision { rev: rev.clone(), date: String::new(), name: String::new(), nar_hash: nar_hash.clone().unwrap_or_default() },
+                Some(d) => extract::nixpkgs_index::find_revision(&IndexFiles::read(d)?, &rev)?
+                    .context("revision not in index")?,
+                None => extract::nixpkgs_index::Revision {
+                    rev: rev.clone(),
+                    date: String::new(),
+                    name: String::new(),
+                    nar_hash: nar_hash.clone().unwrap_or_default(),
+                },
             };
             let opts = EvalOptions {
                 revision,
@@ -541,26 +664,59 @@ fn main() -> Result<()> {
             println!("fetched {n} new fragments from {url}");
         }
         Cmd::Publish { dest, all, paths } => {
-            let paths = if all { store.all_fragment_paths()? } else { paths };
+            let paths = if all {
+                store.all_fragment_paths()?
+            } else {
+                paths
+            };
             let m = publish::publish(&store, &paths, &dest)?;
-            println!("published {} fragments to {}", m.fragments.len(), dest.display());
+            println!(
+                "published {} fragments to {}",
+                m.fragments.len(),
+                dest.display()
+            );
         }
         Cmd::Load { all, new, paths } => {
             let g = Graph::open(&store)?;
             let loaded_marker = store.oxigraph_dir().join(".loaded");
-            let mut already: std::collections::BTreeSet<String> = std::fs::read_to_string(&loaded_marker).map(|t| t.lines().map(String::from).collect()).unwrap_or_default();
-            let candidates: Vec<PathBuf> = if all || new { store.all_fragment_paths()? } else { paths };
-            let todo: Vec<PathBuf> = if new { candidates.into_iter().filter(|p| !already.contains(&store.relative(p).to_string_lossy().to_string())).collect() } else { candidates };
+            let mut already: std::collections::BTreeSet<String> =
+                std::fs::read_to_string(&loaded_marker)
+                    .map(|t| t.lines().map(String::from).collect())
+                    .unwrap_or_default();
+            let candidates: Vec<PathBuf> = if all || new {
+                store.all_fragment_paths()?
+            } else {
+                paths
+            };
+            let todo: Vec<PathBuf> = if new {
+                candidates
+                    .into_iter()
+                    .filter(|p| !already.contains(&store.relative(p).to_string_lossy().to_string()))
+                    .collect()
+            } else {
+                candidates
+            };
             let n = g.load_paths(&todo)?;
             for p in &todo {
                 already.insert(store.relative(p).to_string_lossy().to_string());
             }
-            std::fs::write(&loaded_marker, already.iter().map(|s| format!("{s}\n")).collect::<String>())?;
-            println!("loaded {} fragments ({n} quads); store now has {} quads", todo.len(), g.len()?);
+            std::fs::write(
+                &loaded_marker,
+                already.iter().map(|s| format!("{s}\n")).collect::<String>(),
+            )?;
+            println!(
+                "loaded {} fragments ({n} quads); store now has {} quads",
+                todo.len(),
+                g.len()?
+            );
         }
         Cmd::Rebuild => {
             let g = Graph::rebuild(&store)?;
-            let all: Vec<String> = store.all_fragment_paths()?.iter().map(|p| store.relative(p).to_string_lossy().to_string()).collect();
+            let all: Vec<String> = store
+                .all_fragment_paths()?
+                .iter()
+                .map(|p| store.relative(p).to_string_lossy().to_string())
+                .collect();
             std::fs::write(store.oxigraph_dir().join(".loaded"), all.join("\n") + "\n")?;
             println!("rebuilt: {} quads from {} fragments", g.len()?, all.len());
         }
@@ -595,29 +751,63 @@ fn main() -> Result<()> {
             }
             println!("check ok: {}", file.display());
         }
-        Cmd::Reason { packs: sel, pack_dirs, inputs, roots, input_closure, all_snapshots, everything, force, no_load } => {
+        Cmd::Reason {
+            packs: sel,
+            pack_dirs,
+            inputs,
+            roots,
+            input_closure,
+            all_snapshots,
+            everything,
+            force,
+            no_load,
+        } => {
             let all = packs::discover(&pack_dirs_or_default(&pack_dirs))?;
             let order = packs::resolve(&all, &sel)?;
-            let roots: Vec<oxrdf::NamedNode> = roots.iter().map(|r| oxrdf::NamedNode::new(r.clone())).collect::<std::result::Result<_, _>>()?;
-            let selection = InputSelection { paths: inputs, roots, closure: input_closure, all_snapshots, everything };
+            let roots: Vec<oxrdf::NamedNode> = roots
+                .iter()
+                .map(|r| oxrdf::NamedNode::new(r.clone()))
+                .collect::<std::result::Result<_, _>>()?;
+            let selection = InputSelection {
+                paths: inputs,
+                roots,
+                closure: input_closure,
+                all_snapshots,
+                everything,
+            };
             let ins = reason::select_inputs(&store, &selection)?;
             if ins.is_empty() {
                 bail!("no input graphs selected");
             }
             let r = reason::run(&store, &order, &ins, force)?;
-            let graph = if no_load { None } else { Some(Graph::open(&store)?) };
+            let graph = if no_load {
+                None
+            } else {
+                Some(Graph::open(&store)?)
+            };
             reason::persist(&store, graph.as_ref(), &r)?;
             println!(
                 "derived graph {} ({} quads, {} inputs){}",
                 r.derived.graph(),
                 r.derived.len(),
                 r.inputs,
-                if r.already_existed { " [already existed]" } else { "" }
+                if r.already_existed {
+                    " [already existed]"
+                } else {
+                    ""
+                }
             );
         }
-        Cmd::GcDerived { packs: sel, pack_dirs } => {
+        Cmd::GcDerived {
+            packs: sel,
+            pack_dirs,
+        } => {
             let all = packs::discover(&pack_dirs_or_default(&pack_dirs))?;
-            let keep = if sel.is_empty() { vec![] } else { vec![packs::ruleset_hash(&packs::resolve(&all, &sel)?)] };
+            let keep = if sel.is_empty() {
+                vec![]
+            } else {
+                vec![packs::ruleset_hash(&packs::resolve(&all, &sel)?)]
+            };
             let g = Graph::open(&store).ok();
             let n = reason::gc_derived(&store, g.as_ref(), &keep)?;
             println!("removed {n} derived/run fragments");
@@ -625,12 +815,27 @@ fn main() -> Result<()> {
         Cmd::Pack { cmd } => match cmd {
             PackCmd::List { pack_dirs } => {
                 for p in packs::discover(&pack_dirs_or_default(&pack_dirs))?.values() {
-                    println!("{:<18} {:<8} {}  deps={:?}  {}", p.manifest.name, p.manifest.version, &p.content_hash[..16], p.manifest.depends_on, p.manifest.description);
+                    println!(
+                        "{:<18} {:<8} {}  deps={:?}  {}",
+                        p.manifest.name,
+                        p.manifest.version,
+                        &p.content_hash[..16],
+                        p.manifest.depends_on,
+                        p.manifest.description
+                    );
                 }
             }
-            PackCmd::Test { pack_dirs, all, names } => {
+            PackCmd::Test {
+                pack_dirs,
+                all,
+                names,
+            } => {
                 let allp = packs::discover(&pack_dirs_or_default(&pack_dirs))?;
-                let names: Vec<String> = if all { allp.keys().cloned().collect() } else { names };
+                let names: Vec<String> = if all {
+                    allp.keys().cloned().collect()
+                } else {
+                    names
+                };
                 let mut failures = 0;
                 let mut total = 0;
                 for n in &names {
@@ -659,7 +864,11 @@ fn main() -> Result<()> {
                 std::fs::write(&empty, "")?;
                 let prog = reason::build_program(&order, &empty)?;
                 nix2rdf_core::nemo_engine::validate_program(&prog)?;
-                println!("ok: {} packs, ruleset {}", order.len(), packs::ruleset_hash(&order));
+                println!(
+                    "ok: {} packs, ruleset {}",
+                    order.len(),
+                    packs::ruleset_hash(&order)
+                );
             }
         },
         Cmd::Ontology { cmd } => match cmd {
@@ -673,8 +882,15 @@ fn main() -> Result<()> {
                 }
                 println!("ontology ok: {} files, all terms declared", ttl.len());
             }
-            OntologyCmd::Doc { html, markdown, ttl } => {
-                let vocabs: Vec<ontology::Vocabulary> = ttl.iter().map(|p| ontology::load_file(p)).collect::<nix2rdf_core::Result<_>>()?;
+            OntologyCmd::Doc {
+                html,
+                markdown,
+                ttl,
+            } => {
+                let vocabs: Vec<ontology::Vocabulary> = ttl
+                    .iter()
+                    .map(|p| ontology::load_file(p))
+                    .collect::<nix2rdf_core::Result<_>>()?;
                 if html && !markdown {
                     let v = vocabs.first().context("need one ttl for --html")?;
                     print!("{}", ontology::html(v));
@@ -684,7 +900,18 @@ fn main() -> Result<()> {
             }
         },
         Cmd::K8s { cmd } => match cmd {
-            K8sCmd::Snapshot { cluster_id, context, manifests, live: _, nixos_node_map, observed_at, owner_keys, rack_label, site_label, commit } => {
+            K8sCmd::Snapshot {
+                cluster_id,
+                context,
+                manifests,
+                live: _,
+                nixos_node_map,
+                observed_at,
+                owner_keys,
+                rack_label,
+                site_label,
+                commit,
+            } => {
                 let mut labels = k8s::LabelConfig::default();
                 if !owner_keys.is_empty() {
                     labels.owner_keys = owner_keys;
@@ -700,13 +927,33 @@ fn main() -> Result<()> {
                     None => BTreeMap::new(),
                 };
                 let (input, state) = match &manifests {
-                    Some(dir) => (k8s::SnapshotInput { objects: k8s::manifests::read_dir(dir)?, pods: vec![], failed_kinds: vec![] }, k8s::snapshot::StateKind::Desired),
+                    Some(dir) => (
+                        k8s::SnapshotInput {
+                            objects: k8s::manifests::read_dir(dir)?,
+                            pods: vec![],
+                            failed_kinds: vec![],
+                        },
+                        k8s::snapshot::StateKind::Desired,
+                    ),
                     None => {
                         let live = k8s::api::list_live(context.as_deref())?;
-                        (k8s::SnapshotInput { objects: live.objects, pods: live.pods, failed_kinds: live.failed_kinds }, k8s::snapshot::StateKind::Live)
+                        (
+                            k8s::SnapshotInput {
+                                objects: live.objects,
+                                pods: live.pods,
+                                failed_kinds: live.failed_kinds,
+                            },
+                            k8s::snapshot::StateKind::Live,
+                        )
                     }
                 };
-                let opts = k8s::SnapshotOptions { cluster_id, state, labels, node_map, observed_at };
+                let opts = k8s::SnapshotOptions {
+                    cluster_id,
+                    state,
+                    labels,
+                    node_map,
+                    observed_at,
+                };
                 let out = k8s::build_snapshot(&input, &opts);
                 let mut frags = vec![out.snapshot, out.nodes, out.observed];
                 if let Some(c) = commit.info() {
@@ -719,7 +966,11 @@ fn main() -> Result<()> {
         Cmd::NemoRun { file } => {
             let prog = std::fs::read_to_string(&file)?;
             let out = nix2rdf_core::nemo_engine::run_program(&prog)?;
-            println!("derived facts: {}, new triples: {}", out.derived_facts, out.triples.len());
+            println!(
+                "derived facts: {}, new triples: {}",
+                out.derived_facts,
+                out.triples.len()
+            );
             for t in out.triples.iter().take(50) {
                 println!("{:?}", t);
             }
@@ -728,7 +979,11 @@ fn main() -> Result<()> {
             let mut by_kind: BTreeMap<String, (usize, u64)> = BTreeMap::new();
             for p in store.all_fragment_paths()? {
                 let rel = store.relative(&p);
-                let kind = rel.components().next().map(|c| c.as_os_str().to_string_lossy().to_string()).unwrap_or_default();
+                let kind = rel
+                    .components()
+                    .next()
+                    .map(|c| c.as_os_str().to_string_lossy().to_string())
+                    .unwrap_or_default();
                 let e = by_kind.entry(kind).or_default();
                 e.0 += 1;
                 e.1 += std::fs::metadata(&p).map(|m| m.len()).unwrap_or(0);
@@ -739,11 +994,19 @@ fn main() -> Result<()> {
                 total.0 += n;
                 total.1 += b;
             }
-            println!("{:<14} {:>8} files {:>10} KiB", "total", total.0, total.1 / 1024);
+            println!(
+                "{:<14} {:>8} files {:>10} KiB",
+                "total",
+                total.0,
+                total.1 / 1024
+            );
             let ox = store.oxigraph_dir();
             if ox.exists() {
                 let mut b = 0u64;
-                for e in walkdir::WalkDir::new(&ox).into_iter().filter_map(|e| e.ok()) {
+                for e in walkdir::WalkDir::new(&ox)
+                    .into_iter()
+                    .filter_map(|e| e.ok())
+                {
                     b += e.metadata().map(|m| m.len()).unwrap_or(0);
                 }
                 println!("{:<14} {:>8}       {:>10} KiB", "oxigraph", "", b / 1024);
@@ -755,22 +1018,40 @@ fn main() -> Result<()> {
 
 /// Run one pack test: derive over input.nq with the pack (+deps); every
 /// expected triple must be derived (blank nodes are wildcards), no forbidden one.
-fn run_pack_test(all: &BTreeMap<String, packs::Pack>, name: &str, t: &packs::PackTest) -> Result<()> {
+fn run_pack_test(
+    all: &BTreeMap<String, packs::Pack>,
+    name: &str,
+    t: &packs::PackTest,
+) -> Result<()> {
     let order = packs::resolve(all, &[name.to_string()])?;
     let tmp = tempfile::tempdir()?;
     let store = Store::open(tmp.path())?;
     let mut by_graph: BTreeMap<String, String> = BTreeMap::new();
     for q in fragment::parse_nquads(t.input.as_bytes())? {
-        let g = fragment::graph_of(&q).map(|g| g.as_str().to_string()).unwrap_or_else(|| iri::fragment("test", "input").as_str().to_string());
+        let g = fragment::graph_of(&q)
+            .map(|g| g.as_str().to_string())
+            .unwrap_or_else(|| iri::fragment("test", "input").as_str().to_string());
         let line = format!("{} {} {} <{g}> .\n", q.subject, q.predicate, q.object);
         by_graph.entry(g).or_default().push_str(&line);
     }
-    let inputs: Vec<reason::InputGraph> = by_graph.into_iter().map(|(g, nq)| reason::InputGraph { graph: oxrdf::NamedNode::new_unchecked(g), path: PathBuf::new(), nquads: nq }).collect();
+    let inputs: Vec<reason::InputGraph> = by_graph
+        .into_iter()
+        .map(|(g, nq)| reason::InputGraph {
+            graph: oxrdf::NamedNode::new_unchecked(g),
+            path: PathBuf::new(),
+            nquads: nq,
+        })
+        .collect();
     let r = reason::run(&store, &order, &inputs, true)?;
-    let derived: Vec<String> = r.derived.to_nquads().lines().map(|l| l.rsplitn(3, ' ').last().unwrap_or(l).to_string()).collect();
+    let derived: Vec<String> = r
+        .derived
+        .to_nquads()
+        .lines()
+        .map(|l| l.rsplitn(3, ' ').last().unwrap_or(l).to_string())
+        .collect();
     let matches = |pattern: &oxrdf::Quad| -> bool {
         let s = match &pattern.subject {
-            oxrdf::Subject::BlankNode(_) => None,
+            oxrdf::NamedOrBlankNode::BlankNode(_) => None,
             other => Some(other.to_string()),
         };
         let o = match &pattern.object {
@@ -780,8 +1061,14 @@ fn run_pack_test(all: &BTreeMap<String, packs::Pack>, name: &str, t: &packs::Pac
         let p = pattern.predicate.to_string();
         derived.iter().any(|line| {
             let mut it = line.splitn(3, ' ');
-            let (ls, lp, lo) = (it.next().unwrap_or(""), it.next().unwrap_or(""), it.next().unwrap_or(""));
-            lp == p && s.as_deref().map(|x| x == ls).unwrap_or(true) && o.as_deref().map(|x| x == lo).unwrap_or(true)
+            let (ls, lp, lo) = (
+                it.next().unwrap_or(""),
+                it.next().unwrap_or(""),
+                it.next().unwrap_or(""),
+            );
+            lp == p
+                && s.as_deref().map(|x| x == ls).unwrap_or(true)
+                && o.as_deref().map(|x| x == lo).unwrap_or(true)
         })
     };
     let mut missing = Vec::new();
@@ -803,26 +1090,51 @@ fn run_pack_test(all: &BTreeMap<String, packs::Pack>, name: &str, t: &packs::Pac
     }
     let mut msg = String::new();
     if !missing.is_empty() {
-        msg.push_str(&format!("  expected but not derived:\n    {}\n", missing.join("\n    ")));
+        msg.push_str(&format!(
+            "  expected but not derived:\n    {}\n",
+            missing.join("\n    ")
+        ));
     }
     if !present.is_empty() {
-        msg.push_str(&format!("  forbidden but derived:\n    {}\n", present.join("\n    ")));
+        msg.push_str(&format!(
+            "  forbidden but derived:\n    {}\n",
+            present.join("\n    ")
+        ));
     }
-    msg.push_str(&format!("  derived {} triples; program written to {}\n", derived.len(), t.dir.display()));
+    msg.push_str(&format!(
+        "  derived {} triples; program written to {}\n",
+        derived.len(),
+        t.dir.display()
+    ));
     bail!("{msg}")
 }
 
 /// A minimal SPARQL 1.1 Protocol endpoint: GET/POST /query (and /sparql).
 fn serve(g: Graph, listen: &str) -> Result<()> {
-    use axum::{extract::{Query, State}, http::{header, HeaderMap, StatusCode}, response::IntoResponse, routing::get, Router};
+    use axum::{
+        extract::{Query, State},
+        http::{header, HeaderMap, StatusCode},
+        response::IntoResponse,
+        routing::get,
+        Router,
+    };
     use std::sync::Arc;
 
     #[derive(serde::Deserialize)]
     struct Q {
         query: Option<String>,
     }
-    async fn handle(State(g): State<Arc<Graph>>, headers: HeaderMap, Query(q): Query<Q>, body: String) -> impl IntoResponse {
-        let ct = headers.get(header::CONTENT_TYPE).and_then(|v| v.to_str().ok()).unwrap_or("").to_string();
+    async fn handle(
+        State(g): State<Arc<Graph>>,
+        headers: HeaderMap,
+        Query(q): Query<Q>,
+        body: String,
+    ) -> impl IntoResponse {
+        let ct = headers
+            .get(header::CONTENT_TYPE)
+            .and_then(|v| v.to_str().ok())
+            .unwrap_or("")
+            .to_string();
         let query = if let Some(q) = q.query {
             q
         } else if ct.starts_with("application/sparql-query") {
@@ -833,9 +1145,17 @@ fn serve(g: Graph, listen: &str) -> Result<()> {
             body
         };
         if query.trim().is_empty() {
-            return (StatusCode::BAD_REQUEST, [(header::CONTENT_TYPE, "text/plain")], "missing query".to_string().into_bytes());
+            return (
+                StatusCode::BAD_REQUEST,
+                [(header::CONTENT_TYPE, "text/plain")],
+                "missing query".to_string().into_bytes(),
+            );
         }
-        let accept = headers.get(header::ACCEPT).and_then(|v| v.to_str().ok()).unwrap_or("").to_string();
+        let accept = headers
+            .get(header::ACCEPT)
+            .and_then(|v| v.to_str().ok())
+            .unwrap_or("")
+            .to_string();
         let (fmt, mime) = if accept.contains("text/csv") {
             (QueryResultsFormat::Csv, "text/csv")
         } else if accept.contains("text/tab-separated-values") {
@@ -848,10 +1168,22 @@ fn serve(g: Graph, listen: &str) -> Result<()> {
         let g2 = g.clone();
         let res = tokio::task::spawn_blocking(move || g2.query(&query, fmt)).await;
         match res {
-            Ok(Ok(QueryOutput::Boolean(b))) => (StatusCode::OK, [(header::CONTENT_TYPE, mime)], format!("{{\"head\":{{}},\"boolean\":{b}}}").into_bytes()),
+            Ok(Ok(QueryOutput::Boolean(b))) => (
+                StatusCode::OK,
+                [(header::CONTENT_TYPE, mime)],
+                format!("{{\"head\":{{}},\"boolean\":{b}}}").into_bytes(),
+            ),
             Ok(Ok(QueryOutput::Text(t))) => (StatusCode::OK, [(header::CONTENT_TYPE, mime)], t),
-            Ok(Err(e)) => (StatusCode::BAD_REQUEST, [(header::CONTENT_TYPE, "text/plain")], e.to_string().into_bytes()),
-            Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, [(header::CONTENT_TYPE, "text/plain")], e.to_string().into_bytes()),
+            Ok(Err(e)) => (
+                StatusCode::BAD_REQUEST,
+                [(header::CONTENT_TYPE, "text/plain")],
+                e.to_string().into_bytes(),
+            ),
+            Err(e) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                [(header::CONTENT_TYPE, "text/plain")],
+                e.to_string().into_bytes(),
+            ),
         }
     }
     fn serde_urlencoded_get(body: &str, key: &str) -> Option<String> {
@@ -868,7 +1200,7 @@ fn serve(g: Graph, listen: &str) -> Result<()> {
         let mut out = Vec::with_capacity(b.len());
         let mut i = 0;
         while i < b.len() {
-            if b[i] == b'%' && i + 2 < b.len() + 1 && i + 2 <= b.len() - 1 {
+            if b[i] == b'%' && i + 2 < b.len() + 1 && i + 2 < b.len() {
                 if let Ok(v) = u8::from_str_radix(&s[i + 1..i + 3], 16) {
                     out.push(v);
                     i += 3;
@@ -900,6 +1232,6 @@ fn serve(g: Graph, listen: &str) -> Result<()> {
         axum::serve(listener, app).await?;
         Ok::<(), anyhow::Error>(())
     })?;
-    let _ = warn!("server stopped");
+    warn!("server stopped");
     Ok(())
 }

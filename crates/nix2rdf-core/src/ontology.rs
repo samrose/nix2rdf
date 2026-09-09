@@ -66,17 +66,27 @@ pub fn load_vocabulary(text: &str) -> Result<Vocabulary> {
     // Namespace: the one used by the majority of subjects with a '#'.
     let mut ns_count: BTreeMap<String, usize> = BTreeMap::new();
     for t in &triples {
-        if let oxrdf::Subject::NamedNode(n) = &t.subject {
+        if let oxrdf::NamedOrBlankNode::NamedNode(n) = &t.subject {
             if let Some(i) = n.as_str().find('#') {
                 *ns_count.entry(n.as_str()[..=i].to_string()).or_default() += 1;
             }
         }
     }
-    v.namespace = ns_count.into_iter().max_by_key(|(_, c)| *c).map(|(n, _)| n).unwrap_or_default();
-    v.prefix = if v.namespace == NIX_NS { "nix".into() } else if v.namespace == K8S_NS { "k8s".into() } else { "ns".into() };
+    v.namespace = ns_count
+        .into_iter()
+        .max_by_key(|(_, c)| *c)
+        .map(|(n, _)| n)
+        .unwrap_or_default();
+    v.prefix = if v.namespace == NIX_NS {
+        "nix".into()
+    } else if v.namespace == K8S_NS {
+        "k8s".into()
+    } else {
+        "ns".into()
+    };
     for t in &triples {
         let s = match &t.subject {
-            oxrdf::Subject::NamedNode(n) => n.as_str().to_string(),
+            oxrdf::NamedOrBlankNode::NamedNode(n) => n.as_str().to_string(),
             _ => continue,
         };
         let p = t.predicate.as_str();
@@ -91,7 +101,10 @@ pub fn load_vocabulary(text: &str) -> Result<Vocabulary> {
             }
             continue;
         }
-        let d = v.terms.entry(s.clone()).or_insert_with(|| TermDoc { iri: s.clone(), ..Default::default() });
+        let d = v.terms.entry(s.clone()).or_insert_with(|| TermDoc {
+            iri: s.clone(),
+            ..Default::default()
+        });
         match p {
             RDF_TYPE => {
                 if let Some(k) = iri_of(&t.object) {
@@ -105,7 +118,9 @@ pub fn load_vocabulary(text: &str) -> Result<Vocabulary> {
             x if x == format!("{RDFS}subClassOf") => d.sub_class_of.extend(iri_of(&t.object)),
             x if x == format!("{RDFS}subPropertyOf") => d.sub_property_of.extend(iri_of(&t.object)),
             x if x == format!("{OWL}inverseOf") => d.inverse_of.extend(iri_of(&t.object)),
-            x if x == format!("{OWL}deprecated") => d.deprecated = lit(&t.object).as_deref() == Some("true"),
+            x if x == format!("{OWL}deprecated") => {
+                d.deprecated = lit(&t.object).as_deref() == Some("true")
+            }
             _ => {}
         }
     }
@@ -117,7 +132,11 @@ impl TermDoc {
         self.kinds.iter().any(|k| k.ends_with("#Class"))
     }
     pub fn is_property(&self) -> bool {
-        self.kinds.iter().any(|k| k.ends_with("#Property") || k.ends_with("ObjectProperty") || k.ends_with("DatatypeProperty"))
+        self.kinds.iter().any(|k| {
+            k.ends_with("#Property")
+                || k.ends_with("ObjectProperty")
+                || k.ends_with("DatatypeProperty")
+        })
     }
     pub fn is_individual(&self) -> bool {
         !self.is_class() && !self.is_property()
@@ -129,8 +148,15 @@ impl TermDoc {
 
 /// Terms (as full IRIs) used by Rust: everything in `vocab::*::ALL`.
 pub fn rust_terms() -> Vec<String> {
-    let mut v: Vec<String> = crate::vocab::nix_terms::ALL.iter().map(|t| format!("{NIX_NS}{}", t.trim_start_matches("r#"))).collect();
-    v.extend(crate::vocab::k8s_terms::ALL.iter().map(|t| format!("{K8S_NS}{t}")));
+    let mut v: Vec<String> = crate::vocab::nix_terms::ALL
+        .iter()
+        .map(|t| format!("{NIX_NS}{}", t.trim_start_matches("r#")))
+        .collect();
+    v.extend(
+        crate::vocab::k8s_terms::ALL
+            .iter()
+            .map(|t| format!("{K8S_NS}{t}")),
+    );
     v
 }
 
@@ -156,7 +182,10 @@ pub fn rule_terms(rule_text: &str) -> BTreeSet<String> {
 /// Validate: every ttl parses; every term used in Rust and in the packs'
 /// rule files is declared in one of the vocabularies (nix.ttl, k8s.ttl, or a
 /// pack's vocab.ttl for its own namespace).
-pub fn validate(ttl_paths: &[std::path::PathBuf], pack_dirs: &[std::path::PathBuf]) -> Result<Vec<String>> {
+pub fn validate(
+    ttl_paths: &[std::path::PathBuf],
+    pack_dirs: &[std::path::PathBuf],
+) -> Result<Vec<String>> {
     let mut declared: BTreeSet<String> = BTreeSet::new();
     let mut problems = Vec::new();
     for p in ttl_paths {
@@ -182,7 +211,10 @@ pub fn validate(ttl_paths: &[std::path::PathBuf], pack_dirs: &[std::path::PathBu
         for (name, text) in &p.rule_files {
             for term in rule_terms(text) {
                 if !declared.contains(&term) {
-                    problems.push(format!("pack {}/{name} uses undeclared term {term}", p.manifest.name));
+                    problems.push(format!(
+                        "pack {}/{name} uses undeclared term {term}",
+                        p.manifest.name
+                    ));
                 }
             }
         }
@@ -200,7 +232,10 @@ fn short(iri: &str) -> String {
 }
 
 fn esc(s: &str) -> String {
-    s.replace('&', "&amp;").replace('<', "&lt;").replace('>', "&gt;").replace('"', "&quot;")
+    s.replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('"', "&quot;")
 }
 
 pub fn markdown(vocabs: &[Vocabulary]) -> String {
@@ -208,39 +243,96 @@ pub fn markdown(vocabs: &[Vocabulary]) -> String {
     out.push_str("# Ontology reference\n\nGenerated from `ontology/*.ttl` by `nix2rdf ontology doc`. Do not edit by hand.\n\n");
     out.push_str("OWL and RDFS terms in these vocabularies are **notation only**: they record intent for readers and for the `rdfs`/`owl-rl-subset` rule packs. No OWL reasoner runs; every entailment in the dataset was produced by an authored Nemo rule.\n\n");
     for v in vocabs {
-        out.push_str(&format!("## {} (`{}:`)\n\n", v.title.clone().unwrap_or_else(|| v.namespace.clone()), v.prefix));
-        out.push_str(&format!("Namespace: `{}`  \nVersion: {}  \nVersion IRI: {}\n\n", v.namespace, v.version.clone().unwrap_or_default(), v.version_iri.clone().unwrap_or_default()));
+        out.push_str(&format!(
+            "## {} (`{}:`)\n\n",
+            v.title.clone().unwrap_or_else(|| v.namespace.clone()),
+            v.prefix
+        ));
+        out.push_str(&format!(
+            "Namespace: `{}`  \nVersion: {}  \nVersion IRI: {}\n\n",
+            v.namespace,
+            v.version.clone().unwrap_or_default(),
+            v.version_iri.clone().unwrap_or_default()
+        ));
         if let Some(d) = &v.description {
             out.push_str(d);
             out.push_str("\n\n");
         }
         for (title, pred) in [("Classes", 0), ("Properties", 1), ("Individuals", 2)] {
-            let items: Vec<&TermDoc> = v.terms.values().filter(|t| match pred { 0 => t.is_class(), 1 => t.is_property(), _ => t.is_individual() }).collect();
+            let items: Vec<&TermDoc> = v
+                .terms
+                .values()
+                .filter(|t| match pred {
+                    0 => t.is_class(),
+                    1 => t.is_property(),
+                    _ => t.is_individual(),
+                })
+                .collect();
             if items.is_empty() {
                 continue;
             }
             out.push_str(&format!("### {title}\n\n"));
             for t in items {
-                out.push_str(&format!("#### `{}:{}`{}\n\n", v.prefix, t.local(), if t.deprecated { " (deprecated)" } else { "" }));
+                out.push_str(&format!(
+                    "#### `{}:{}`{}\n\n",
+                    v.prefix,
+                    t.local(),
+                    if t.deprecated { " (deprecated)" } else { "" }
+                ));
                 if let Some(c) = &t.comment {
                     out.push_str(c);
                     out.push_str("\n\n");
                 }
                 let mut facts = Vec::new();
                 if !t.sub_class_of.is_empty() {
-                    facts.push(format!("subClassOf: {}", t.sub_class_of.iter().map(|x| format!("`{}`", short(x))).collect::<Vec<_>>().join(", ")));
+                    facts.push(format!(
+                        "subClassOf: {}",
+                        t.sub_class_of
+                            .iter()
+                            .map(|x| format!("`{}`", short(x)))
+                            .collect::<Vec<_>>()
+                            .join(", ")
+                    ));
                 }
                 if !t.sub_property_of.is_empty() {
-                    facts.push(format!("subPropertyOf: {}", t.sub_property_of.iter().map(|x| format!("`{}`", short(x))).collect::<Vec<_>>().join(", ")));
+                    facts.push(format!(
+                        "subPropertyOf: {}",
+                        t.sub_property_of
+                            .iter()
+                            .map(|x| format!("`{}`", short(x)))
+                            .collect::<Vec<_>>()
+                            .join(", ")
+                    ));
                 }
                 if !t.domain.is_empty() {
-                    facts.push(format!("domain: {}", t.domain.iter().map(|x| format!("`{}`", short(x))).collect::<Vec<_>>().join(", ")));
+                    facts.push(format!(
+                        "domain: {}",
+                        t.domain
+                            .iter()
+                            .map(|x| format!("`{}`", short(x)))
+                            .collect::<Vec<_>>()
+                            .join(", ")
+                    ));
                 }
                 if !t.range.is_empty() {
-                    facts.push(format!("range: {}", t.range.iter().map(|x| format!("`{}`", short(x))).collect::<Vec<_>>().join(", ")));
+                    facts.push(format!(
+                        "range: {}",
+                        t.range
+                            .iter()
+                            .map(|x| format!("`{}`", short(x)))
+                            .collect::<Vec<_>>()
+                            .join(", ")
+                    ));
                 }
                 if !t.inverse_of.is_empty() {
-                    facts.push(format!("inverseOf: {}", t.inverse_of.iter().map(|x| format!("`{}`", short(x))).collect::<Vec<_>>().join(", ")));
+                    facts.push(format!(
+                        "inverseOf: {}",
+                        t.inverse_of
+                            .iter()
+                            .map(|x| format!("`{}`", short(x)))
+                            .collect::<Vec<_>>()
+                            .join(", ")
+                    ));
                 }
                 if t.kinds.iter().any(|k| k.ends_with("TransitiveProperty")) {
                     facts.push("transitive (notation; closure computed by the core pack)".into());
@@ -258,7 +350,10 @@ pub fn markdown(vocabs: &[Vocabulary]) -> String {
 pub fn html(v: &Vocabulary) -> String {
     let mut s = String::new();
     let title = v.title.clone().unwrap_or_else(|| v.namespace.clone());
-    s.push_str(&format!("<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><title>{}</title>\n", esc(&title)));
+    s.push_str(&format!(
+        "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><title>{}</title>\n",
+        esc(&title)
+    ));
     s.push_str("<style>body{font-family:system-ui,sans-serif;max-width:60rem;margin:2rem auto;padding:0 1rem;line-height:1.5}code{background:#f4f4f4;padding:0 .2em}dt{font-weight:600;margin-top:1rem}dd{margin:0 0 .5rem 1rem}.meta{color:#555;font-size:.9em}</style></head><body>\n");
     s.push_str(&format!("<h1>{}</h1>\n<p class=\"meta\">Namespace <code>{}</code> · version {} · <a href=\"{}\">Turtle</a></p>\n", esc(&title), esc(&v.namespace), esc(&v.version.clone().unwrap_or_default()), if v.prefix == "k8s" { "k8s.ttl" } else { "ns.ttl" }));
     if let Some(d) = &v.description {
@@ -266,20 +361,50 @@ pub fn html(v: &Vocabulary) -> String {
     }
     s.push_str("<p>OWL/RDFS terms are notation only; semantics are given by Nemo rule packs. Terms are immutable: added, never removed; deprecated with <code>owl:deprecated</code>.</p>\n");
     for (title, pred) in [("Classes", 0), ("Properties", 1), ("Individuals", 2)] {
-        let items: Vec<&TermDoc> = v.terms.values().filter(|t| match pred { 0 => t.is_class(), 1 => t.is_property(), _ => t.is_individual() }).collect();
+        let items: Vec<&TermDoc> = v
+            .terms
+            .values()
+            .filter(|t| match pred {
+                0 => t.is_class(),
+                1 => t.is_property(),
+                _ => t.is_individual(),
+            })
+            .collect();
         if items.is_empty() {
             continue;
         }
         s.push_str(&format!("<h2>{title}</h2>\n<dl>\n"));
         for t in items {
-            s.push_str(&format!("<dt id=\"{}\"><code>{}:{}</code>{}</dt>\n", esc(t.local()), v.prefix, esc(t.local()), if t.deprecated { " <em>(deprecated)</em>" } else { "" }));
+            s.push_str(&format!(
+                "<dt id=\"{}\"><code>{}:{}</code>{}</dt>\n",
+                esc(t.local()),
+                v.prefix,
+                esc(t.local()),
+                if t.deprecated {
+                    " <em>(deprecated)</em>"
+                } else {
+                    ""
+                }
+            ));
             if let Some(c) = &t.comment {
                 s.push_str(&format!("<dd>{}</dd>\n", esc(c)));
             }
             let mut facts = Vec::new();
-            for (k, vals) in [("subClassOf", &t.sub_class_of), ("subPropertyOf", &t.sub_property_of), ("domain", &t.domain), ("range", &t.range), ("inverseOf", &t.inverse_of)] {
+            for (k, vals) in [
+                ("subClassOf", &t.sub_class_of),
+                ("subPropertyOf", &t.sub_property_of),
+                ("domain", &t.domain),
+                ("range", &t.range),
+                ("inverseOf", &t.inverse_of),
+            ] {
                 if !vals.is_empty() {
-                    facts.push(format!("{k}: {}", vals.iter().map(|x| format!("<code>{}</code>", esc(&short(x)))).collect::<Vec<_>>().join(", ")));
+                    facts.push(format!(
+                        "{k}: {}",
+                        vals.iter()
+                            .map(|x| format!("<code>{}</code>", esc(&short(x))))
+                            .collect::<Vec<_>>()
+                            .join(", ")
+                    ));
                 }
             }
             if !facts.is_empty() {

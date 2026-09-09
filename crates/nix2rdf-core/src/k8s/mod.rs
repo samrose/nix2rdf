@@ -35,13 +35,23 @@ impl Default for LabelConfig {
         LabelConfig {
             owner_keys: vec!["nix2rdf.io/owner".into(), "owner".into(), "team".into()],
             cost_center_keys: vec!["nix2rdf.io/cost-center".into(), "cost-center".into()],
-            zone_keys: vec!["topology.kubernetes.io/zone".into(), "failure-domain.beta.kubernetes.io/zone".into()],
-            region_keys: vec!["topology.kubernetes.io/region".into(), "failure-domain.beta.kubernetes.io/region".into()],
+            zone_keys: vec![
+                "topology.kubernetes.io/zone".into(),
+                "failure-domain.beta.kubernetes.io/zone".into(),
+            ],
+            region_keys: vec![
+                "topology.kubernetes.io/region".into(),
+                "failure-domain.beta.kubernetes.io/region".into(),
+            ],
             rack_key: "topology.nix2rdf.io/rack".into(),
             site_key: "topology.nix2rdf.io/site".into(),
             generation_annotation: "nix2rdf.io/generation".into(),
             exempt_single_domain_annotation: "nix2rdf.io/exempt-single-domain".into(),
-            production_labels: vec!["environment=production".into(), "env=prod".into(), "nix2rdf.io/production=true".into()],
+            production_labels: vec![
+                "environment=production".into(),
+                "env=prod".into(),
+                "nix2rdf.io/production=true".into(),
+            ],
         }
     }
 }

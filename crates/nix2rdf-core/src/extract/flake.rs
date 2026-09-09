@@ -44,11 +44,7 @@ pub struct FlakeExtraction {
 
 /// The system string Nix would use on this host, without calling Nix.
 pub fn current_system() -> String {
-    let arch = match std::env::consts::ARCH {
-        "x86_64" => "x86_64",
-        "aarch64" => "aarch64",
-        other => other,
-    };
+    let arch = std::env::consts::ARCH;
     let os = match std::env::consts::OS {
         "macos" => "darwin",
         other => other,
@@ -65,7 +61,11 @@ pub fn flake_ref_string(o: &serde_json::Value) -> String {
     let ty = str_of(o, "type").unwrap_or("");
     match ty {
         "github" | "gitlab" | "sourcehut" => {
-            let mut s = format!("{ty}:{}/{}", str_of(o, "owner").unwrap_or(""), str_of(o, "repo").unwrap_or(""));
+            let mut s = format!(
+                "{ty}:{}/{}",
+                str_of(o, "owner").unwrap_or(""),
+                str_of(o, "repo").unwrap_or("")
+            );
             if let Some(r) = str_of(o, "rev") {
                 s.push('/');
                 s.push_str(r);
@@ -134,7 +134,11 @@ fn add_pin(f: &mut Fragment, pin: &NamedNode, locked: &serde_json::Value) {
 
 /// Resolve a `follows` path (e.g. ["a", "nixpkgs"]) from the root to
 /// (parent node id, input name).
-fn resolve_follows<'a>(nodes: &'a serde_json::Value, root: &'a str, path: &[String]) -> Option<(String, String)> {
+fn resolve_follows<'a>(
+    nodes: &'a serde_json::Value,
+    root: &'a str,
+    path: &[String],
+) -> Option<(String, String)> {
     if path.is_empty() {
         return None;
     }
@@ -144,7 +148,10 @@ fn resolve_follows<'a>(nodes: &'a serde_json::Value, root: &'a str, path: &[Stri
         match inputs.get(name)? {
             serde_json::Value::String(id) => cur = id.clone(),
             serde_json::Value::Array(p) => {
-                let p: Vec<String> = p.iter().filter_map(|x| x.as_str().map(String::from)).collect();
+                let p: Vec<String> = p
+                    .iter()
+                    .filter_map(|x| x.as_str().map(String::from))
+                    .collect();
                 let (parent, n) = resolve_follows(nodes, root, &p)?;
                 let inputs = nodes.get(&parent)?.get("inputs")?;
                 cur = inputs.get(&n)?.as_str()?.to_string();
@@ -156,14 +163,25 @@ fn resolve_follows<'a>(nodes: &'a serde_json::Value, root: &'a str, path: &[Stri
 }
 
 /// Build the lock graph into `root_frag`, plus one small fragment per nested pin.
-pub fn lock_graph(meta: &serde_json::Value, root_nar: &str, root_frag: &mut Fragment) -> Result<Vec<Fragment>> {
-    let locks = meta.get("locks").ok_or_else(|| Error::Other("flake metadata has no locks".into()))?;
-    let nodes = locks.get("nodes").ok_or_else(|| Error::Other("flake.lock has no nodes".into()))?;
+pub fn lock_graph(
+    meta: &serde_json::Value,
+    root_nar: &str,
+    root_frag: &mut Fragment,
+) -> Result<Vec<Fragment>> {
+    let locks = meta
+        .get("locks")
+        .ok_or_else(|| Error::Other("flake metadata has no locks".into()))?;
+    let nodes = locks
+        .get("nodes")
+        .ok_or_else(|| Error::Other("flake.lock has no nodes".into()))?;
     let root_id = str_of(locks, "root").unwrap_or("root").to_string();
     let root_pin = iri::pin(root_nar);
     let mut extra = Vec::new();
 
-    let node_ids: Vec<String> = nodes.as_object().map(|o| o.keys().cloned().collect()).unwrap_or_default();
+    let node_ids: Vec<String> = nodes
+        .as_object()
+        .map(|o| o.keys().cloned().collect())
+        .unwrap_or_default();
     // node id → pin IRI (root node → root pin; locked nodes → pin by narHash)
     let mut pin_of: BTreeMap<String, NamedNode> = BTreeMap::new();
     for id in &node_ids {
@@ -176,7 +194,9 @@ pub fn lock_graph(meta: &serde_json::Value, root_nar: &str, root_frag: &mut Frag
     }
     for id in &node_ids {
         let node = &nodes[id];
-        let Some(parent_pin) = pin_of.get(id).cloned() else { continue };
+        let Some(parent_pin) = pin_of.get(id).cloned() else {
+            continue;
+        };
         if id != &root_id {
             if let Some(locked) = node.get("locked") {
                 let nar = str_of(locked, "narHash").unwrap_or_default();
@@ -187,7 +207,9 @@ pub fn lock_graph(meta: &serde_json::Value, root_nar: &str, root_frag: &mut Frag
                 add_pin(root_frag, &parent_pin, locked);
             }
         }
-        let Some(inputs) = node.get("inputs").and_then(|i| i.as_object()) else { continue };
+        let Some(inputs) = node.get("inputs").and_then(|i| i.as_object()) else {
+            continue;
+        };
         for (name, target) in inputs {
             let input = iri::flake_input(root_nar, id, name);
             root_frag.add_type(input.clone(), t::FlakeInput());
@@ -201,7 +223,11 @@ pub fn lock_graph(meta: &serde_json::Value, root_nar: &str, root_frag: &mut Frag
                     }
                     if let Some(tn) = nodes.get(target_id) {
                         if let Some(orig) = tn.get("original") {
-                            root_frag.add_str(input.clone(), t::originalRef(), &flake_ref_string(orig));
+                            root_frag.add_str(
+                                input.clone(),
+                                t::originalRef(),
+                                &flake_ref_string(orig),
+                            );
                         }
                         if tn.get("flake").and_then(|b| b.as_bool()) == Some(false) {
                             root_frag.add_bool(input.clone(), t::isFlake(), false);
@@ -209,12 +235,21 @@ pub fn lock_graph(meta: &serde_json::Value, root_nar: &str, root_frag: &mut Frag
                     }
                 }
                 serde_json::Value::Array(p) => {
-                    let path: Vec<String> = p.iter().filter_map(|x| x.as_str().map(String::from)).collect();
+                    let path: Vec<String> = p
+                        .iter()
+                        .filter_map(|x| x.as_str().map(String::from))
+                        .collect();
                     match resolve_follows(nodes, &root_id, &path) {
                         Some((parent, n)) => {
-                            root_frag.add(input.clone(), t::follows(), iri::flake_input(root_nar, &parent, &n));
+                            root_frag.add(
+                                input.clone(),
+                                t::follows(),
+                                iri::flake_input(root_nar, &parent, &n),
+                            );
                         }
-                        None => warn!(target: "nix2rdf::flake", input = %name, "unresolvable follows path"),
+                        None => {
+                            warn!(target: "nix2rdf::flake", input = %name, "unresolvable follows path")
+                        }
                     }
                 }
                 _ => {}
@@ -228,13 +263,19 @@ pub fn lock_graph(meta: &serde_json::Value, root_nar: &str, root_frag: &mut Frag
 fn default_attrs(nix: &dyn NixSource, flake_ref: &str, system: &str) -> Result<Vec<String>> {
     let show = nix.flake_show(flake_ref)?;
     let mut attrs = Vec::new();
-    if let Some(pk) = show.get("packages").and_then(|p| p.get(system)).and_then(|s| s.as_object()) {
+    if let Some(pk) = show
+        .get("packages")
+        .and_then(|p| p.get(system))
+        .and_then(|s| s.as_object())
+    {
         for name in pk.keys() {
             attrs.push(format!("packages.{system}.{name}"));
         }
     }
     if attrs.is_empty() {
-        return Err(Error::Other(format!("no packages.{system}.* in {flake_ref}; pass --attr")));
+        return Err(Error::Other(format!(
+            "no packages.{system}.* in {flake_ref}; pass --attr"
+        )));
     }
     Ok(attrs)
 }
@@ -257,14 +298,26 @@ pub fn meta_for(nix: &dyn NixSource, flake_ref: &str, attr: &str) -> Option<Meta
 
 pub fn extract_flake(nix: &dyn NixSource, opts: &FlakeOptions) -> Result<FlakeExtraction> {
     let meta = nix.flake_metadata(&opts.flake_ref)?;
-    let locked = meta.get("locked").cloned().unwrap_or(serde_json::Value::Null);
+    let locked = meta
+        .get("locked")
+        .cloned()
+        .unwrap_or(serde_json::Value::Null);
     let root_nar = match str_of(&locked, "narHash") {
         Some(n) => n.to_string(),
         None => {
             // A dirty local checkout: hash the store copy of the source.
-            let path = str_of(&meta, "path").ok_or_else(|| Error::Other("flake metadata has neither locked.narHash nor path".into()))?.to_string();
-            let infos = nix.path_info(&[path.clone()])?;
-            infos.get(&path).cloned().flatten().and_then(|i| i.nar_hash).ok_or_else(|| Error::Other(format!("no NAR hash for {path}")))?
+            let path = str_of(&meta, "path")
+                .ok_or_else(|| {
+                    Error::Other("flake metadata has neither locked.narHash nor path".into())
+                })?
+                .to_string();
+            let infos = nix.path_info(std::slice::from_ref(&path))?;
+            infos
+                .get(&path)
+                .cloned()
+                .flatten()
+                .and_then(|i| i.nar_hash)
+                .ok_or_else(|| Error::Other(format!("no NAR hash for {path}")))?
         }
     };
     info!(target: "nix2rdf::flake", flake = %opts.flake_ref, root_nar_hash = %root_nar, "flake resolved");
@@ -278,8 +331,15 @@ pub fn extract_flake(nix: &dyn NixSource, opts: &FlakeOptions) -> Result<FlakeEx
     }
     let mut fragments = lock_graph(&meta, &root_nar, &mut root_frag)?;
 
-    let attrs = if opts.attrs.is_empty() { default_attrs(nix, &opts.flake_ref, &opts.system)? } else { opts.attrs.clone() };
-    let installables: Vec<String> = attrs.iter().map(|a| format!("{}#{a}", opts.flake_ref)).collect();
+    let attrs = if opts.attrs.is_empty() {
+        default_attrs(nix, &opts.flake_ref, &opts.system)?
+    } else {
+        opts.attrs.clone()
+    };
+    let installables: Vec<String> = attrs
+        .iter()
+        .map(|a| format!("{}#{a}", opts.flake_ref))
+        .collect();
 
     // Roots first (non-recursive), then the whole graph.
     let roots = nix.derivation_show(&installables, false)?;
@@ -300,18 +360,25 @@ pub fn extract_flake(nix: &dyn NixSource, opts: &FlakeOptions) -> Result<FlakeEx
                         root_drvs.insert(a.clone(), p.clone());
                     }
                 }
-                Err(e) => warn!(target: "nix2rdf::flake", attr = %a, error = %e, "cannot resolve root"),
+                Err(e) => {
+                    warn!(target: "nix2rdf::flake", attr = %a, error = %e, "cannot resolve root")
+                }
             }
         }
         if root_drvs.is_empty() {
             for (i, p) in roots.keys().enumerate() {
-                root_drvs.insert(attrs.get(i).cloned().unwrap_or_else(|| p.clone()), p.clone());
+                root_drvs.insert(
+                    attrs.get(i).cloned().unwrap_or_else(|| p.clone()),
+                    p.clone(),
+                );
             }
         }
     }
 
     for (attr, drv_path) in &root_drvs {
-        let Some(d) = graph.drv_iri(drv_path) else { continue };
+        let Some(d) = graph.drv_iri(drv_path) else {
+            continue;
+        };
         let a = iri::pin_attr(&root_nar, attr);
         root_frag.add_type(a.clone(), t::Attribute());
         root_frag.add_str(a.clone(), t::attrPath(), attr);
@@ -334,16 +401,30 @@ pub fn extract_flake(nix: &dyn NixSource, opts: &FlakeOptions) -> Result<FlakeEx
     if let Some(c) = &opts.commit {
         fragments.push(commit_fragment(c, &root_pin));
     }
-    Ok(FlakeExtraction { root_nar_hash: root_nar, snapshot: root_pin, fragments, graph, root_drvs })
+    Ok(FlakeExtraction {
+        root_nar_hash: root_nar,
+        snapshot: root_pin,
+        fragments,
+        graph,
+        root_drvs,
+    })
 }
 
 pub fn commit_fragment(c: &CommitInfo, snapshot: &NamedNode) -> Fragment {
     let node = iri::commit(&c.repo, &c.sha);
-    let mut f = Fragment::new(FragmentKind::Commit { repo: c.repo.clone(), sha: c.sha.clone() });
+    let mut f = Fragment::new(FragmentKind::Commit {
+        repo: c.repo.clone(),
+        sha: c.sha.clone(),
+    });
     f.add_type(node.clone(), t::Commit());
     f.add_str(node.clone(), t::rev(), &c.sha);
     f.add_str(node.clone(), t::repo(), &c.repo);
-    f.add_typed(node.clone(), t::committedAt(), &c.committed_at, xsd_date_time());
+    f.add_typed(
+        node.clone(),
+        t::committedAt(),
+        &c.committed_at,
+        xsd_date_time(),
+    );
     f.add(node, t::snapshot(), snapshot.clone());
     f
 }

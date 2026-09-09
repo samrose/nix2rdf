@@ -51,16 +51,27 @@ impl RecordedNix {
 }
 
 impl NixSource for RecordedNix {
-    fn derivation_show(&self, installables: &[String], recursive: bool) -> Result<BTreeMap<String, DrvInfo>> {
-        let all: BTreeMap<String, DrvInfo> = serde_json::from_value(self.read_json("derivation-show.json")?)?;
+    fn derivation_show(
+        &self,
+        installables: &[String],
+        recursive: bool,
+    ) -> Result<BTreeMap<String, DrvInfo>> {
+        let all: BTreeMap<String, DrvInfo> =
+            serde_json::from_value(self.read_json("derivation-show.json")?)?;
         if recursive {
             return Ok(all);
         }
         // Non-recursive: explicit .drv paths filter the recorded graph; anything
         // else (attribute installables) answers from derivation-show-roots.json.
-        let wanted: Vec<&String> = installables.iter().filter(|i| i.ends_with(".drv")).collect();
+        let wanted: Vec<&String> = installables
+            .iter()
+            .filter(|i| i.ends_with(".drv"))
+            .collect();
         if !wanted.is_empty() {
-            return Ok(all.into_iter().filter(|(k, _)| wanted.contains(&k)).collect());
+            return Ok(all
+                .into_iter()
+                .filter(|(k, _)| wanted.contains(&k))
+                .collect());
         }
         match self.read_json_opt("derivation-show-roots.json")? {
             Some(v) => Ok(serde_json::from_value(v)?),
@@ -69,11 +80,15 @@ impl NixSource for RecordedNix {
     }
 
     fn path_info(&self, paths: &[String]) -> Result<BTreeMap<String, Option<PathInfo>>> {
-        let recorded: BTreeMap<String, Option<PathInfo>> = match self.read_json_opt("path-info.json")? {
-            Some(v) => serde_json::from_value(v)?,
-            None => BTreeMap::new(),
-        };
-        Ok(paths.iter().map(|p| (p.clone(), recorded.get(p).cloned().flatten())).collect())
+        let recorded: BTreeMap<String, Option<PathInfo>> =
+            match self.read_json_opt("path-info.json")? {
+                Some(v) => serde_json::from_value(v)?,
+                None => BTreeMap::new(),
+            };
+        Ok(paths
+            .iter()
+            .map(|p| (p.clone(), recorded.get(p).cloned().flatten()))
+            .collect())
     }
 
     fn flake_metadata(&self, _flake_ref: &str) -> Result<serde_json::Value> {

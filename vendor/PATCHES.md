@@ -25,3 +25,6 @@ the only place the Nemo API is used.
   ("generated predicate: …") that Nemo emits for every existential rule is
   turned into `log::debug!`, so library output does not pollute the CLI's
   stdout (which carries query results).
+- `Cargo.toml` (workspace): the license field is corrected to the valid SPDX
+  expression `Apache-2.0 OR MIT` (upstream writes `APACHE-2.0`), so
+  `cargo deny check licenses` can evaluate it.

@@ -63,11 +63,23 @@ impl Store {
         let path = self.path_of(&frag.kind);
         if path.exists() {
             let bytes = std::fs::metadata(&path).map(|m| m.len()).unwrap_or(0);
-            return Ok(WriteOutcome { path, kind: frag.kind.clone(), written: false, quads: frag.len(), bytes });
+            return Ok(WriteOutcome {
+                path,
+                kind: frag.kind.clone(),
+                written: false,
+                quads: frag.len(),
+                bytes,
+            });
         }
         frag.write_to(&path)?;
         let bytes = std::fs::metadata(&path).map(|m| m.len()).unwrap_or(0);
-        Ok(WriteOutcome { path, kind: frag.kind.clone(), written: true, quads: frag.len(), bytes })
+        Ok(WriteOutcome {
+            path,
+            kind: frag.kind.clone(),
+            written: true,
+            quads: frag.len(),
+            bytes,
+        })
     }
 
     /// Force-write even if present (used by `rebuild`-style refreshes).
@@ -75,16 +87,24 @@ impl Store {
         let path = self.path_of(&frag.kind);
         frag.write_to(&path)?;
         let bytes = std::fs::metadata(&path).map(|m| m.len()).unwrap_or(0);
-        Ok(WriteOutcome { path, kind: frag.kind.clone(), written: true, quads: frag.len(), bytes })
+        Ok(WriteOutcome {
+            path,
+            kind: frag.kind.clone(),
+            written: true,
+            quads: frag.len(),
+            bytes,
+        })
     }
 
     /// All fragment files under the store, sorted, excluding the index and packs.
     pub fn all_fragment_paths(&self) -> Result<Vec<PathBuf>> {
         let mut out = Vec::new();
         let skip = [self.oxigraph_dir(), self.packs_dir()];
-        for entry in WalkDir::new(&self.root).sort_by_file_name().into_iter().filter_entry(|e| {
-            !skip.iter().any(|s| e.path() == s)
-        }) {
+        for entry in WalkDir::new(&self.root)
+            .sort_by_file_name()
+            .into_iter()
+            .filter_entry(|e| !skip.iter().any(|s| e.path() == s))
+        {
             let entry = entry.map_err(|e| Error::Store(e.to_string()))?;
             let p = entry.path();
             if p.is_file() && p.to_string_lossy().ends_with(".nq.zst") {
@@ -115,6 +135,8 @@ impl Store {
 
     /// Relative path (inside the store) of an absolute fragment path.
     pub fn relative(&self, path: &Path) -> PathBuf {
-        path.strip_prefix(&self.root).map(|p| p.to_path_buf()).unwrap_or_else(|_| path.to_path_buf())
+        path.strip_prefix(&self.root)
+            .map(|p| p.to_path_buf())
+            .unwrap_or_else(|_| path.to_path_buf())
     }
 }

@@ -66,10 +66,16 @@ struct Ctx<'a> {
 
 impl<'a> Ctx<'a> {
     fn get(&self, kind: &str, ns: &str, name: &str) -> Option<&'a Value> {
-        self.index.get(&(kind.to_string(), ns.to_string(), name.to_string())).copied()
+        self.index
+            .get(&(kind.to_string(), ns.to_string(), name.to_string()))
+            .copied()
     }
     fn of_kind(&self, kind: &str) -> Vec<&'a Value> {
-        self.index.iter().filter(|((k, _, _), _)| k == kind).map(|(_, v)| *v).collect()
+        self.index
+            .iter()
+            .filter(|((k, _, _), _)| k == kind)
+            .map(|(_, v)| *v)
+            .collect()
     }
     fn obj_iri(&self, kind: &str, ns: Option<&str>, name: &str) -> NamedNode {
         match kind {
@@ -93,16 +99,24 @@ impl<'a> Ctx<'a> {
     }
     /// Owner precedence: workload label > workload annotation > namespace label > namespace annotation.
     fn owner(&self, labels: &Labels, ann: &Labels, ns: Option<&str>) -> Option<String> {
-        self.first_key(&self.cfg.owner_keys, labels, ann).or_else(|| {
-            let (nl, na) = ns.and_then(|n| self.ns_meta.get(n)).cloned().unwrap_or_default();
-            self.first_key(&self.cfg.owner_keys, &nl, &na)
-        })
+        self.first_key(&self.cfg.owner_keys, labels, ann)
+            .or_else(|| {
+                let (nl, na) = ns
+                    .and_then(|n| self.ns_meta.get(n))
+                    .cloned()
+                    .unwrap_or_default();
+                self.first_key(&self.cfg.owner_keys, &nl, &na)
+            })
     }
     fn cost_center(&self, labels: &Labels, ann: &Labels, ns: Option<&str>) -> Option<String> {
-        self.first_key(&self.cfg.cost_center_keys, labels, ann).or_else(|| {
-            let (nl, na) = ns.and_then(|n| self.ns_meta.get(n)).cloned().unwrap_or_default();
-            self.first_key(&self.cfg.cost_center_keys, &nl, &na)
-        })
+        self.first_key(&self.cfg.cost_center_keys, labels, ann)
+            .or_else(|| {
+                let (nl, na) = ns
+                    .and_then(|n| self.ns_meta.get(n))
+                    .cloned()
+                    .unwrap_or_default();
+                self.first_key(&self.cfg.cost_center_keys, &nl, &na)
+            })
     }
 }
 
@@ -113,7 +127,10 @@ fn add_labels(f: &mut Fragment, subj: &NamedNode, labels: &Labels) {
 }
 
 fn nodes_fragment(ctx: &Ctx, opts: &SnapshotOptions) -> (Fragment, BTreeSet<String>) {
-    let mut f = Fragment::new(FragmentKind::K8sNodes { cluster: opts.cluster_id.clone(), hash: PLACEHOLDER.into() });
+    let mut f = Fragment::new(FragmentKind::K8sNodes {
+        cluster: opts.cluster_id.clone(),
+        hash: PLACEHOLDER.into(),
+    });
     let cluster = iri::k8s_cluster(ctx.cid);
     let mut names = BTreeSet::new();
     for node in ctx.of_kind("Node") {
@@ -126,12 +143,17 @@ fn nodes_fragment(ctx: &Ctx, opts: &SnapshotOptions) -> (Fragment, BTreeSet<Stri
         let labels = labels(node);
         let ann = annotations(node);
         add_labels(&mut f, &ni, &labels);
-        for (key, _) in &labels {
+        for key in labels.keys() {
             if let Some(role) = key.strip_prefix("node-role.kubernetes.io/") {
                 f.add_str(ni.clone(), k::nodeRole(), role);
             }
         }
-        for (prop, path) in [(k::kubeletVersion(), "kubeletVersion"), (k::containerRuntimeVersion(), "containerRuntimeVersion"), (k::kernelVersion(), "kernelVersion"), (k::osImage(), "osImage")] {
+        for (prop, path) in [
+            (k::kubeletVersion(), "kubeletVersion"),
+            (k::containerRuntimeVersion(), "containerRuntimeVersion"),
+            (k::kernelVersion(), "kernelVersion"),
+            (k::osImage(), "osImage"),
+        ] {
             if let Some(v) = s(node, &["status", "nodeInfo", path]) {
                 f.add_str(ni.clone(), prop, v);
             }
@@ -157,7 +179,11 @@ fn nodes_fragment(ctx: &Ctx, opts: &SnapshotOptions) -> (Fragment, BTreeSet<Stri
             f.add(d.clone(), k::inCluster(), cluster.clone());
             f.add(ni.clone(), k::inFailureDomain(), d);
         }
-        let gen = opts.node_map.get(nm).cloned().or_else(|| ann.get(&ctx.cfg.generation_annotation).cloned());
+        let gen = opts
+            .node_map
+            .get(nm)
+            .cloned()
+            .or_else(|| ann.get(&ctx.cfg.generation_annotation).cloned());
         if let Some(g) = gen {
             f.add(ni.clone(), k::hostGeneration(), iri::gen(&g));
         }
@@ -165,7 +191,13 @@ fn nodes_fragment(ctx: &Ctx, opts: &SnapshotOptions) -> (Fragment, BTreeSet<Stri
     (f, names)
 }
 
-fn container_specs(f: &mut Fragment, ctx: &Ctx, w: &Value, wi: &NamedNode, pulled: &BTreeMap<String, BTreeSet<String>>) {
+fn container_specs(
+    f: &mut Fragment,
+    ctx: &Ctx,
+    w: &Value,
+    wi: &NamedNode,
+    pulled: &BTreeMap<String, BTreeSet<String>>,
+) {
     let Some(ps) = pod_spec(w) else { return };
     let ns = namespace(w).unwrap_or("default");
     for (list, init) in [("containers", false), ("initContainers", true)] {
@@ -198,15 +230,29 @@ fn container_specs(f: &mut Fragment, ctx: &Ctx, w: &Value, wi: &NamedNode, pulle
             for d in digests {
                 f.add(ci.clone(), k::runsImage(), iri::image(&d));
             }
-            for (prop, path) in [(k::requestsCpu(), ["requests", "cpu"]), (k::requestsMemory(), ["requests", "memory"]), (k::limitsCpu(), ["limits", "cpu"]), (k::limitsMemory(), ["limits", "memory"])] {
-                if let Some(v) = c.get("resources").and_then(|r| r.get(path[0])).and_then(|r| r.get(path[1])).and_then(|v| v.as_str()) {
+            for (prop, path) in [
+                (k::requestsCpu(), ["requests", "cpu"]),
+                (k::requestsMemory(), ["requests", "memory"]),
+                (k::limitsCpu(), ["limits", "cpu"]),
+                (k::limitsMemory(), ["limits", "memory"]),
+            ] {
+                if let Some(v) = c
+                    .get("resources")
+                    .and_then(|r| r.get(path[0]))
+                    .and_then(|r| r.get(path[1]))
+                    .and_then(|v| v.as_str())
+                {
                     f.add_str(ci.clone(), prop, v);
                 }
             }
             // env / envFrom references → mounts on the workload.
             for e in arr(c, &["env"]) {
                 if let Some(nm) = s(e, &["valueFrom", "configMapKeyRef", "name"]) {
-                    f.add(wi.clone(), k::mounts(), ctx.obj_iri("ConfigMap", Some(ns), nm));
+                    f.add(
+                        wi.clone(),
+                        k::mounts(),
+                        ctx.obj_iri("ConfigMap", Some(ns), nm),
+                    );
                 }
                 if let Some(nm) = s(e, &["valueFrom", "secretKeyRef", "name"]) {
                     f.add(wi.clone(), k::mounts(), ctx.obj_iri("Secret", Some(ns), nm));
@@ -214,7 +260,11 @@ fn container_specs(f: &mut Fragment, ctx: &Ctx, w: &Value, wi: &NamedNode, pulle
             }
             for e in arr(c, &["envFrom"]) {
                 if let Some(nm) = s(e, &["configMapRef", "name"]) {
-                    f.add(wi.clone(), k::mounts(), ctx.obj_iri("ConfigMap", Some(ns), nm));
+                    f.add(
+                        wi.clone(),
+                        k::mounts(),
+                        ctx.obj_iri("ConfigMap", Some(ns), nm),
+                    );
                 }
                 if let Some(nm) = s(e, &["secretRef", "name"]) {
                     f.add(wi.clone(), k::mounts(), ctx.obj_iri("Secret", Some(ns), nm));
@@ -224,17 +274,29 @@ fn container_specs(f: &mut Fragment, ctx: &Ctx, w: &Value, wi: &NamedNode, pulle
     }
     for v in arr(ps, &["volumes"]) {
         if let Some(nm) = s(v, &["configMap", "name"]) {
-            f.add(wi.clone(), k::mounts(), ctx.obj_iri("ConfigMap", Some(ns), nm));
+            f.add(
+                wi.clone(),
+                k::mounts(),
+                ctx.obj_iri("ConfigMap", Some(ns), nm),
+            );
         }
         if let Some(nm) = s(v, &["secret", "secretName"]) {
             f.add(wi.clone(), k::mounts(), ctx.obj_iri("Secret", Some(ns), nm));
         }
         if let Some(nm) = s(v, &["persistentVolumeClaim", "claimName"]) {
-            f.add(wi.clone(), k::mounts(), ctx.obj_iri("PersistentVolumeClaim", Some(ns), nm));
+            f.add(
+                wi.clone(),
+                k::mounts(),
+                ctx.obj_iri("PersistentVolumeClaim", Some(ns), nm),
+            );
         }
         for src in arr(v, &["projected", "sources"]) {
             if let Some(nm) = s(src, &["configMap", "name"]) {
-                f.add(wi.clone(), k::mounts(), ctx.obj_iri("ConfigMap", Some(ns), nm));
+                f.add(
+                    wi.clone(),
+                    k::mounts(),
+                    ctx.obj_iri("ConfigMap", Some(ns), nm),
+                );
             }
             if let Some(nm) = s(src, &["secret", "name"]) {
                 f.add(wi.clone(), k::mounts(), ctx.obj_iri("Secret", Some(ns), nm));
@@ -244,22 +306,30 @@ fn container_specs(f: &mut Fragment, ctx: &Ctx, w: &Value, wi: &NamedNode, pulle
     // StatefulSet volumeClaimTemplates create PVCs named <template>-<sts>-<i>; record the template's storage class.
     for t in arr(w, &["spec", "volumeClaimTemplates"]) {
         if let Some(sc) = s(t, &["spec", "storageClassName"]) {
-            f.add(wi.clone(), k::usesStorageClass(), ctx.obj_iri("StorageClass", None, sc));
+            f.add(
+                wi.clone(),
+                k::usesStorageClass(),
+                ctx.obj_iri("StorageClass", None, sc),
+            );
         }
     }
-    let sa = s(ps, &["serviceAccountName"]).or(s(ps, &["serviceAccount"])).unwrap_or("default");
-    f.add(wi.clone(), k::usesServiceAccount(), ctx.obj_iri("ServiceAccount", Some(ns), sa));
+    let sa = s(ps, &["serviceAccountName"])
+        .or(s(ps, &["serviceAccount"]))
+        .unwrap_or("default");
+    f.add(
+        wi.clone(),
+        k::usesServiceAccount(),
+        ctx.obj_iri("ServiceAccount", Some(ns), sa),
+    );
 }
 
 /// Resolve pod → owning workload (kind, ns, name) through ReplicaSets and Jobs.
 fn pod_owner(ctx: &Ctx, pod: &Value) -> Option<(String, String, String)> {
     let ns = namespace(pod).unwrap_or("default").to_string();
-    let mut cur_kind = String::new();
-    let mut cur_name = String::new();
     let owners = arr(pod, &["metadata", "ownerReferences"]);
     let o = owners.first()?;
-    cur_kind = s(o, &["kind"]).unwrap_or("").to_string();
-    cur_name = s(o, &["name"]).unwrap_or("").to_string();
+    let mut cur_kind = s(o, &["kind"]).unwrap_or("").to_string();
+    let mut cur_name = s(o, &["name"]).unwrap_or("").to_string();
     for _ in 0..3 {
         if WORKLOAD_KINDS.contains(&cur_kind.as_str()) {
             // A Job owned by a CronJob is attributed to the CronJob.
@@ -267,7 +337,11 @@ fn pod_owner(ctx: &Ctx, pod: &Value) -> Option<(String, String, String)> {
                 if let Some(j) = ctx.get("Job", &ns, &cur_name) {
                     if let Some(o) = arr(j, &["metadata", "ownerReferences"]).first() {
                         if s(o, &["kind"]) == Some("CronJob") {
-                            return Some(("CronJob".into(), ns, s(o, &["name"]).unwrap_or("").to_string()));
+                            return Some((
+                                "CronJob".into(),
+                                ns,
+                                s(o, &["name"]).unwrap_or("").to_string(),
+                            ));
                         }
                     }
                 }
@@ -295,30 +369,54 @@ pub fn build_snapshot(input: &SnapshotInput, opts: &SnapshotOptions) -> Snapshot
         if kd.is_empty() || kd == "Pod" {
             continue;
         }
-        let ns = if CLUSTER_KINDS.contains(&kd.as_str()) { String::new() } else { namespace(o).unwrap_or("default").to_string() };
+        let ns = if CLUSTER_KINDS.contains(&kd.as_str()) {
+            String::new()
+        } else {
+            namespace(o).unwrap_or("default").to_string()
+        };
         index.insert((kd.clone(), ns, name(o).to_string()), o);
         if kd == "Namespace" {
             ns_meta.insert(name(o).to_string(), (labels(o), annotations(o)));
         }
     }
-    let ctx = Ctx { cid, cfg: &opts.labels, index, ns_meta };
+    let ctx = Ctx {
+        cid,
+        cfg: &opts.labels,
+        index,
+        ns_meta,
+    };
     let cluster = iri::k8s_cluster(cid);
 
     // Pods → placement and pulled digests per workload.
     let mut placement: BTreeMap<(String, String, String), BTreeMap<String, i64>> = BTreeMap::new();
-    let mut pulled: BTreeMap<(String, String, String), BTreeMap<String, BTreeSet<String>>> = BTreeMap::new();
+    let mut pulled: BTreeMap<(String, String, String), BTreeMap<String, BTreeSet<String>>> =
+        BTreeMap::new();
     for pod in &input.pods {
-        let Some(owner) = pod_owner(&ctx, pod) else { continue };
+        let Some(owner) = pod_owner(&ctx, pod) else {
+            continue;
+        };
         if let Some(node) = s(pod, &["spec", "nodeName"]) {
-            *placement.entry(owner.clone()).or_default().entry(node.to_string()).or_default() += 1;
+            *placement
+                .entry(owner.clone())
+                .or_default()
+                .entry(node.to_string())
+                .or_default() += 1;
         }
-        for cs in arr(pod, &["status", "containerStatuses"]).into_iter().chain(arr(pod, &["status", "initContainerStatuses"])) {
+        for cs in arr(pod, &["status", "containerStatuses"])
+            .into_iter()
+            .chain(arr(pod, &["status", "initContainerStatuses"]))
+        {
             let cname = s(cs, &["name"]).unwrap_or("").to_string();
             if let Some(id) = s(cs, &["imageID"]) {
                 let d = id.rsplit_once("@").map(|(_, d)| d).unwrap_or(id);
                 let d = d.strip_prefix("docker-pullable://").unwrap_or(d);
                 if let Some(h) = digest_hex(d.rsplit('@').next().unwrap_or(d)) {
-                    pulled.entry(owner.clone()).or_default().entry(cname).or_default().insert(h);
+                    pulled
+                        .entry(owner.clone())
+                        .or_default()
+                        .entry(cname)
+                        .or_default()
+                        .insert(h);
                 }
             }
         }
@@ -326,12 +424,29 @@ pub fn build_snapshot(input: &SnapshotInput, opts: &SnapshotOptions) -> Snapshot
 
     let (nodes_frag, node_names) = nodes_fragment(&ctx, opts);
     let nodes_hash = hash::sha256_hex(nodes_frag.to_nquads().as_bytes());
-    let nodes = Fragment::from_quads(FragmentKind::K8sNodes { cluster: cid.into(), hash: nodes_hash.clone() }, &rehash(&nodes_frag, &nodes_hash));
+    let nodes = Fragment::from_quads(
+        FragmentKind::K8sNodes {
+            cluster: cid.into(),
+            hash: nodes_hash.clone(),
+        },
+        &rehash(&nodes_frag, &nodes_hash),
+    );
 
-    let mut f = Fragment::new(FragmentKind::K8sSnapshot { cluster: cid.into(), hash: PLACEHOLDER.into() });
+    let mut f = Fragment::new(FragmentKind::K8sSnapshot {
+        cluster: cid.into(),
+        hash: PLACEHOLDER.into(),
+    });
     let snap = f.graph();
     f.add_type(snap.clone(), k::Snapshot());
-    f.add(snap.clone(), k::snapshotKind(), if opts.state == StateKind::Live { k::liveState() } else { k::desiredState() });
+    f.add(
+        snap.clone(),
+        k::snapshotKind(),
+        if opts.state == StateKind::Live {
+            k::liveState()
+        } else {
+            k::desiredState()
+        },
+    );
     f.add(snap.clone(), k::ofCluster(), cluster.clone());
     f.add_type(cluster.clone(), k::Cluster());
     f.add_str(cluster.clone(), k::clusterId(), cid);
@@ -351,7 +466,11 @@ pub fn build_snapshot(input: &SnapshotInput, opts: &SnapshotOptions) -> Snapshot
             continue;
         }
         count += 1;
-        let nsopt = if ns.is_empty() { None } else { Some(ns.as_str()) };
+        let nsopt = if ns.is_empty() {
+            None
+        } else {
+            Some(ns.as_str())
+        };
         let oi = ctx.obj_iri(kd, nsopt, nm);
         f.add(snap.clone(), k::contains(), oi.clone());
         f.add_str(oi.clone(), k::name(), nm);
@@ -422,23 +541,46 @@ pub fn build_snapshot(input: &SnapshotInput, opts: &SnapshotOptions) -> Snapshot
                 if let Some(cc) = ctx.cost_center(&labels, &ann, nsopt) {
                     f.add_str(oi.clone(), k::costCenter(), &cc);
                 }
-                if ann.get(&ctx.cfg.exempt_single_domain_annotation).map(|v| v == "true").unwrap_or(false) {
+                if ann
+                    .get(&ctx.cfg.exempt_single_domain_annotation)
+                    .map(|v| v == "true")
+                    .unwrap_or(false)
+                {
                     f.add_bool(oi.clone(), k::exemptSingleDomain(), true);
                 }
                 // PDBs selecting this workload's pods.
                 let pl = pod_labels(o);
                 for pdb in ctx.of_kind("PodDisruptionBudget") {
-                    if namespace(pdb).unwrap_or("default") == ns && selector_matches(pdb.get("spec").and_then(|x| x.get("selector")), &pl, false) {
-                        f.add(oi.clone(), k::hasPDB(), ctx.obj_iri("PodDisruptionBudget", nsopt, name(pdb)));
+                    if namespace(pdb).unwrap_or("default") == ns
+                        && selector_matches(
+                            pdb.get("spec").and_then(|x| x.get("selector")),
+                            &pl,
+                            false,
+                        )
+                    {
+                        f.add(
+                            oi.clone(),
+                            k::hasPDB(),
+                            ctx.obj_iri("PodDisruptionBudget", nsopt, name(pdb)),
+                        );
                     }
                 }
             }
             "Service" => {
                 f.add_type(oi.clone(), k::Service());
                 let sel = map(o, &["spec", "selector"]);
-                for w in ctx.index.iter().filter(|((wk, wns, _), _)| WORKLOAD_KINDS.contains(&wk.as_str()) && wns == ns).map(|(_, v)| *v) {
+                for w in ctx
+                    .index
+                    .iter()
+                    .filter(|((wk, wns, _), _)| WORKLOAD_KINDS.contains(&wk.as_str()) && wns == ns)
+                    .map(|(_, v)| *v)
+                {
                     if plain_selector_matches(&sel, &pod_labels(w)) {
-                        f.add(oi.clone(), k::selects(), ctx.obj_iri(kind(w), nsopt, name(w)));
+                        f.add(
+                            oi.clone(),
+                            k::selects(),
+                            ctx.obj_iri(kind(w), nsopt, name(w)),
+                        );
                     }
                 }
             }
@@ -456,7 +598,11 @@ pub fn build_snapshot(input: &SnapshotInput, opts: &SnapshotOptions) -> Snapshot
                     }
                 }
                 for sv in svcs {
-                    f.add(oi.clone(), k::routesTo(), ctx.obj_iri("Service", nsopt, &sv));
+                    f.add(
+                        oi.clone(),
+                        k::routesTo(),
+                        ctx.obj_iri("Service", nsopt, &sv),
+                    );
                 }
             }
             "ConfigMap" => f.add_type(oi.clone(), k::ConfigMap()),
@@ -466,29 +612,54 @@ pub fn build_snapshot(input: &SnapshotInput, opts: &SnapshotOptions) -> Snapshot
             "PodDisruptionBudget" => {
                 f.add_type(oi.clone(), k::PodDisruptionBudget());
                 if let Some(v) = o.get("spec").and_then(|x| x.get("minAvailable")) {
-                    f.add_str(oi.clone(), k::minAvailable(), &v.to_string().trim_matches('"').to_string());
+                    f.add_str(
+                        oi.clone(),
+                        k::minAvailable(),
+                        v.to_string().trim_matches('"'),
+                    );
                 }
                 if let Some(v) = o.get("spec").and_then(|x| x.get("maxUnavailable")) {
-                    f.add_str(oi.clone(), k::maxUnavailable(), &v.to_string().trim_matches('"').to_string());
+                    f.add_str(
+                        oi.clone(),
+                        k::maxUnavailable(),
+                        v.to_string().trim_matches('"'),
+                    );
                 }
             }
             "PersistentVolumeClaim" => {
                 f.add_type(oi.clone(), k::PersistentVolumeClaim());
                 if let Some(sc) = s(o, &["spec", "storageClassName"]) {
-                    f.add(oi.clone(), k::usesStorageClass(), ctx.obj_iri("StorageClass", None, sc));
+                    f.add(
+                        oi.clone(),
+                        k::usesStorageClass(),
+                        ctx.obj_iri("StorageClass", None, sc),
+                    );
                 }
                 if let Some(pv) = s(o, &["spec", "volumeName"]) {
-                    f.add(oi.clone(), k::boundTo(), ctx.obj_iri("PersistentVolume", None, pv));
+                    f.add(
+                        oi.clone(),
+                        k::boundTo(),
+                        ctx.obj_iri("PersistentVolume", None, pv),
+                    );
                 }
             }
             "PersistentVolume" => {
                 f.add_type(oi.clone(), k::PersistentVolume());
                 if let Some(sc) = s(o, &["spec", "storageClassName"]) {
-                    f.add(oi.clone(), k::usesStorageClass(), ctx.obj_iri("StorageClass", None, sc));
+                    f.add(
+                        oi.clone(),
+                        k::usesStorageClass(),
+                        ctx.obj_iri("StorageClass", None, sc),
+                    );
                 }
-                for term in arr(o, &["spec", "nodeAffinity", "required", "nodeSelectorTerms"]) {
+                for term in arr(
+                    o,
+                    &["spec", "nodeAffinity", "required", "nodeSelectorTerms"],
+                ) {
                     for e in arr(term, &["matchExpressions"]) {
-                        if s(e, &["key"]) == Some("kubernetes.io/hostname") && s(e, &["operator"]) == Some("In") {
+                        if s(e, &["key"]) == Some("kubernetes.io/hostname")
+                            && s(e, &["operator"]) == Some("In")
+                        {
                             for v in arr(e, &["values"]) {
                                 if let Some(nn) = v.as_str() {
                                     f.add(oi.clone(), k::pinnedToNode(), iri::k8s_node(cid, nn));
@@ -500,21 +671,40 @@ pub fn build_snapshot(input: &SnapshotInput, opts: &SnapshotOptions) -> Snapshot
             }
             "NetworkPolicy" => {
                 f.add_type(oi.clone(), k::NetworkPolicy());
-                let types: Vec<String> = arr(o, &["spec", "policyTypes"]).into_iter().filter_map(|x| x.as_str().map(String::from)).collect();
-                let types = if types.is_empty() { vec!["Ingress".to_string()] } else { types };
+                let types: Vec<String> = arr(o, &["spec", "policyTypes"])
+                    .into_iter()
+                    .filter_map(|x| x.as_str().map(String::from))
+                    .collect();
+                let types = if types.is_empty() {
+                    vec!["Ingress".to_string()]
+                } else {
+                    types
+                };
                 for t in &types {
                     f.add_str(oi.clone(), k::policyType(), t);
                 }
                 let pod_sel = o.get("spec").and_then(|x| x.get("podSelector"));
-                let workloads_in_ns: Vec<&Value> = ctx.index.iter().filter(|((wk, wns, _), _)| WORKLOAD_KINDS.contains(&wk.as_str()) && wns == ns).map(|(_, v)| *v).collect();
+                let workloads_in_ns: Vec<&Value> = ctx
+                    .index
+                    .iter()
+                    .filter(|((wk, wns, _), _)| WORKLOAD_KINDS.contains(&wk.as_str()) && wns == ns)
+                    .map(|(_, v)| *v)
+                    .collect();
                 for w in &workloads_in_ns {
                     if selector_matches(pod_sel, &pod_labels(w), true) {
-                        f.add(oi.clone(), k::appliesTo(), ctx.obj_iri(kind(w), nsopt, name(w)));
+                        f.add(
+                            oi.clone(),
+                            k::appliesTo(),
+                            ctx.obj_iri(kind(w), nsopt, name(w)),
+                        );
                     }
                 }
                 let mut peers = |rules: Vec<&Value>, prop: NamedNode, all_prop: NamedNode| {
                     for rule in rules {
-                        let from = arr(rule, &["from"]).into_iter().chain(arr(rule, &["to"])).collect::<Vec<_>>();
+                        let from = arr(rule, &["from"])
+                            .into_iter()
+                            .chain(arr(rule, &["to"]))
+                            .collect::<Vec<_>>();
                         if from.is_empty() {
                             f.add_bool(oi.clone(), all_prop.clone(), true);
                             continue;
@@ -524,36 +714,78 @@ pub fn build_snapshot(input: &SnapshotInput, opts: &SnapshotOptions) -> Snapshot
                             let p_sel = peer.get("podSelector");
                             // Namespaces this peer covers: own ns unless a namespaceSelector is given.
                             let nss: Vec<String> = match ns_sel {
-                                Some(sel) => ctx.ns_meta.iter().filter(|(_, (l, _))| selector_matches(Some(sel), l, true)).map(|(n, _)| n.clone()).collect(),
+                                Some(sel) => ctx
+                                    .ns_meta
+                                    .iter()
+                                    .filter(|(_, (l, _))| selector_matches(Some(sel), l, true))
+                                    .map(|(n, _)| n.clone())
+                                    .collect(),
                                 None => vec![ns.clone()],
                             };
                             for pns in nss {
                                 match p_sel {
                                     Some(ps) => {
-                                        for w in ctx.index.iter().filter(|((wk, wns, _), _)| WORKLOAD_KINDS.contains(&wk.as_str()) && wns == &pns).map(|(_, v)| *v) {
+                                        for w in ctx
+                                            .index
+                                            .iter()
+                                            .filter(|((wk, wns, _), _)| {
+                                                WORKLOAD_KINDS.contains(&wk.as_str()) && wns == &pns
+                                            })
+                                            .map(|(_, v)| *v)
+                                        {
                                             if selector_matches(Some(ps), &pod_labels(w), true) {
-                                                f.add(oi.clone(), prop.clone(), ctx.obj_iri(kind(w), Some(&pns), name(w)));
+                                                f.add(
+                                                    oi.clone(),
+                                                    prop.clone(),
+                                                    ctx.obj_iri(kind(w), Some(&pns), name(w)),
+                                                );
                                             }
                                         }
                                     }
-                                    None => f.add(oi.clone(), prop.clone(), iri::k8s_namespace(cid, &pns)),
+                                    None => f.add(
+                                        oi.clone(),
+                                        prop.clone(),
+                                        iri::k8s_namespace(cid, &pns),
+                                    ),
                                 }
                             }
                         }
                     }
                 };
                 if types.iter().any(|t| t == "Ingress") {
-                    peers(arr(o, &["spec", "ingress"]), k::allowsIngressFrom(), k::allowsAllIngress());
+                    peers(
+                        arr(o, &["spec", "ingress"]),
+                        k::allowsIngressFrom(),
+                        k::allowsAllIngress(),
+                    );
                 }
                 if types.iter().any(|t| t == "Egress") {
-                    peers(arr(o, &["spec", "egress"]), k::allowsEgressTo(), k::allowsAllEgress());
+                    peers(
+                        arr(o, &["spec", "egress"]),
+                        k::allowsEgressTo(),
+                        k::allowsAllEgress(),
+                    );
                 }
             }
             "Role" | "ClusterRole" => {
-                f.add_type(oi.clone(), if kd == "Role" { k::Role() } else { k::ClusterRole() });
+                f.add_type(
+                    oi.clone(),
+                    if kd == "Role" {
+                        k::Role()
+                    } else {
+                        k::ClusterRole()
+                    },
+                );
                 for rule in arr(o, &["rules"]) {
-                    let groups: Vec<String> = arr(rule, &["apiGroups"]).into_iter().filter_map(|x| x.as_str().map(String::from)).collect();
-                    let groups = if groups.is_empty() { vec!["".to_string()] } else { groups };
+                    let groups: Vec<String> = arr(rule, &["apiGroups"])
+                        .into_iter()
+                        .filter_map(|x| x.as_str().map(String::from))
+                        .collect();
+                    let groups = if groups.is_empty() {
+                        vec!["".to_string()]
+                    } else {
+                        groups
+                    };
                     for g in &groups {
                         for r in arr(rule, &["resources"]) {
                             for v in arr(rule, &["verbs"]) {
@@ -571,18 +803,35 @@ pub fn build_snapshot(input: &SnapshotInput, opts: &SnapshotOptions) -> Snapshot
                 if kd == "ClusterRole" {
                     for sel in arr(o, &["aggregationRule", "clusterRoleSelectors"]) {
                         for other in ctx.of_kind("ClusterRole") {
-                            if name(other) != nm && selector_matches(Some(sel), &labels_of(other), false) {
-                                f.add(oi.clone(), k::aggregates(), ctx.obj_iri("ClusterRole", None, name(other)));
+                            if name(other) != nm
+                                && selector_matches(Some(sel), &labels_of(other), false)
+                            {
+                                f.add(
+                                    oi.clone(),
+                                    k::aggregates(),
+                                    ctx.obj_iri("ClusterRole", None, name(other)),
+                                );
                             }
                         }
                     }
                 }
             }
             "RoleBinding" | "ClusterRoleBinding" => {
-                f.add_type(oi.clone(), if kd == "RoleBinding" { k::RoleBinding() } else { k::ClusterRoleBinding() });
+                f.add_type(
+                    oi.clone(),
+                    if kd == "RoleBinding" {
+                        k::RoleBinding()
+                    } else {
+                        k::ClusterRoleBinding()
+                    },
+                );
                 let rk = s(o, &["roleRef", "kind"]).unwrap_or("");
                 let rn = s(o, &["roleRef", "name"]).unwrap_or("");
-                let role = if rk == "ClusterRole" { ctx.obj_iri("ClusterRole", None, rn) } else { ctx.obj_iri("Role", nsopt, rn) };
+                let role = if rk == "ClusterRole" {
+                    ctx.obj_iri("ClusterRole", None, rn)
+                } else {
+                    ctx.obj_iri("Role", nsopt, rn)
+                };
                 f.add(oi.clone(), k::grants(), role);
                 for sub in arr(o, &["subjects"]) {
                     let sk = s(sub, &["kind"]).unwrap_or("");
@@ -613,15 +862,45 @@ pub fn build_snapshot(input: &SnapshotInput, opts: &SnapshotOptions) -> Snapshot
     }
 
     let snapshot_hash = hash::sha256_hex(f.to_nquads().as_bytes());
-    let snapshot = Fragment::from_quads(FragmentKind::K8sSnapshot { cluster: cid.into(), hash: snapshot_hash.clone() }, &rehash(&f, &snapshot_hash));
+    let snapshot = Fragment::from_quads(
+        FragmentKind::K8sSnapshot {
+            cluster: cid.into(),
+            hash: snapshot_hash.clone(),
+        },
+        &rehash(&f, &snapshot_hash),
+    );
     let snapshot_iri = snapshot.graph();
 
-    let observed_at = opts.observed_at.clone().unwrap_or_else(|| chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Secs, true));
-    let mut observed = Fragment::new(FragmentKind::K8sObserved { cluster: cid.into(), hash: snapshot_hash.clone(), observed_at: observed_at.clone() });
-    observed.add_typed(snapshot_iri.clone(), k::observedAt(), &observed_at, xsd_date_time());
-    observed.add(snapshot_iri.clone(), n::hasFragment(), iri::k8s_nodes_fragment(cid, &nodes_hash));
+    let observed_at = opts
+        .observed_at
+        .clone()
+        .unwrap_or_else(|| chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Secs, true));
+    let mut observed = Fragment::new(FragmentKind::K8sObserved {
+        cluster: cid.into(),
+        hash: snapshot_hash.clone(),
+        observed_at: observed_at.clone(),
+    });
+    observed.add_typed(
+        snapshot_iri.clone(),
+        k::observedAt(),
+        &observed_at,
+        xsd_date_time(),
+    );
+    observed.add(
+        snapshot_iri.clone(),
+        n::hasFragment(),
+        iri::k8s_nodes_fragment(cid, &nodes_hash),
+    );
     info!(target: "nix2rdf::k8s", cluster = cid, objects = count, nodes = node_names.len(), snapshot = %snapshot_hash, nodes_hash = %nodes_hash, partial = !input.failed_kinds.is_empty(), "snapshot built");
-    SnapshotOutput { snapshot, nodes, observed, snapshot_iri, snapshot_hash, nodes_hash, objects: count }
+    SnapshotOutput {
+        snapshot,
+        nodes,
+        observed,
+        snapshot_iri,
+        snapshot_hash,
+        nodes_hash,
+        objects: count,
+    }
 }
 
 fn labels_of(v: &Value) -> Labels {

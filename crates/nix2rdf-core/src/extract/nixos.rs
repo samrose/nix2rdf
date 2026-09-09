@@ -75,7 +75,13 @@ in walk options"#
     )
 }
 
-fn value_literal(f: &mut Fragment, subject: &NamedNode, prop: NamedNode, v: &serde_json::Value, side: &mut Vec<Fragment>) {
+fn value_literal(
+    f: &mut Fragment,
+    subject: &NamedNode,
+    prop: NamedNode,
+    v: &serde_json::Value,
+    side: &mut Vec<Fragment>,
+) {
     let json = hash::canonical_json(v);
     if json.len() <= VALUE_INLINE_THRESHOLD {
         f.add_str(subject.clone(), prop, &json);
@@ -100,10 +106,15 @@ pub fn extract_nixos(nix: &dyn NixSource, opts: &NixosOptions) -> Result<Vec<Fra
         .ok_or_else(|| Error::Other("flake metadata has no locked.narHash".into()))?
         .to_string();
 
-    let graph = extract_graph(nix, &[toplevel.clone()], &opts.extract)?;
-    let roots = nix.derivation_show(&[toplevel.clone()], false)?;
-    let (top_path, top) = roots.iter().next().ok_or_else(|| Error::Other("toplevel has no derivation".into()))?;
-    let top_iri = graph.drv_iri(top_path).ok_or_else(|| Error::Other("toplevel not in graph".into()))?;
+    let graph = extract_graph(nix, std::slice::from_ref(&toplevel), &opts.extract)?;
+    let roots = nix.derivation_show(std::slice::from_ref(&toplevel), false)?;
+    let (top_path, top) = roots
+        .iter()
+        .next()
+        .ok_or_else(|| Error::Other("toplevel has no derivation".into()))?;
+    let top_iri = graph
+        .drv_iri(top_path)
+        .ok_or_else(|| Error::Other("toplevel not in graph".into()))?;
     // Generation identity: the toplevel output path hash (what /run/current-system
     // points at); for a content-addressed toplevel fall back to the drv hash.
     let gen_hash = top
@@ -186,7 +197,9 @@ pub fn extract_nixos(nix: &dyn NixSource, opts: &NixosOptions) -> Result<Vec<Fra
                     info!(target: "nix2rdf::nixos", store_paths = seen.len(), "runtime closure recorded");
                     fragments.extend(outs);
                 }
-                Err(e) => warn!(target: "nix2rdf::nixos", error = %e, "runtime closure unavailable (not built?)"),
+                Err(e) => {
+                    warn!(target: "nix2rdf::nixos", error = %e, "runtime closure unavailable (not built?)")
+                }
             }
         }
     }

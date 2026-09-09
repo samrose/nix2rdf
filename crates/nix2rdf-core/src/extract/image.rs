@@ -85,7 +85,9 @@ fn open_maybe_compressed(path: &Path) -> Result<Box<dyn Read>> {
     if magic[..2] == [0x1f, 0x8b] {
         Ok(Box::new(flate2::read::GzDecoder::new(f)))
     } else if magic == [0x28, 0xb5, 0x2f, 0xfd] {
-        Ok(Box::new(zstd::stream::Decoder::new(f).map_err(|e| Error::Other(e.to_string()))?))
+        Ok(Box::new(
+            zstd::stream::Decoder::new(f).map_err(|e| Error::Other(e.to_string()))?,
+        ))
     } else {
         Ok(Box::new(f))
     }
@@ -102,21 +104,33 @@ pub fn read_docker_archive(path: &Path) -> Result<ImageDesc> {
     let mut config_digest_from_content: Option<String> = None;
     for entry in archive.entries().map_err(|e| Error::Other(e.to_string()))? {
         let mut entry = entry.map_err(|e| Error::Other(e.to_string()))?;
-        let name = entry.path().map_err(|e| Error::Other(e.to_string()))?.to_string_lossy().to_string();
+        let name = entry
+            .path()
+            .map_err(|e| Error::Other(e.to_string()))?
+            .to_string_lossy()
+            .to_string();
         let name = name.strip_prefix("./").unwrap_or(&name).to_string();
         if name == "manifest.json" {
             let mut s = String::new();
-            entry.read_to_string(&mut s).map_err(|e| Error::Other(e.to_string()))?;
+            entry
+                .read_to_string(&mut s)
+                .map_err(|e| Error::Other(e.to_string()))?;
             manifest = Some(serde_json::from_str(&s)?);
         } else if name.ends_with(".json") && !name.contains('/') && name != "repositories" {
             let mut buf = Vec::new();
-            entry.read_to_end(&mut buf).map_err(|e| Error::Other(e.to_string()))?;
+            entry
+                .read_to_end(&mut buf)
+                .map_err(|e| Error::Other(e.to_string()))?;
             let h = hash::sha256_hex(&buf);
             config_name = Some(name.clone());
             config_digest_from_content = Some(h);
         } else if name.ends_with("layer.tar") || name.ends_with(".tar") {
             let size = entry.header().size().ok();
-            let mut hr = HashingReader { inner: &mut entry, hasher: Sha256::new(), n: 0 };
+            let mut hr = HashingReader {
+                inner: &mut entry,
+                hasher: Sha256::new(),
+                n: 0,
+            };
             let mut paths = BTreeSet::new();
             {
                 let mut inner = tar::Archive::new(&mut hr);
@@ -137,27 +151,52 @@ pub fn read_docker_archive(path: &Path) -> Result<ImageDesc> {
                 }
             }
             let digest = hex::encode(hr.hasher.finalize());
-            layers_by_name.insert(name.clone(), LayerDesc { digest_hex: digest, media_type: Some("application/vnd.oci.image.layer.v1.tar".into()), size, store_paths: paths });
+            layers_by_name.insert(
+                name.clone(),
+                LayerDesc {
+                    digest_hex: digest,
+                    media_type: Some("application/vnd.oci.image.layer.v1.tar".into()),
+                    size,
+                    store_paths: paths,
+                },
+            );
         }
     }
-    let manifest = manifest.ok_or_else(|| Error::Other(format!("{}: no manifest.json (not a docker archive?)", path.display())))?;
+    let manifest = manifest.ok_or_else(|| {
+        Error::Other(format!(
+            "{}: no manifest.json (not a docker archive?)",
+            path.display()
+        ))
+    })?;
     let m0 = manifest.get(0).cloned().unwrap_or(manifest.clone());
-    let mut desc = ImageDesc { tool: "dockerTools".into(), ..Default::default() };
-    let cfg = m0.get("Config").and_then(|c| c.as_str()).map(String::from).or(config_name);
+    let mut desc = ImageDesc {
+        tool: "dockerTools".into(),
+        ..Default::default()
+    };
+    let cfg = m0
+        .get("Config")
+        .and_then(|c| c.as_str())
+        .map(String::from)
+        .or(config_name);
     desc.config_digest_hex = cfg
         .as_deref()
         .and_then(|c| c.strip_suffix(".json").map(String::from))
         .filter(|h| h.len() == 64)
         .or(config_digest_from_content);
     if let Some(tags) = m0.get("RepoTags").and_then(|x| x.as_array()) {
-        desc.repo_tags = tags.iter().filter_map(|x| x.as_str().map(String::from)).collect();
+        desc.repo_tags = tags
+            .iter()
+            .filter_map(|x| x.as_str().map(String::from))
+            .collect();
     }
     if let Some(ls) = m0.get("Layers").and_then(|x| x.as_array()) {
         for l in ls {
             let lname = l.as_str().unwrap_or_default();
             match layers_by_name.get(lname) {
                 Some(d) => desc.layers.push(d.clone()),
-                None => warn!(target: "nix2rdf::image", layer = lname, "layer listed in manifest but not found in archive"),
+                None => {
+                    warn!(target: "nix2rdf::image", layer = lname, "layer listed in manifest but not found in archive")
+                }
             }
         }
     }
@@ -168,18 +207,43 @@ pub fn read_docker_archive(path: &Path) -> Result<ImageDesc> {
 pub fn read_nix2container(path: &Path) -> Result<ImageDesc> {
     let bytes = std::fs::read(path).map_err(|e| Error::io(path, e))?;
     let v: serde_json::Value = serde_json::from_slice(&bytes)?;
-    let mut desc = ImageDesc { tool: "nix2container".into(), ..Default::default() };
+    let mut desc = ImageDesc {
+        tool: "nix2container".into(),
+        ..Default::default()
+    };
     desc.config_digest_hex = Some(hash::sha256_hex(hash::canonical_json(&v).as_bytes()));
-    let layers = v.get("layers").and_then(|l| l.as_array()).cloned().unwrap_or_default();
+    let layers = v
+        .get("layers")
+        .and_then(|l| l.as_array())
+        .cloned()
+        .unwrap_or_default();
     for l in layers {
         // A layer can be inline or a reference to another JSON file.
-        let l = if let Some(p) = l.as_str() { serde_json::from_slice::<serde_json::Value>(&std::fs::read(p).map_err(|e| Error::io(p, e))?)? } else { l };
+        let l = if let Some(p) = l.as_str() {
+            serde_json::from_slice::<serde_json::Value>(
+                &std::fs::read(p).map_err(|e| Error::io(p, e))?,
+            )?
+        } else {
+            l
+        };
         let digest = l.get("digest").and_then(|d| d.as_str()).unwrap_or_default();
         let digest_hex = digest.strip_prefix("sha256:").unwrap_or(digest).to_string();
-        let mut ld = LayerDesc { digest_hex, media_type: l.get("mediatype").and_then(|m| m.as_str()).map(String::from), size: l.get("size").and_then(|s| s.as_u64()), store_paths: BTreeSet::new() };
+        let mut ld = LayerDesc {
+            digest_hex,
+            media_type: l
+                .get("mediatype")
+                .and_then(|m| m.as_str())
+                .map(String::from),
+            size: l.get("size").and_then(|s| s.as_u64()),
+            store_paths: BTreeSet::new(),
+        };
         if let Some(paths) = l.get("paths").and_then(|p| p.as_array()) {
             for p in paths {
-                let s = p.get("path").and_then(|x| x.as_str()).or(p.as_str()).unwrap_or_default();
+                let s = p
+                    .get("path")
+                    .and_then(|x| x.as_str())
+                    .or(p.as_str())
+                    .unwrap_or_default();
                 if let Some(h) = iri::store_path_hash(s) {
                     let _ = h;
                     ld.store_paths.insert(s.to_string());
@@ -206,7 +270,13 @@ pub fn read_image_artifact(path: &Path) -> Result<ImageDesc> {
     }
 }
 
-pub fn image_fragment(image_id_hex: &str, desc: &ImageDesc, image_drv: &NamedNode, closure: &[String], registry_digest: Option<&str>) -> Fragment {
+pub fn image_fragment(
+    image_id_hex: &str,
+    desc: &ImageDesc,
+    image_drv: &NamedNode,
+    closure: &[String],
+    registry_digest: Option<&str>,
+) -> Fragment {
     let img = iri::image(image_id_hex);
     let mut f = Fragment::new(FragmentKind::Image(image_id_hex.to_string()));
     f.add_type(img.clone(), t::Image());
@@ -234,7 +304,11 @@ pub fn image_fragment(image_id_hex: &str, desc: &ImageDesc, image_drv: &NamedNod
     for (i, l) in desc.layers.iter().enumerate() {
         let ln = iri::layer(&l.digest_hex);
         f.add(img.clone(), t::hasLayer(), ln.clone());
-        f.add_str(img.clone(), t::layerIndex(), &format!("{i}:sha256:{}", l.digest_hex));
+        f.add_str(
+            img.clone(),
+            t::layerIndex(),
+            &format!("{i}:sha256:{}", l.digest_hex),
+        );
         f.add_type(ln.clone(), t::Layer());
         f.add_str(ln.clone(), t::digest(), &format!("sha256:{}", l.digest_hex));
         if let Some(m) = &l.media_type {
@@ -252,25 +326,49 @@ pub fn image_fragment(image_id_hex: &str, desc: &ImageDesc, image_drv: &NamedNod
     f
 }
 
-pub fn extract_image(nix: &dyn NixSource, opts: &ImageOptions) -> Result<(Vec<Fragment>, NamedNode)> {
+pub fn extract_image(
+    nix: &dyn NixSource,
+    opts: &ImageOptions,
+) -> Result<(Vec<Fragment>, NamedNode)> {
     let installable = format!("{}#{}", opts.flake_ref, opts.attr);
     let built = nix.build_json(&installable)?;
-    let b = built.first().ok_or_else(|| Error::Other("nix build returned nothing".into()))?;
-    let out = b.outputs.get("out").or_else(|| b.outputs.values().next()).ok_or_else(|| Error::Other("image has no output".into()))?;
+    let b = built
+        .first()
+        .ok_or_else(|| Error::Other("nix build returned nothing".into()))?;
+    let out = b
+        .outputs
+        .get("out")
+        .or_else(|| b.outputs.values().next())
+        .ok_or_else(|| Error::Other("image has no output".into()))?;
     info!(target: "nix2rdf::image", drv = %b.drv_path, artifact = %out, "image built");
     let desc = read_image_artifact(Path::new(out))?;
-    let graph = extract_graph(nix, &[installable.clone()], &opts.extract)?;
-    let image_drv = graph.drv_iri(&b.drv_path).ok_or_else(|| Error::Other("image derivation not in graph".into()))?;
+    let graph = extract_graph(nix, std::slice::from_ref(&installable), &opts.extract)?;
+    let image_drv = graph
+        .drv_iri(&b.drv_path)
+        .ok_or_else(|| Error::Other("image derivation not in graph".into()))?;
     let image_id = match &opts.digest {
         Some(d) => d.strip_prefix("sha256:").unwrap_or(d).to_string(),
-        None => desc.config_digest_hex.clone().ok_or_else(|| Error::Other("cannot determine image digest; pass --digest".into()))?,
+        None => desc
+            .config_digest_hex
+            .clone()
+            .ok_or_else(|| Error::Other("cannot determine image digest; pass --digest".into()))?,
     };
     let closure: Vec<String> = graph.drv_hashes.values().cloned().collect();
     let mut frags = graph.fragments.clone();
     let img = iri::image(&image_id);
-    frags.push(image_fragment(&image_id, &desc, &image_drv, &closure, opts.digest.as_deref()));
+    frags.push(image_fragment(
+        &image_id,
+        &desc,
+        &image_drv,
+        &closure,
+        opts.digest.as_deref(),
+    ));
     // Runtime references for the layer contents, when the paths are local.
-    let paths: Vec<String> = desc.layers.iter().flat_map(|l| l.store_paths.iter().cloned()).collect();
+    let paths: Vec<String> = desc
+        .layers
+        .iter()
+        .flat_map(|l| l.store_paths.iter().cloned())
+        .collect();
     if !paths.is_empty() {
         match super::drv::extract_runtime_closure(nix, &paths) {
             Ok((outs, _)) => frags.extend(outs),

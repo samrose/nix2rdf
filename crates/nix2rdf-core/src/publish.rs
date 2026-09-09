@@ -33,7 +33,11 @@ pub fn publish(store: &Store, paths: &[PathBuf], dest: &Path) -> Result<Manifest
     std::fs::create_dir_all(dest).map_err(|e| Error::io(dest, e))?;
     let mut entries = Vec::new();
     for p in paths {
-        let abs = if p.is_absolute() { p.clone() } else { store.root().join(p) };
+        let abs = if p.is_absolute() {
+            p.clone()
+        } else {
+            store.root().join(p)
+        };
         let rel = store.relative(&abs);
         let bytes = std::fs::read(&abs).map_err(|e| Error::io(&abs, e))?;
         let target = dest.join(&rel);
@@ -41,10 +45,17 @@ pub fn publish(store: &Store, paths: &[PathBuf], dest: &Path) -> Result<Manifest
             std::fs::create_dir_all(parent).map_err(|e| Error::io(parent, e))?;
         }
         std::fs::write(&target, &bytes).map_err(|e| Error::io(&target, e))?;
-        entries.push(ManifestEntry { path: rel.to_string_lossy().to_string(), sha256: hash::sha256_hex(&bytes), bytes: bytes.len() as u64 });
+        entries.push(ManifestEntry {
+            path: rel.to_string_lossy().to_string(),
+            sha256: hash::sha256_hex(&bytes),
+            bytes: bytes.len() as u64,
+        });
     }
     entries.sort_by(|a, b| a.path.cmp(&b.path));
-    let m = Manifest { version: 1, fragments: entries };
+    let m = Manifest {
+        version: 1,
+        fragments: entries,
+    };
     let mp = dest.join("manifest.json");
     std::fs::write(&mp, serde_json::to_vec_pretty(&m)?).map_err(|e| Error::io(&mp, e))?;
     info!(target: "nix2rdf::publish", fragments = m.fragments.len(), dest = %dest.display(), "published");
@@ -61,9 +72,14 @@ fn get_bytes(base: &str, rel: &str) -> Result<Vec<u8>> {
         return std::fs::read(&p).map_err(|e| Error::io(&p, e));
     }
     let url = format!("{}/{}", base.trim_end_matches('/'), rel);
-    let mut resp = ureq::get(&url).call().map_err(|e| Error::Other(format!("GET {url}: {e}")))?;
+    let mut resp = ureq::get(&url)
+        .call()
+        .map_err(|e| Error::Other(format!("GET {url}: {e}")))?;
     let mut buf = Vec::new();
-    resp.body_mut().as_reader().read_to_end(&mut buf).map_err(|e| Error::Other(format!("GET {url}: {e}")))?;
+    resp.body_mut()
+        .as_reader()
+        .read_to_end(&mut buf)
+        .map_err(|e| Error::Other(format!("GET {url}: {e}")))?;
     Ok(buf)
 }
 
@@ -83,7 +99,10 @@ pub fn fetch(store: &Store, base: &str) -> Result<usize> {
         let bytes = get_bytes(base, &e.path)?;
         let h = hash::sha256_hex(&bytes);
         if h != e.sha256 {
-            return Err(Error::Other(format!("{}: hash mismatch (manifest {}, got {h})", e.path, e.sha256)));
+            return Err(Error::Other(format!(
+                "{}: hash mismatch (manifest {}, got {h})",
+                e.path, e.sha256
+            )));
         }
         if let Some(parent) = target.parent() {
             std::fs::create_dir_all(parent).map_err(|e| Error::io(parent, e))?;

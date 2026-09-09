@@ -121,89 +121,91 @@ in
     users.users = lib.mkIf (cfg.user == "nix2rdf") {
       nix2rdf = {
         isSystemUser = true;
-        group = cfg.group;
+        inherit (cfg) group;
         home = cfg.stateDir;
         description = "nix2rdf service user";
       };
     };
     users.groups = lib.mkIf (cfg.group == "nix2rdf") { nix2rdf = { }; };
 
-    systemd.tmpfiles.rules = [ "d ${cfg.stateDir} 0750 ${cfg.user} ${cfg.group} -" ];
-
     networking.firewall.allowedTCPPorts = lib.mkIf cfg.openFirewall [ cfg.port ];
 
-    # The server: loads any fragment not yet in the index, then serves SPARQL.
-    systemd.services.nix2rdf-serve = {
-      description = "nix2rdf SPARQL endpoint";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ];
-      environment = { RUST_LOG = cfg.logLevel; NIX2RDF_LOG_FORMAT = "json"; };
-      serviceConfig = {
-        User = cfg.user;
-        Group = cfg.group;
-        WorkingDirectory = cfg.stateDir;
-        ExecStartPre = "${pkg}/bin/nix2rdf ${storeArg} load --new";
-        ExecStart = "${pkg}/bin/nix2rdf ${storeArg} serve --listen ${cfg.listenAddress}:${toString cfg.port} ${lib.escapeShellArgs cfg.extraServeArgs}";
-        Restart = "on-failure";
-        RestartSec = 5;
-        # Hardening.
-        NoNewPrivileges = true;
-        PrivateTmp = true;
-        ProtectSystem = "strict";
-        ProtectHome = true;
-        ReadWritePaths = [ cfg.stateDir ];
-        ProtectKernelTunables = true;
-        ProtectControlGroups = true;
-        RestrictSUIDSGID = true;
-        LockPersonality = true;
-      };
-    };
+    systemd = {
+      tmpfiles.rules = [ "d ${cfg.stateDir} 0750 ${cfg.user} ${cfg.group} -" ];
 
-    # Layer 0 index refresh: writes fragments (no index access), optionally
-    # reasons, then restarts the server so it bulk-loads what is new.
-    systemd.services.nix2rdf-index = lib.mkIf cfg.index.enable {
-      description = "nix2rdf: refresh the nixpkgs-multiverse index (Layer 0)";
-      after = [ "network-online.target" ];
-      wants = [ "network-online.target" ];
-      environment = { RUST_LOG = cfg.logLevel; NIX2RDF_LOG_FORMAT = "json"; HOME = cfg.stateDir; };
-      path = [ pkgs.nix ];
-      script = ''
-        ${pkg}/bin/nix2rdf ${storeArg} nixpkgs-index --from ${lib.escapeShellArg cfg.index.source}
-        ${reasonCmd}
-      '';
-      serviceConfig = {
-        Type = "oneshot";
-        User = cfg.user;
-        Group = cfg.group;
-        WorkingDirectory = cfg.stateDir;
-        ExecStartPost = "+${pkgs.systemd}/bin/systemctl try-restart nix2rdf-serve.service";
+      # The server: loads any fragment not yet in the index, then serves SPARQL.
+      services.nix2rdf-serve = {
+        description = "nix2rdf SPARQL endpoint";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network.target" ];
+        environment = { RUST_LOG = cfg.logLevel; NIX2RDF_LOG_FORMAT = "json"; };
+        serviceConfig = {
+          User = cfg.user;
+          Group = cfg.group;
+          WorkingDirectory = cfg.stateDir;
+          ExecStartPre = "${pkg}/bin/nix2rdf ${storeArg} load --new";
+          ExecStart = "${pkg}/bin/nix2rdf ${storeArg} serve --listen ${cfg.listenAddress}:${toString cfg.port} ${lib.escapeShellArgs cfg.extraServeArgs}";
+          Restart = "on-failure";
+          RestartSec = 5;
+          # Hardening.
+          NoNewPrivileges = true;
+          PrivateTmp = true;
+          ProtectSystem = "strict";
+          ProtectHome = true;
+          ReadWritePaths = [ cfg.stateDir ];
+          ProtectKernelTunables = true;
+          ProtectControlGroups = true;
+          RestrictSUIDSGID = true;
+          LockPersonality = true;
+        };
       };
-    };
-    systemd.timers.nix2rdf-index = lib.mkIf cfg.index.enable {
-      wantedBy = [ "timers.target" ];
-      timerConfig = { OnCalendar = cfg.index.schedule; Persistent = true; RandomizedDelaySec = "10m"; };
-    };
 
-    systemd.services.nix2rdf-fetch = lib.mkIf (cfg.fetchFragments.urls != [ ]) {
-      description = "nix2rdf: mirror published fragments";
-      after = [ "network-online.target" ];
-      wants = [ "network-online.target" ];
-      environment = { RUST_LOG = cfg.logLevel; NIX2RDF_LOG_FORMAT = "json"; };
-      script = ''
-        ${lib.concatMapStringsSep "\n" (u: "${pkg}/bin/nix2rdf ${storeArg} fetch-fragments ${lib.escapeShellArg u}") cfg.fetchFragments.urls}
-        ${reasonCmd}
-      '';
-      serviceConfig = {
-        Type = "oneshot";
-        User = cfg.user;
-        Group = cfg.group;
-        WorkingDirectory = cfg.stateDir;
-        ExecStartPost = "+${pkgs.systemd}/bin/systemctl try-restart nix2rdf-serve.service";
+      # Layer 0 index refresh: writes fragments (no index access), optionally
+      # reasons, then restarts the server so it bulk-loads what is new.
+      services.nix2rdf-index = lib.mkIf cfg.index.enable {
+        description = "nix2rdf: refresh the nixpkgs-multiverse index (Layer 0)";
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
+        environment = { RUST_LOG = cfg.logLevel; NIX2RDF_LOG_FORMAT = "json"; HOME = cfg.stateDir; };
+        path = [ pkgs.nix ];
+        script = ''
+          ${pkg}/bin/nix2rdf ${storeArg} nixpkgs-index --from ${lib.escapeShellArg cfg.index.source}
+          ${reasonCmd}
+        '';
+        serviceConfig = {
+          Type = "oneshot";
+          User = cfg.user;
+          Group = cfg.group;
+          WorkingDirectory = cfg.stateDir;
+          ExecStartPost = "+${pkgs.systemd}/bin/systemctl try-restart nix2rdf-serve.service";
+        };
       };
-    };
-    systemd.timers.nix2rdf-fetch = lib.mkIf (cfg.fetchFragments.urls != [ ]) {
-      wantedBy = [ "timers.target" ];
-      timerConfig = { OnCalendar = cfg.fetchFragments.schedule; Persistent = true; RandomizedDelaySec = "5m"; };
+      timers.nix2rdf-index = lib.mkIf cfg.index.enable {
+        wantedBy = [ "timers.target" ];
+        timerConfig = { OnCalendar = cfg.index.schedule; Persistent = true; RandomizedDelaySec = "10m"; };
+      };
+
+      services.nix2rdf-fetch = lib.mkIf (cfg.fetchFragments.urls != [ ]) {
+        description = "nix2rdf: mirror published fragments";
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
+        environment = { RUST_LOG = cfg.logLevel; NIX2RDF_LOG_FORMAT = "json"; };
+        script = ''
+          ${lib.concatMapStringsSep "\n" (u: "${pkg}/bin/nix2rdf ${storeArg} fetch-fragments ${lib.escapeShellArg u}") cfg.fetchFragments.urls}
+          ${reasonCmd}
+        '';
+        serviceConfig = {
+          Type = "oneshot";
+          User = cfg.user;
+          Group = cfg.group;
+          WorkingDirectory = cfg.stateDir;
+          ExecStartPost = "+${pkgs.systemd}/bin/systemctl try-restart nix2rdf-serve.service";
+        };
+      };
+      timers.nix2rdf-fetch = lib.mkIf (cfg.fetchFragments.urls != [ ]) {
+        wantedBy = [ "timers.target" ];
+        timerConfig = { OnCalendar = cfg.fetchFragments.schedule; Persistent = true; RandomizedDelaySec = "5m"; };
+      };
     };
 
     environment.systemPackages = [ pkg ];

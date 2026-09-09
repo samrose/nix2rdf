@@ -26,17 +26,23 @@ impl Graph {
     pub fn open(store: &Store) -> Result<Graph> {
         let dir = store.oxigraph_dir();
         std::fs::create_dir_all(&dir).map_err(|e| Error::io(&dir, e))?;
-        Ok(Graph { inner: OxStore::open(&dir)? })
+        Ok(Graph {
+            inner: OxStore::open(&dir)?,
+        })
     }
 
     pub fn open_read_only(store: &Store) -> Result<Graph> {
         let dir = store.oxigraph_dir();
-        Ok(Graph { inner: OxStore::open_read_only(&dir)? })
+        Ok(Graph {
+            inner: OxStore::open_read_only(&dir)?,
+        })
     }
 
     /// In-memory graph, for tests and one-off checks.
     pub fn in_memory() -> Result<Graph> {
-        Ok(Graph { inner: OxStore::new()? })
+        Ok(Graph {
+            inner: OxStore::new()?,
+        })
     }
 
     pub fn inner(&self) -> &OxStore {
@@ -107,7 +113,9 @@ impl Graph {
     /// pattern must see all of them; `GRAPH ?g { }` still scopes when needed.
     fn evaluate(&self, sparql: &str) -> Result<QueryResults<'static>> {
         let q = Self::with_prologue(sparql);
-        let mut prepared = SparqlEvaluator::new().parse_query(&q).map_err(|e| Error::Sparql(e.to_string()))?;
+        let mut prepared = SparqlEvaluator::new()
+            .parse_query(&q)
+            .map_err(|e| Error::Sparql(e.to_string()))?;
         prepared.dataset_mut().set_default_graph_as_union();
         Ok(prepared.on_store(&self.inner).execute()?)
     }
@@ -123,7 +131,8 @@ impl Graph {
                     .map_err(|e| Error::Sparql(e.to_string()))?;
                 for s in sols {
                     let s = s?;
-                    ser.serialize(s.iter()).map_err(|e| Error::Sparql(e.to_string()))?;
+                    ser.serialize(s.iter())
+                        .map_err(|e| Error::Sparql(e.to_string()))?;
                 }
                 let buf = ser.finish().map_err(|e| Error::Sparql(e.to_string()))?;
                 Ok(QueryOutput::Text(buf))
@@ -186,7 +195,12 @@ impl Graph {
 
     pub fn graph_quads(&self, g: &NamedNode) -> Result<Vec<Quad>> {
         let mut out = Vec::new();
-        for q in self.inner.quads_for_pattern(None, None, None, Some(GraphNameRef::NamedNode(g.as_ref()))) {
+        for q in self.inner.quads_for_pattern(
+            None,
+            None,
+            None,
+            Some(GraphNameRef::NamedNode(g.as_ref())),
+        ) {
             out.push(q?);
         }
         Ok(out)
@@ -201,6 +215,12 @@ impl Graph {
 
     /// Is a derived fragment for this run already present?
     pub fn has_derived(&self, ruleset: &str, input: &str) -> Result<bool> {
-        self.contains_graph(&FragmentKind::Derived { ruleset: ruleset.into(), input: input.into() }.graph())
+        self.contains_graph(
+            &FragmentKind::Derived {
+                ruleset: ruleset.into(),
+                input: input.into(),
+            }
+            .graph(),
+        )
     }
 }

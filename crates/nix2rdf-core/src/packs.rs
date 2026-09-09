@@ -49,9 +49,14 @@ fn read(p: &Path) -> Result<String> {
 
 impl Pack {
     pub fn load(dir: &Path) -> Result<Pack> {
-        let manifest: PackManifest = toml::from_str(&read(&dir.join("pack.toml"))?).map_err(|e| Error::Pack(format!("{}: {e}", dir.display())))?;
+        let manifest: PackManifest = toml::from_str(&read(&dir.join("pack.toml"))?)
+            .map_err(|e| Error::Pack(format!("{}: {e}", dir.display())))?;
         let vocab_p = dir.join("vocab.ttl");
-        let vocab_ttl = if vocab_p.exists() { Some(read(&vocab_p)?) } else { None };
+        let vocab_ttl = if vocab_p.exists() {
+            Some(read(&vocab_p)?)
+        } else {
+            None
+        };
         let mut rule_files = Vec::new();
         for name in ["semantics.rls", "mapping.rls"] {
             let p = dir.join(name);
@@ -79,15 +84,33 @@ impl Pack {
             if !entry.file_type().is_file() {
                 continue;
             }
-            let rel = entry.path().strip_prefix(dir).unwrap().to_string_lossy().to_string();
+            let rel = entry
+                .path()
+                .strip_prefix(dir)
+                .unwrap()
+                .to_string_lossy()
+                .to_string();
             if rel.starts_with("tests/") {
                 continue;
             }
-            items.push((rel, std::fs::read(entry.path()).map_err(|e| Error::io(entry.path(), e))?));
+            items.push((
+                rel,
+                std::fs::read(entry.path()).map_err(|e| Error::io(entry.path(), e))?,
+            ));
         }
         items.sort();
-        let content_hash = hash::sha256_hex_items(items.iter().flat_map(|(n, b)| [n.as_bytes().to_vec(), b.clone()]));
-        Ok(Pack { manifest, dir: dir.to_path_buf(), vocab_ttl, rule_files, content_hash })
+        let content_hash = hash::sha256_hex_items(
+            items
+                .iter()
+                .flat_map(|(n, b)| [n.as_bytes().to_vec(), b.clone()]),
+        );
+        Ok(Pack {
+            manifest,
+            dir: dir.to_path_buf(),
+            vocab_ttl,
+            rule_files,
+            content_hash,
+        })
     }
 
     pub fn name(&self) -> &str {
@@ -96,7 +119,10 @@ impl Pack {
 
     /// All rule text of the pack, concatenated in load order.
     pub fn rules_text(&self) -> String {
-        self.rule_files.iter().map(|(n, t)| format!("%% ---- {}/{} ----\n{t}\n", self.manifest.name, n)).collect()
+        self.rule_files
+            .iter()
+            .map(|(n, t)| format!("%% ---- {}/{} ----\n{t}\n", self.manifest.name, n))
+            .collect()
     }
 }
 
@@ -131,7 +157,10 @@ pub fn discover(dirs: &[PathBuf]) -> Result<BTreeMap<String, Pack>> {
             packs.entry(p.manifest.name.clone()).or_insert(p);
             continue;
         }
-        let mut subs: Vec<PathBuf> = std::fs::read_dir(d).map_err(|e| Error::io(d, e))?.filter_map(|e| e.ok().map(|e| e.path())).collect();
+        let mut subs: Vec<PathBuf> = std::fs::read_dir(d)
+            .map_err(|e| Error::io(d, e))?
+            .filter_map(|e| e.ok().map(|e| e.path()))
+            .collect();
         subs.sort();
         for s in subs {
             if s.join("pack.toml").exists() {
@@ -150,14 +179,22 @@ pub fn resolve(all: &BTreeMap<String, Pack>, selected: &[String]) -> Result<Vec<
     let mut order: Vec<Pack> = Vec::new();
     let mut done: BTreeSet<String> = BTreeSet::new();
     let mut visiting: BTreeSet<String> = BTreeSet::new();
-    fn visit(name: &str, all: &BTreeMap<String, Pack>, done: &mut BTreeSet<String>, visiting: &mut BTreeSet<String>, order: &mut Vec<Pack>) -> Result<()> {
+    fn visit(
+        name: &str,
+        all: &BTreeMap<String, Pack>,
+        done: &mut BTreeSet<String>,
+        visiting: &mut BTreeSet<String>,
+        order: &mut Vec<Pack>,
+    ) -> Result<()> {
         if done.contains(name) {
             return Ok(());
         }
         if !visiting.insert(name.to_string()) {
             return Err(Error::Pack(format!("dependency cycle at pack '{name}'")));
         }
-        let p = all.get(name).ok_or_else(|| Error::Pack(format!("unknown pack '{name}'")))?;
+        let p = all
+            .get(name)
+            .ok_or_else(|| Error::Pack(format!("unknown pack '{name}'")))?;
         let mut deps = p.manifest.depends_on.clone();
         deps.sort();
         for d in deps {
@@ -181,7 +218,13 @@ pub fn resolve(all: &BTreeMap<String, Pack>, selected: &[String]) -> Result<Vec<
 pub fn ruleset_hash(packs: &[Pack]) -> String {
     let mut items: Vec<Vec<u8>> = Vec::new();
     for p in packs {
-        items.push(format!("{}@{}#{}", p.manifest.name, p.manifest.version, p.content_hash).into_bytes());
+        items.push(
+            format!(
+                "{}@{}#{}",
+                p.manifest.name, p.manifest.version, p.content_hash
+            )
+            .into_bytes(),
+        );
         items.push(p.rules_text().into_bytes());
     }
     hash::sha256_hex_items(items)
@@ -199,12 +242,20 @@ pub fn collect_prefixes(packs: &[Pack]) -> Result<(BTreeMap<String, String>, Str
                 let trimmed = line.trim();
                 if let Some(rest) = trimmed.strip_prefix("@prefix") {
                     let rest = rest.trim().trim_end_matches('.').trim();
-                    let (pfx, iri) = rest.split_once(':').ok_or_else(|| Error::Pack(format!("{}: bad @prefix line: {line}", p.manifest.name)))?;
-                    let iri = iri.trim().trim_matches(|c| c == '<' || c == '>').to_string();
+                    let (pfx, iri) = rest.split_once(':').ok_or_else(|| {
+                        Error::Pack(format!("{}: bad @prefix line: {line}", p.manifest.name))
+                    })?;
+                    let iri = iri
+                        .trim()
+                        .trim_matches(|c| c == '<' || c == '>')
+                        .to_string();
                     let pfx = pfx.trim().to_string();
                     if let Some(prev) = prefixes.get(&pfx) {
                         if prev != &iri {
-                            return Err(Error::Pack(format!("prefix '{pfx}' bound to both <{prev}> and <{iri}> (pack {})", p.manifest.name)));
+                            return Err(Error::Pack(format!(
+                                "prefix '{pfx}' bound to both <{prev}> and <{iri}> (pack {})",
+                                p.manifest.name
+                            )));
                         }
                     } else {
                         prefixes.insert(pfx, iri);
@@ -259,7 +310,11 @@ pub fn tests_of(pack: &Pack) -> Result<Vec<PackTest>> {
     if !tdir.is_dir() {
         return Ok(vec![]);
     }
-    let mut cases: Vec<PathBuf> = std::fs::read_dir(&tdir).map_err(|e| Error::io(&tdir, e))?.filter_map(|e| e.ok().map(|e| e.path())).filter(|p| p.is_dir()).collect();
+    let mut cases: Vec<PathBuf> = std::fs::read_dir(&tdir)
+        .map_err(|e| Error::io(&tdir, e))?
+        .filter_map(|e| e.ok().map(|e| e.path()))
+        .filter(|p| p.is_dir())
+        .collect();
     cases.sort();
     let mut out = Vec::new();
     for c in cases {
@@ -274,7 +329,11 @@ pub fn tests_of(pack: &Pack) -> Result<Vec<PackTest>> {
             dir: c.clone(),
             input: read(&input)?,
             expected: read(&expected)?,
-            forbidden: if forbidden.exists() { Some(read(&forbidden)?) } else { None },
+            forbidden: if forbidden.exists() {
+                Some(read(&forbidden)?)
+            } else {
+                None
+            },
         });
     }
     Ok(out)

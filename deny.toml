@@ -1,0 +1,38 @@
+# cargo-deny configuration: license allow-list and dependency bans.
+# Run: cargo deny check licenses bans   (also a `nix flake check` check)
+
+[graph]
+all-features = false
+
+[licenses]
+# Everything nix2rdf links must be compatible with distributing under MIT.
+allow = [
+  "MIT",
+  "MIT-0",
+  "Apache-2.0",
+  "Apache-2.0 WITH LLVM-exception",
+  "BSD-2-Clause",
+  "BSD-3-Clause",
+  "0BSD",
+  "ISC",
+  "Zlib",
+  "Unicode-3.0",
+  "Unlicense",
+  "MPL-2.0",
+  "CDLA-Permissive-2.0",
+  "CC0-1.0",
+  "BSL-1.0",
+  "BlueOak-1.0.0",
+]
+confidence-threshold = 0.8
+
+[bans]
+multiple-versions = "allow"
+# Path dependencies (workspace crates, vendored Nemo) have no version
+# requirement; cargo-deny counts them as wildcards, which only matters for
+# crates.io publication.
+wildcards = "allow"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"

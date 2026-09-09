@@ -4,7 +4,7 @@
 //!
 //! Format: `Derive([outputs],[inputDrvs],[inputSrcs],"system","builder",[args],[env])`
 //! - outputs:   `("out","/nix/store/...","","")` or, for content-addressed
-//!              derivations, `("out","","r:sha256","")` / `("out","","sha256","<hash>")`.
+//!   derivations, `("out","","r:sha256","")` / `("out","","sha256","<hash>")`.
 //! - inputDrvs: `("/nix/store/x.drv",["out","dev"])`.
 //! - env:       `("NAME","value")`.
 
@@ -34,7 +34,10 @@ impl<'a> Parser<'a> {
             self.i += 1;
             Ok(())
         } else {
-            Err(Error::Other(format!("drv parse: expected '{}' at {}", b as char, self.i)))
+            Err(Error::Other(format!(
+                "drv parse: expected '{}' at {}",
+                b as char, self.i
+            )))
         }
     }
     fn string(&mut self) -> Result<String> {
@@ -49,7 +52,9 @@ impl<'a> Parser<'a> {
                 }
                 Some(b'\\') => {
                     self.i += 1;
-                    let c = self.peek().ok_or_else(|| Error::Other("drv parse: bad escape".into()))?;
+                    let c = self
+                        .peek()
+                        .ok_or_else(|| Error::Other("drv parse: bad escape".into()))?;
                     self.i += 1;
                     out.push(match c {
                         b'n' => b'\n',
@@ -77,7 +82,11 @@ impl<'a> Parser<'a> {
                 self.i += 1;
                 Ok(Term::Tuple(self.seq(b')')?))
             }
-            other => Err(Error::Other(format!("drv parse: unexpected {:?} at {}", other.map(|b| b as char), self.i))),
+            other => Err(Error::Other(format!(
+                "drv parse: unexpected {:?} at {}",
+                other.map(|b| b as char),
+                self.i
+            ))),
         }
     }
     fn seq(&mut self, close: u8) -> Result<Vec<Term>> {
@@ -94,7 +103,12 @@ impl<'a> Parser<'a> {
                     self.i += 1;
                     return Ok(items);
                 }
-                _ => return Err(Error::Other(format!("drv parse: bad sequence at {}", self.i))),
+                _ => {
+                    return Err(Error::Other(format!(
+                        "drv parse: bad sequence at {}",
+                        self.i
+                    )))
+                }
             }
         }
     }
@@ -119,16 +133,27 @@ pub fn parse_drv(drv_path: &str, text: &str) -> Result<DrvInfo> {
     if !text.starts_with("Derive(") {
         return Err(Error::Other(format!("{drv_path}: not a Derive(...) term")));
     }
-    let mut p = Parser { s: text.as_bytes(), i: "Derive".len() };
+    let mut p = Parser {
+        s: text.as_bytes(),
+        i: "Derive".len(),
+    };
     let fields = match p.term()? {
         Term::Tuple(f) => f,
         _ => return Err(Error::Other(format!("{drv_path}: malformed Derive term"))),
     };
     if fields.len() != 7 {
-        return Err(Error::Other(format!("{drv_path}: expected 7 fields, got {}", fields.len())));
+        return Err(Error::Other(format!(
+            "{drv_path}: expected 7 fields, got {}",
+            fields.len()
+        )));
     }
-    let mut d = DrvInfo::default();
-    d.name = crate::iri::store_path_name(drv_path).unwrap_or_default().trim_end_matches(".drv").to_string();
+    let mut d = DrvInfo {
+        name: crate::iri::store_path_name(drv_path)
+            .unwrap_or_default()
+            .trim_end_matches(".drv")
+            .to_string(),
+        ..Default::default()
+    };
 
     for o in as_list(&fields[0])? {
         let t = as_list(o)?;
@@ -151,12 +176,24 @@ pub fn parse_drv(drv_path: &str, text: &str) -> Result<DrvInfo> {
         let t = as_list(i)?;
         let path = as_str(&t[0])?;
         let outs: Vec<String> = as_list(&t[1])?.iter().map(as_str).collect::<Result<_>>()?;
-        d.input_drvs.insert(path, InputDrv::Structured { outputs: outs, dynamic_outputs: serde_json::json!({}) });
+        d.input_drvs.insert(
+            path,
+            InputDrv::Structured {
+                outputs: outs,
+                dynamic_outputs: serde_json::json!({}),
+            },
+        );
     }
-    d.input_srcs = as_list(&fields[2])?.iter().map(as_str).collect::<Result<_>>()?;
+    d.input_srcs = as_list(&fields[2])?
+        .iter()
+        .map(as_str)
+        .collect::<Result<_>>()?;
     d.system = as_str(&fields[3])?;
     d.builder = as_str(&fields[4])?;
-    d.args = as_list(&fields[5])?.iter().map(as_str).collect::<Result<_>>()?;
+    d.args = as_list(&fields[5])?
+        .iter()
+        .map(as_str)
+        .collect::<Result<_>>()?;
     for e in as_list(&fields[6])? {
         let t = as_list(e)?;
         d.env.insert(as_str(&t[0])?, as_str(&t[1])?);
@@ -212,7 +249,10 @@ mod tests {
         assert_eq!(d.name, "x");
         assert_eq!(d.system, "x86_64-linux");
         assert_eq!(d.args, vec!["-c", "echo \"hi\\n\""]);
-        assert_eq!(d.outputs["out"].path.as_deref(), Some("/nix/store/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-x"));
+        assert_eq!(
+            d.outputs["out"].path.as_deref(),
+            Some("/nix/store/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-x")
+        );
         assert_eq!(d.input_drvs.len(), 1);
         assert_eq!(d.env["name"], "x");
     }

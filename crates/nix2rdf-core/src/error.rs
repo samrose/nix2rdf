@@ -3,7 +3,11 @@ use std::path::PathBuf;
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error("io error at {path}: {source}")]
-    Io { path: PathBuf, #[source] source: std::io::Error },
+    Io {
+        path: PathBuf,
+        #[source]
+        source: std::io::Error,
+    },
     #[error("nix command failed: {cmd}\n{stderr}")]
     Nix { cmd: String, stderr: String },
     #[error("json error: {0}")]
@@ -30,22 +34,35 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 impl Error {
     pub fn io(path: impl Into<PathBuf>, source: std::io::Error) -> Self {
-        Error::Io { path: path.into(), source }
+        Error::Io {
+            path: path.into(),
+            source,
+        }
     }
 }
 
 impl From<oxigraph::store::StorageError> for Error {
-    fn from(e: oxigraph::store::StorageError) -> Self { Error::Store(e.to_string()) }
+    fn from(e: oxigraph::store::StorageError) -> Self {
+        Error::Store(e.to_string())
+    }
 }
 impl From<oxigraph::sparql::QueryEvaluationError> for Error {
-    fn from(e: oxigraph::sparql::QueryEvaluationError) -> Self { Error::Sparql(e.to_string()) }
+    fn from(e: oxigraph::sparql::QueryEvaluationError) -> Self {
+        Error::Sparql(e.to_string())
+    }
 }
 impl From<oxigraph::store::LoaderError> for Error {
-    fn from(e: oxigraph::store::LoaderError) -> Self { Error::Store(e.to_string()) }
+    fn from(e: oxigraph::store::LoaderError) -> Self {
+        Error::Store(e.to_string())
+    }
 }
 impl From<oxrdf::IriParseError> for Error {
-    fn from(e: oxrdf::IriParseError) -> Self { Error::Rdf(e.to_string()) }
+    fn from(e: oxrdf::IriParseError) -> Self {
+        Error::Rdf(e.to_string())
+    }
 }
 impl From<anyhow::Error> for Error {
-    fn from(e: anyhow::Error) -> Self { Error::Other(format!("{e:#}")) }
+    fn from(e: anyhow::Error) -> Self {
+        Error::Other(format!("{e:#}"))
+    }
 }

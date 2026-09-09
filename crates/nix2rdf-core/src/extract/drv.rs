@@ -54,8 +54,13 @@ const WELL_KNOWN: &[&str] = &["pname", "version"];
 
 /// The derivation fragment. Contains exactly what the .drv says; nothing
 /// that depends on build state or on who is asking.
-pub fn derivation_fragment(drv_path: &str, d: &DrvInfo, src_hashes: &BTreeMap<String, String>) -> Result<Fragment> {
-    let h = iri::store_path_hash(drv_path).ok_or_else(|| Error::Other(format!("not a store path: {drv_path}")))?;
+pub fn derivation_fragment(
+    drv_path: &str,
+    d: &DrvInfo,
+    src_hashes: &BTreeMap<String, String>,
+) -> Result<Fragment> {
+    let h = iri::store_path_hash(drv_path)
+        .ok_or_else(|| Error::Other(format!("not a store path: {drv_path}")))?;
     let s = iri::drv(h);
     let mut f = Fragment::new(FragmentKind::Drv(h.to_string()));
     f.add_type(s.clone(), t::Derivation());
@@ -76,13 +81,18 @@ pub fn derivation_fragment(drv_path: &str, d: &DrvInfo, src_hashes: &BTreeMap<St
         }
     }
     let env_json = serde_json::to_value(&d.env)?;
-    f.add_str(s.clone(), t::envHash(), &hash::sha256_hex(hash::canonical_json(&env_json).as_bytes()));
+    f.add_str(
+        s.clone(),
+        t::envHash(),
+        &hash::sha256_hex(hash::canonical_json(&env_json).as_bytes()),
+    );
     f.add_bool(s.clone(), t::structuredAttrs(), d.uses_structured_attrs());
     let ca = d.is_content_addressed();
     f.add_bool(s.clone(), t::contentAddressed(), ca);
 
     for (in_path, outs) in &d.input_drvs {
-        let ih = iri::store_path_hash(in_path).ok_or_else(|| Error::Other(format!("not a store path: {in_path}")))?;
+        let ih = iri::store_path_hash(in_path)
+            .ok_or_else(|| Error::Other(format!("not a store path: {in_path}")))?;
         let dep = iri::drv(ih);
         f.add(s.clone(), t::inputDrv(), dep.clone());
         f.add(s.clone(), t::dependsOn(), dep);
@@ -101,7 +111,8 @@ pub fn derivation_fragment(drv_path: &str, d: &DrvInfo, src_hashes: &BTreeMap<St
     // so this fragment stays byte-identical before and after the build.
     for (name, o) in &d.outputs {
         if let Some(p) = &o.path {
-            let oh = iri::store_path_hash(p).ok_or_else(|| Error::Other(format!("not a store path: {p}")))?;
+            let oh = iri::store_path_hash(p)
+                .ok_or_else(|| Error::Other(format!("not a store path: {p}")))?;
             let on = iri::out(oh);
             f.add(s.clone(), t::hasOutput(), on.clone());
             f.add_type(on.clone(), t::Output());
@@ -114,7 +125,8 @@ pub fn derivation_fragment(drv_path: &str, d: &DrvInfo, src_hashes: &BTreeMap<St
 
 /// The full environment as a side fragment (opt-in; can be large).
 pub fn env_fragment(drv_path: &str, d: &DrvInfo) -> Result<Fragment> {
-    let h = iri::store_path_hash(drv_path).ok_or_else(|| Error::Other(format!("not a store path: {drv_path}")))?;
+    let h = iri::store_path_hash(drv_path)
+        .ok_or_else(|| Error::Other(format!("not a store path: {drv_path}")))?;
     let s = iri::drv(h);
     let mut f = Fragment::new(FragmentKind::Env(h.to_string()));
     for (k, v) in &d.env {
@@ -139,12 +151,18 @@ pub fn source_fragment(store_path: &str, nar_hash: &str) -> Fragment {
 /// The outputs fragment: outputs (with paths) and their runtime references.
 /// Written after a build. For input-addressed derivations it adds only the
 /// `references` edges (hasOutput is already in the drv fragment).
-pub fn outputs_fragment(drv_path: &str, outputs: &BTreeMap<String, String>, infos: &BTreeMap<String, Option<PathInfo>>) -> Result<Fragment> {
-    let h = iri::store_path_hash(drv_path).ok_or_else(|| Error::Other(format!("not a store path: {drv_path}")))?;
+pub fn outputs_fragment(
+    drv_path: &str,
+    outputs: &BTreeMap<String, String>,
+    infos: &BTreeMap<String, Option<PathInfo>>,
+) -> Result<Fragment> {
+    let h = iri::store_path_hash(drv_path)
+        .ok_or_else(|| Error::Other(format!("not a store path: {drv_path}")))?;
     let s = iri::drv(h);
     let mut f = Fragment::new(FragmentKind::Out(h.to_string()));
     for (name, p) in outputs {
-        let oh = iri::store_path_hash(p).ok_or_else(|| Error::Other(format!("not a store path: {p}")))?;
+        let oh = iri::store_path_hash(p)
+            .ok_or_else(|| Error::Other(format!("not a store path: {p}")))?;
         let on = iri::out(oh);
         f.add(s.clone(), t::hasOutput(), on.clone());
         f.add_type(on.clone(), t::Output());
@@ -188,17 +206,32 @@ pub fn add_meta(f: &mut Fragment, drv: &oxrdf::NamedNode, meta: &Meta) {
 }
 
 /// Extract a derivation graph reachable from `installables`.
-pub fn extract_graph(nix: &dyn NixSource, installables: &[String], opts: &ExtractOptions) -> Result<GraphExtraction> {
+pub fn extract_graph(
+    nix: &dyn NixSource,
+    installables: &[String],
+    opts: &ExtractOptions,
+) -> Result<GraphExtraction> {
     let drvs = nix.derivation_show(installables, true)?;
     extract_from_drvs(nix, drvs, opts)
 }
 
 /// Same, from an already-parsed graph (used by the .drv fast path and nix-eval-jobs).
-pub fn extract_from_drvs(nix: &dyn NixSource, drvs: BTreeMap<String, DrvInfo>, opts: &ExtractOptions) -> Result<GraphExtraction> {
+pub fn extract_from_drvs(
+    nix: &dyn NixSource,
+    drvs: BTreeMap<String, DrvInfo>,
+    opts: &ExtractOptions,
+) -> Result<GraphExtraction> {
     info!(target: "nix2rdf::extract", derivations = drvs.len(), "extracting derivation graph");
-    let srcs: BTreeSet<String> = drvs.values().flat_map(|d| d.input_srcs.iter().cloned()).collect();
+    let srcs: BTreeSet<String> = drvs
+        .values()
+        .flat_map(|d| d.input_srcs.iter().cloned())
+        .collect();
     let src_list: Vec<String> = srcs.iter().cloned().collect();
-    let infos = if src_list.is_empty() { BTreeMap::new() } else { nix.path_info(&src_list)? };
+    let infos = if src_list.is_empty() {
+        BTreeMap::new()
+    } else {
+        nix.path_info(&src_list)?
+    };
     let mut src_hashes = BTreeMap::new();
     let mut missing = Vec::new();
     for p in &src_list {
@@ -218,14 +251,19 @@ pub fn extract_from_drvs(nix: &dyn NixSource, drvs: BTreeMap<String, DrvInfo>, o
         )));
     }
 
-    let mut ex = GraphExtraction { drvs: BTreeMap::new(), ..Default::default() };
+    let mut ex = GraphExtraction {
+        drvs: BTreeMap::new(),
+        ..Default::default()
+    };
     for (path, nar) in &src_hashes {
         ex.fragments.push(source_fragment(path, nar));
     }
     for (path, d) in &drvs {
-        let h = iri::store_path_hash(path).ok_or_else(|| Error::Other(format!("not a store path: {path}")))?;
+        let h = iri::store_path_hash(path)
+            .ok_or_else(|| Error::Other(format!("not a store path: {path}")))?;
         ex.drv_hashes.insert(path.clone(), h.to_string());
-        ex.fragments.push(derivation_fragment(path, d, &src_hashes)?);
+        ex.fragments
+            .push(derivation_fragment(path, d, &src_hashes)?);
         if opts.env == EnvMode::Full {
             ex.fragments.push(env_fragment(path, d)?);
         }
@@ -236,9 +274,19 @@ pub fn extract_from_drvs(nix: &dyn NixSource, drvs: BTreeMap<String, DrvInfo>, o
 }
 
 /// After a build: outputs fragments for the given drvs, with references.
-pub fn extract_outputs(nix: &dyn NixSource, built: &[crate::nix::BuildResult]) -> Result<Vec<Fragment>> {
-    let paths: Vec<String> = built.iter().flat_map(|b| b.outputs.values().cloned()).collect();
-    let infos = if paths.is_empty() { BTreeMap::new() } else { nix.path_info(&paths)? };
+pub fn extract_outputs(
+    nix: &dyn NixSource,
+    built: &[crate::nix::BuildResult],
+) -> Result<Vec<Fragment>> {
+    let paths: Vec<String> = built
+        .iter()
+        .flat_map(|b| b.outputs.values().cloned())
+        .collect();
+    let infos = if paths.is_empty() {
+        BTreeMap::new()
+    } else {
+        nix.path_info(&paths)?
+    };
     let mut out = Vec::new();
     for b in built {
         out.push(outputs_fragment(&b.drv_path, &b.outputs, &infos)?);
@@ -250,7 +298,10 @@ pub fn extract_outputs(nix: &dyn NixSource, built: &[crate::nix::BuildResult]) -
 /// references, returning outputs fragments for every derivation reached.
 /// Used by the image and NixOS front-ends to record `references` edges for
 /// the whole runtime closure (`nix path-info -r` semantics, but batched).
-pub fn extract_runtime_closure(nix: &dyn NixSource, roots: &[String]) -> Result<(Vec<Fragment>, BTreeMap<String, PathInfo>)> {
+pub fn extract_runtime_closure(
+    nix: &dyn NixSource,
+    roots: &[String],
+) -> Result<(Vec<Fragment>, BTreeMap<String, PathInfo>)> {
     let mut seen: BTreeMap<String, PathInfo> = BTreeMap::new();
     let mut frontier: Vec<String> = roots.to_vec();
     while !frontier.is_empty() {
@@ -279,11 +330,14 @@ pub fn extract_runtime_closure(nix: &dyn NixSource, roots: &[String]) -> Result<
             by_drv.entry(d.clone()).or_default().insert(name, p.clone());
         }
     }
-    let infos_opt: BTreeMap<String, Option<PathInfo>> = seen.iter().map(|(k, v)| (k.clone(), Some(v.clone()))).collect();
+    let infos_opt: BTreeMap<String, Option<PathInfo>> = seen
+        .iter()
+        .map(|(k, v)| (k.clone(), Some(v.clone())))
+        .collect();
     let mut frags = Vec::new();
     for (drv, outs) in &by_drv {
         // The output *name* is not in path-info; recover it from the drv when possible.
-        let named = match nix.derivation_show(&[drv.clone()], false) {
+        let named = match nix.derivation_show(std::slice::from_ref(drv), false) {
             Ok(m) => m.get(drv).map(|d| {
                 d.outputs
                     .iter()
@@ -293,7 +347,9 @@ pub fn extract_runtime_closure(nix: &dyn NixSource, roots: &[String]) -> Result<
             }),
             Err(_) => None,
         };
-        let outs = named.filter(|m| !m.is_empty()).unwrap_or_else(|| outs.clone());
+        let outs = named
+            .filter(|m| !m.is_empty())
+            .unwrap_or_else(|| outs.clone());
         frags.push(outputs_fragment(drv, &outs, &infos_opt)?);
     }
     Ok((frags, seen))

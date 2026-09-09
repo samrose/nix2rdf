@@ -59,9 +59,21 @@ pub mod k8s_terms {
     );
 }
 
-pub fn xsd_string() -> NamedNode { xsd("string") }
-pub fn xsd_integer() -> NamedNode { xsd("integer") }
-pub fn xsd_boolean() -> NamedNode { xsd("boolean") }
-pub fn xsd_date() -> NamedNode { xsd("date") }
-pub fn xsd_date_time() -> NamedNode { xsd("dateTime") }
-pub fn xsd_any_uri() -> NamedNode { xsd("anyURI") }
+pub fn xsd_string() -> NamedNode {
+    xsd("string")
+}
+pub fn xsd_integer() -> NamedNode {
+    xsd("integer")
+}
+pub fn xsd_boolean() -> NamedNode {
+    xsd("boolean")
+}
+pub fn xsd_date() -> NamedNode {
+    xsd("date")
+}
+pub fn xsd_date_time() -> NamedNode {
+    xsd("dateTime")
+}
+pub fn xsd_any_uri() -> NamedNode {
+    xsd("anyURI")
+}

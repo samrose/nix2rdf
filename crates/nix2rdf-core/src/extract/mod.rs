@@ -6,10 +6,10 @@
 
 pub mod drv;
 pub mod flake;
-pub mod nixos;
 pub mod image;
-pub mod nixpkgs_index;
+pub mod nixos;
 pub mod nixpkgs_eval;
+pub mod nixpkgs_index;
 
 pub use drv::{extract_graph, ExtractOptions, GraphExtraction};
 

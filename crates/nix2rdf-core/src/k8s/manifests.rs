@@ -14,7 +14,12 @@ pub fn read_dir(dir: &Path) -> Result<Vec<Value>> {
         .filter_map(|e| e.ok())
         .filter(|e| e.file_type().is_file())
         .map(|e| e.path().to_path_buf())
-        .filter(|p| matches!(p.extension().and_then(|x| x.to_str()), Some("yaml" | "yml" | "json")))
+        .filter(|p| {
+            matches!(
+                p.extension().and_then(|x| x.to_str()),
+                Some("yaml" | "yml" | "json")
+            )
+        })
         .collect();
     files.sort();
     let mut out = Vec::new();

@@ -98,7 +98,16 @@ pub fn index_fragment(files: &IndexFiles) -> Result<Fragment> {
         if !rel.name.is_empty() {
             f.add_str(rn.clone(), t::channelName(), &rel.name);
         }
-        let rev = revision_node(&mut f, &Revision { rev: rel.rev.clone(), date: rel.date.clone(), name: rel.name.clone(), nar_hash: rel.nar_hash.clone() }, None);
+        let rev = revision_node(
+            &mut f,
+            &Revision {
+                rev: rel.rev.clone(),
+                date: rel.date.clone(),
+                name: rel.name.clone(),
+                nar_hash: rel.nar_hash.clone(),
+            },
+            None,
+        );
         f.add(rn, t::releasePinnedTo(), rev);
     }
     let tip = revisions.last();
@@ -132,5 +141,7 @@ pub fn index_fragment(files: &IndexFiles) -> Result<Fragment> {
 /// Look up a revision's NAR hash in the index (for Layer 1 materialization).
 pub fn find_revision(files: &IndexFiles, rev_prefix: &str) -> Result<Option<Revision>> {
     let revisions: Vec<Revision> = serde_json::from_slice(&files.revisions)?;
-    Ok(revisions.into_iter().find(|r| r.rev.starts_with(rev_prefix)))
+    Ok(revisions
+        .into_iter()
+        .find(|r| r.rev.starts_with(rev_prefix)))
 }

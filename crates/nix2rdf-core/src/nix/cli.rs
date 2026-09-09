@@ -26,7 +26,14 @@ impl CliNix {
             .ok()
             .map(|o| String::from_utf8_lossy(&o.stdout).trim().to_string())
             .unwrap_or_else(|| "unknown".into());
-        CliNix { nix_bin: bin.to_string(), extra_args: vec!["--extra-experimental-features".into(), "nix-command flakes".into()], version }
+        CliNix {
+            nix_bin: bin.to_string(),
+            extra_args: vec![
+                "--extra-experimental-features".into(),
+                "nix-command flakes".into(),
+            ],
+            version,
+        }
     }
 
     pub fn run(&self, args: &[&str]) -> Result<Vec<u8>> {
@@ -34,9 +41,15 @@ impl CliNix {
         cmd.args(&self.extra_args).args(args);
         let cmd_line = format!("{} {}", self.nix_bin, args.join(" "));
         info!(target: "nix2rdf::nix", cmd = %cmd_line, nix_version = %self.version, "invoking nix");
-        let out = cmd.output().map_err(|e| Error::Nix { cmd: cmd_line.clone(), stderr: e.to_string() })?;
+        let out = cmd.output().map_err(|e| Error::Nix {
+            cmd: cmd_line.clone(),
+            stderr: e.to_string(),
+        })?;
         if !out.status.success() {
-            return Err(Error::Nix { cmd: cmd_line, stderr: String::from_utf8_lossy(&out.stderr).to_string() });
+            return Err(Error::Nix {
+                cmd: cmd_line,
+                stderr: String::from_utf8_lossy(&out.stderr).to_string(),
+            });
         }
         debug!(target: "nix2rdf::nix", bytes = out.stdout.len(), "nix returned");
         Ok(out.stdout)
@@ -54,9 +67,15 @@ impl CliNix {
         let out = Command::new("nix-eval-jobs")
             .args(args)
             .output()
-            .map_err(|e| Error::Nix { cmd: cmd_line.clone(), stderr: e.to_string() })?;
+            .map_err(|e| Error::Nix {
+                cmd: cmd_line.clone(),
+                stderr: e.to_string(),
+            })?;
         if !out.status.success() {
-            return Err(Error::Nix { cmd: cmd_line, stderr: String::from_utf8_lossy(&out.stderr).to_string() });
+            return Err(Error::Nix {
+                cmd: cmd_line,
+                stderr: String::from_utf8_lossy(&out.stderr).to_string(),
+            });
         }
         let mut jobs = Vec::new();
         for line in String::from_utf8_lossy(&out.stdout).lines() {
@@ -76,7 +95,11 @@ impl Default for CliNix {
 }
 
 impl NixSource for CliNix {
-    fn derivation_show(&self, installables: &[String], recursive: bool) -> Result<BTreeMap<String, DrvInfo>> {
+    fn derivation_show(
+        &self,
+        installables: &[String],
+        recursive: bool,
+    ) -> Result<BTreeMap<String, DrvInfo>> {
         let mut args: Vec<&str> = vec!["derivation", "show"];
         if recursive {
             args.push("-r");
@@ -98,19 +121,36 @@ impl NixSource for CliNix {
             match v {
                 serde_json::Value::Object(m) => {
                     for (k, val) in m {
-                        let info = if val.is_null() { None } else { Some(serde_json::from_value::<PathInfo>(val)?) };
+                        let info = if val.is_null() {
+                            None
+                        } else {
+                            Some(serde_json::from_value::<PathInfo>(val)?)
+                        };
                         result.insert(k, info);
                     }
                 }
                 serde_json::Value::Array(a) => {
                     for item in a {
-                        let path = item.get("path").and_then(|p| p.as_str()).unwrap_or_default().to_string();
+                        let path = item
+                            .get("path")
+                            .and_then(|p| p.as_str())
+                            .unwrap_or_default()
+                            .to_string();
                         let valid = item.get("valid").and_then(|b| b.as_bool()).unwrap_or(true);
-                        let info = if valid { Some(serde_json::from_value::<PathInfo>(item.clone())?) } else { None };
+                        let info = if valid {
+                            Some(serde_json::from_value::<PathInfo>(item.clone())?)
+                        } else {
+                            None
+                        };
                         result.insert(path, info);
                     }
                 }
-                _ => return Err(Error::Nix { cmd: "path-info".into(), stderr: "unexpected JSON shape".into() }),
+                _ => {
+                    return Err(Error::Nix {
+                        cmd: "path-info".into(),
+                        stderr: "unexpected JSON shape".into(),
+                    })
+                }
             }
         }
         Ok(result)

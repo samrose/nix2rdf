@@ -7,9 +7,9 @@
 //! `NixSource` returns, so both back-ends must yield identical fragments.
 
 pub mod cli;
+pub mod drv_file;
 pub mod model;
 pub mod recorded;
-pub mod drv_file;
 
 pub use cli::CliNix;
 pub use model::*;
@@ -22,7 +22,11 @@ use std::collections::BTreeMap;
 /// one Nix CLI invocation and one recorded JSON file.
 pub trait NixSource {
     /// `nix derivation show [-r] <installables...>` → drv path → info.
-    fn derivation_show(&self, installables: &[String], recursive: bool) -> Result<BTreeMap<String, DrvInfo>>;
+    fn derivation_show(
+        &self,
+        installables: &[String],
+        recursive: bool,
+    ) -> Result<BTreeMap<String, DrvInfo>>;
     /// `nix path-info --json <paths...>` → store path → info (None when not present locally).
     fn path_info(&self, paths: &[String]) -> Result<BTreeMap<String, Option<PathInfo>>>;
     /// `nix flake metadata --json <ref>`.

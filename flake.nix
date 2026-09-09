@@ -19,7 +19,7 @@
             inherit system;
             overlays = [ rust-overlay.overlays.default ];
           };
-          lib = pkgs.lib;
+          inherit (pkgs) lib;
 
           # Nemo (vendored under vendor/nemo) needs nightly; the date is pinned
           # in rust-toolchain.toml and read from there so rustup and nix agree.
@@ -45,6 +45,7 @@
             fileset = lib.fileset.unions [
               ./Cargo.toml
               ./Cargo.lock
+              ./deny.toml
               ./rust-toolchain.toml
               ./crates
               ./vendor
@@ -92,7 +93,7 @@
                 --set-default NIX2RDF_PACKS $out/share/nix2rdf/packs
             '';
             passthru = { unwrapped = nix2rdf-unwrapped; };
-            meta = nix2rdf-unwrapped.meta;
+            inherit (nix2rdf-unwrapped) meta;
           };
 
           ontology-docs = pkgs.runCommand "nix2rdf-ontology-docs" { nativeBuildInputs = [ nix2rdf ]; } ''
@@ -114,6 +115,27 @@
             ${script}
             touch $out
           '';
+          # Lint checks reuse the package derivation (vendored crates, toolchain,
+          # native deps) with a different build phase.
+          cargoCheck = name: phase: nix2rdf-unwrapped.overrideAttrs (old: {
+            pname = "nix2rdf-${name}";
+            nativeBuildInputs = old.nativeBuildInputs ++ [ devToolchain pkgs.cargo-deny ];
+            buildPhase = phase;
+            doCheck = false;
+            installPhase = "touch $out";
+          });
+          lintTools = [ pkgs.nixpkgs-fmt pkgs.statix pkgs.deadnix pkgs.yamllint ];
+          lintSrc = lib.fileset.toSource {
+            root = ./.;
+            fileset = lib.fileset.unions [ ./flake.nix ./nix ./docs ./fixtures ./statix.toml ./deny.toml ];
+          };
+          yamllintConfig = pkgs.writeText "yamllint.yaml" ''
+            extends: default
+            rules:
+              line-length: { max: 140 }
+              document-start: disable
+              truthy: disable
+          '';
         in
         {
           packages = {
@@ -129,6 +151,20 @@
 
           checks = {
             build = nix2rdf-unwrapped;
+            # Rust: formatting, clippy with warnings as errors, license/ban audit.
+            fmt = cargoCheck "fmt" "cargo fmt --all --check";
+            clippy = cargoCheck "clippy" "cargo clippy --workspace --all-targets --offline -- -D warnings";
+            deny = cargoCheck "deny" "cargo deny --offline check licenses bans sources";
+            # Nix and YAML: formatting, anti-patterns, dead code, YAML style.
+            lint = pkgs.runCommand "nix2rdf-lint" { nativeBuildInputs = lintTools; } ''
+              cd ${lintSrc}
+              nixpkgs-fmt --check flake.nix nix/*.nix fixtures/flake/flake.nix
+              statix check .
+              deadnix --fail .
+              yamllint -c ${yamllintConfig} docs fixtures/k8s
+              touch $out
+            '';
+
             ontology = mkCheck "ontology" ''
               nix2rdf ontology validate --packs ${src}/packs ${./ontology}/nix.ttl ${./ontology}/k8s.ttl
             '';
@@ -162,6 +198,11 @@
             inherit buildInputs;
             nativeBuildInputs = nativeBuildInputs ++ [ devToolchain ] ++ runtimeDeps ++ [
               pkgs.cargo-nextest
+              pkgs.cargo-deny
+              pkgs.nixpkgs-fmt
+              pkgs.statix
+              pkgs.deadnix
+              pkgs.yamllint
               pkgs.zstd
               pkgs.jq
               pkgs.kubectl
@@ -177,7 +218,7 @@
         };
     in
     flake-utils.lib.eachDefaultSystem perSystem // {
-      overlays.default = final: prev: {
+      overlays.default = final: _prev: {
         nix2rdf = self.packages.${final.system}.nix2rdf;
       };
       nixosModules = {

@@ -17,20 +17,20 @@
 //! - [`k8s`]      cluster snapshot front-end
 
 pub mod error;
+pub mod extract;
+pub mod fragment;
+pub mod graph;
 pub mod hash;
 pub mod iri;
-pub mod vocab;
-pub mod fragment;
-pub mod store;
-pub mod nix;
-pub mod extract;
-pub mod graph;
-pub mod packs;
-pub mod nemo_engine;
-pub mod reason;
-pub mod publish;
-pub mod ontology;
 pub mod k8s;
+pub mod nemo_engine;
+pub mod nix;
+pub mod ontology;
+pub mod packs;
+pub mod publish;
+pub mod reason;
+pub mod store;
+pub mod vocab;
 
 pub use error::{Error, Result};
 pub use fragment::{Fragment, FragmentKind};

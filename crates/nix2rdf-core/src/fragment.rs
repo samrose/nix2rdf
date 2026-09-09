@@ -4,7 +4,7 @@
 
 use crate::error::{Error, Result};
 use crate::iri;
-use oxrdf::{GraphName, Literal, NamedNode, NamedNodeRef, Quad, Subject, Term};
+use oxrdf::{GraphName, Literal, NamedNode, NamedNodeRef, NamedOrBlankNode, Quad, Term};
 use std::collections::BTreeSet;
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
@@ -48,7 +48,11 @@ pub enum FragmentKind {
     /// Node inventory of a cluster, by content hash.
     K8sNodes { cluster: String, hash: String },
     /// Timestamped observation record for a snapshot.
-    K8sObserved { cluster: String, hash: String, observed_at: String },
+    K8sObserved {
+        cluster: String,
+        hash: String,
+        observed_at: String,
+    },
 }
 
 impl FragmentKind {
@@ -90,10 +94,22 @@ impl FragmentKind {
             FragmentKind::Run { ruleset, input } => format!("runs/{ruleset}/{input}.nq.zst"),
             FragmentKind::Value(h) => format!("values/{h}.nq.zst"),
             FragmentKind::Env(h) => format!("env/{h}.nq.zst"),
-            FragmentKind::K8sSnapshot { cluster, hash } => format!("k8s/{}/snapshot/{hash}.nq.zst", seg(cluster)),
-            FragmentKind::K8sNodes { cluster, hash } => format!("k8s/{}/nodes/{hash}.nq.zst", seg(cluster)),
-            FragmentKind::K8sObserved { cluster, hash, observed_at } => {
-                format!("k8s/{}/observed/{hash}-{}.nq.zst", seg(cluster), seg(observed_at))
+            FragmentKind::K8sSnapshot { cluster, hash } => {
+                format!("k8s/{}/snapshot/{hash}.nq.zst", seg(cluster))
+            }
+            FragmentKind::K8sNodes { cluster, hash } => {
+                format!("k8s/{}/nodes/{hash}.nq.zst", seg(cluster))
+            }
+            FragmentKind::K8sObserved {
+                cluster,
+                hash,
+                observed_at,
+            } => {
+                format!(
+                    "k8s/{}/observed/{hash}-{}.nq.zst",
+                    seg(cluster),
+                    seg(observed_at)
+                )
             }
         };
         PathBuf::from(p)
@@ -114,14 +130,25 @@ impl FragmentKind {
             FragmentKind::Image(d) => iri::image(d),
             FragmentKind::Index(h) => iri::fragment("index", &format!("nixpkgs-multiverse-{h}")),
             FragmentKind::Derived { ruleset, input } => iri::derived(ruleset, input),
-            FragmentKind::Run { ruleset, input } => iri::fragment("run", &format!("{ruleset}:{input}")),
+            FragmentKind::Run { ruleset, input } => {
+                iri::fragment("run", &format!("{ruleset}:{input}"))
+            }
             FragmentKind::Value(h) => iri::fragment("values", h),
             FragmentKind::Env(h) => iri::fragment("env", h),
             FragmentKind::K8sSnapshot { cluster, hash } => iri::k8s_snapshot(cluster, hash),
             FragmentKind::K8sNodes { cluster, hash } => iri::k8s_nodes_fragment(cluster, hash),
-            FragmentKind::K8sObserved { cluster, hash, observed_at } => {
-                iri::fragment("k8s-observed", &format!("{}/{hash}/{}", iri::encode_segment(cluster), iri::encode_segment(observed_at)))
-            }
+            FragmentKind::K8sObserved {
+                cluster,
+                hash,
+                observed_at,
+            } => iri::fragment(
+                "k8s-observed",
+                &format!(
+                    "{}/{hash}/{}",
+                    iri::encode_segment(cluster),
+                    iri::encode_segment(observed_at)
+                ),
+            ),
         }
     }
 }
@@ -136,7 +163,10 @@ pub struct Fragment {
 
 impl Fragment {
     pub fn new(kind: FragmentKind) -> Self {
-        Fragment { kind, lines: BTreeSet::new() }
+        Fragment {
+            kind,
+            lines: BTreeSet::new(),
+        }
     }
 
     pub fn graph(&self) -> NamedNode {
@@ -150,33 +180,45 @@ impl Fragment {
         self.lines.is_empty()
     }
 
-    pub fn add(&mut self, s: impl Into<Subject>, p: impl Into<NamedNode>, o: impl Into<Term>) {
-        let s: Subject = s.into();
+    pub fn add(
+        &mut self,
+        s: impl Into<NamedOrBlankNode>,
+        p: impl Into<NamedNode>,
+        o: impl Into<Term>,
+    ) {
+        let s: NamedOrBlankNode = s.into();
         let p: NamedNode = p.into();
         let o: Term = o.into();
         self.lines.insert(format!("{s} {p} {o}"));
     }
 
-    pub fn add_type(&mut self, s: impl Into<Subject>, class: NamedNode) {
+    pub fn add_type(&mut self, s: impl Into<NamedOrBlankNode>, class: NamedNode) {
         self.add(s, iri::rdf_type(), class);
     }
 
-    pub fn add_str(&mut self, s: impl Into<Subject>, p: NamedNode, v: &str) {
+    pub fn add_str(&mut self, s: impl Into<NamedOrBlankNode>, p: NamedNode, v: &str) {
         self.add(s, p, Literal::new_simple_literal(v));
     }
-    pub fn add_int(&mut self, s: impl Into<Subject>, p: NamedNode, v: i64) {
+    pub fn add_int(&mut self, s: impl Into<NamedOrBlankNode>, p: NamedNode, v: i64) {
         self.add(s, p, Literal::from(v));
     }
-    pub fn add_bool(&mut self, s: impl Into<Subject>, p: NamedNode, v: bool) {
+    pub fn add_bool(&mut self, s: impl Into<NamedOrBlankNode>, p: NamedNode, v: bool) {
         self.add(s, p, Literal::from(v));
     }
-    pub fn add_typed(&mut self, s: impl Into<Subject>, p: NamedNode, v: &str, dt: NamedNode) {
+    pub fn add_typed(
+        &mut self,
+        s: impl Into<NamedOrBlankNode>,
+        p: NamedNode,
+        v: &str,
+        dt: NamedNode,
+    ) {
         self.add(s, p, Literal::new_typed_literal(v, dt));
     }
 
     /// Add an already-formed quad, ignoring its graph (the fragment's graph wins).
     pub fn add_quad(&mut self, q: &Quad) {
-        self.lines.insert(format!("{} {} {}", q.subject, q.predicate, q.object));
+        self.lines
+            .insert(format!("{} {} {}", q.subject, q.predicate, q.object));
     }
 
     /// Canonical N-Quads text: sorted, unique lines, each ending in the graph IRI.
@@ -229,17 +271,22 @@ impl Fragment {
 }
 
 pub fn compress(data: &[u8]) -> Result<Vec<u8>> {
-    let mut enc = zstd::stream::Encoder::new(Vec::new(), ZSTD_LEVEL).map_err(|e| Error::Other(e.to_string()))?;
-    enc.include_checksum(false).map_err(|e| Error::Other(e.to_string()))?;
-    enc.include_contentsize(true).map_err(|e| Error::Other(e.to_string()))?;
-    enc.write_all(data).map_err(|e| Error::Other(e.to_string()))?;
+    let mut enc = zstd::stream::Encoder::new(Vec::new(), ZSTD_LEVEL)
+        .map_err(|e| Error::Other(e.to_string()))?;
+    enc.include_checksum(false)
+        .map_err(|e| Error::Other(e.to_string()))?;
+    enc.include_contentsize(true)
+        .map_err(|e| Error::Other(e.to_string()))?;
+    enc.write_all(data)
+        .map_err(|e| Error::Other(e.to_string()))?;
     enc.finish().map_err(|e| Error::Other(e.to_string()))
 }
 
 pub fn decompress(data: &[u8]) -> Result<Vec<u8>> {
     let mut dec = zstd::stream::Decoder::new(data).map_err(|e| Error::Other(e.to_string()))?;
     let mut out = Vec::new();
-    dec.read_to_end(&mut out).map_err(|e| Error::Other(e.to_string()))?;
+    dec.read_to_end(&mut out)
+        .map_err(|e| Error::Other(e.to_string()))?;
     Ok(out)
 }
 

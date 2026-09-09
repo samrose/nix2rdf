@@ -36,6 +36,15 @@ nix flake check             # unit, pack, determinism, e2e, k8s, ontology checks
 nix build .#ontology-docs   # ns.ttl / ns.html / ONTOLOGY.md for the w3id target
 ```
 
+`nix flake check` runs, in the sandbox: the build with unit tests, the pack
+fixture tests, the determinism test, the end-to-end fixture run, the
+Kubernetes snapshot determinism test, ontology validation, and the linters:
+`cargo fmt --check`, `cargo clippy -D warnings`, `cargo deny check licenses
+bans sources` (license allow-list in `deny.toml`), `nixpkgs-fmt --check`,
+`statix`, `deadnix`, and `yamllint`. The same tools are in the dev shell; the
+usual loop is `cargo fmt && cargo clippy --all-targets && cargo test` before
+`nix flake check`.
+
 Vendored: `vendor/nemo` (patched; see `vendor/PATCHES.md`).
 
 ## Deploy

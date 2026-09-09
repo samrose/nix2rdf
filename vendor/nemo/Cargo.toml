@@ -22,7 +22,7 @@ authors = [
 ]
 edition = "2024"
 homepage = "https://github.com/knowsys/nemo"
-license = "APACHE-2.0 OR MIT"
+license = "Apache-2.0 OR MIT"
 readme = "README.md"
 repository = "https://github.com/knowsys/nemo"
 

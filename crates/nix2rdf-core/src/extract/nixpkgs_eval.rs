@@ -33,7 +33,11 @@ pub struct EvalOptions {
 
 pub fn default_expr(o: &EvalOptions) -> String {
     let unfree = if o.allow_unfree { "true" } else { "false" };
-    let nar = if o.revision.nar_hash.is_empty() { String::new() } else { format!(" narHash = \"{}\";", o.revision.nar_hash) };
+    let nar = if o.revision.nar_hash.is_empty() {
+        String::new()
+    } else {
+        format!(" narHash = \"{}\";", o.revision.nar_hash)
+    };
     format!(
         "import (builtins.fetchTree {{ type = \"github\"; owner = \"NixOS\"; repo = \"nixpkgs\"; rev = \"{}\";{nar} }}) {{ system = \"{}\"; config.allowUnfree = {unfree}; config.allowBroken = false; }}",
         o.revision.rev, o.system
@@ -41,7 +45,11 @@ pub fn default_expr(o: &EvalOptions) -> String {
 }
 
 /// Convert nix-eval-jobs output into a revision fragment plus the derivation graph.
-pub fn fragments_from_jobs(nix: &CliNix, o: &EvalOptions, jobs: &[EvalJob]) -> Result<Vec<Fragment>> {
+pub fn fragments_from_jobs(
+    nix: &CliNix,
+    o: &EvalOptions,
+    jobs: &[EvalJob],
+) -> Result<Vec<Fragment>> {
     let rev = &o.revision.rev;
     let mut f = Fragment::new(FragmentKind::Nixpkgs(rev.clone()));
     let rn = revision_node(&mut f, &o.revision, None);
@@ -58,7 +66,11 @@ pub fn fragments_from_jobs(nix: &CliNix, o: &EvalOptions, jobs: &[EvalJob]) -> R
         }
         let Some(drv) = &j.drv_path else { continue };
         roots.push(drv.clone());
-        let attr = if j.attr_path.is_empty() { j.attr.clone() } else { j.attr_path.join(".") };
+        let attr = if j.attr_path.is_empty() {
+            j.attr.clone()
+        } else {
+            j.attr_path.join(".")
+        };
         let meta = j.meta.as_ref().map(Meta::from_json).unwrap_or_default();
         metas.insert(drv.clone(), (attr, meta));
     }
@@ -78,7 +90,9 @@ pub fn fragments_from_jobs(nix: &CliNix, o: &EvalOptions, jobs: &[EvalJob]) -> R
     };
     let graph = extract_from_drvs(nix, drvs, &o.extract)?;
     for (drv, (attr, meta)) in &metas {
-        let Some(d) = graph.drv_iri(drv) else { continue };
+        let Some(d) = graph.drv_iri(drv) else {
+            continue;
+        };
         let a = iri::nixpkgs_attr(rev, attr);
         f.add_type(a.clone(), t::Attribute());
         f.add_str(a.clone(), t::attrPath(), attr);
@@ -100,10 +114,20 @@ pub fn extract_nixpkgs(nix: &CliNix, o: &EvalOptions) -> Result<Vec<Fragment>> {
     let expr = o.expr.clone().unwrap_or_else(|| default_expr(o));
     let workers = o.workers.max(1).to_string();
     let mem = o.max_memory_mb.max(512).to_string();
-    let args = vec!["--expr", &expr, "--meta", "--workers", &workers, "--max-memory-size", &mem, "--force-recurse"];
+    let args = vec![
+        "--expr",
+        &expr,
+        "--meta",
+        "--workers",
+        &workers,
+        "--max-memory-size",
+        &mem,
+        "--force-recurse",
+    ];
     if o.revision.nar_hash.is_empty() {
         warn!(target: "nix2rdf::nixpkgs_eval", "no NAR hash for revision; fetchTree will not verify the tree");
     }
     let jobs = nix.eval_jobs(&args)?;
-    fragments_from_jobs(nix, o, &jobs).map_err(|e| Error::Other(format!("nixpkgs-eval {}: {e}", o.revision.rev)))
+    fragments_from_jobs(nix, o, &jobs)
+        .map_err(|e| Error::Other(format!("nixpkgs-eval {}: {e}", o.revision.rev)))
 }

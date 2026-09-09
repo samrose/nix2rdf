@@ -66,13 +66,20 @@ impl DrvInfo {
     }
 
     pub fn uses_structured_attrs(&self) -> bool {
-        self.env.get("__structuredAttrs").map(|v| v == "1" || v == "true").unwrap_or(false) || self.env.contains_key("__json")
+        self.env
+            .get("__structuredAttrs")
+            .map(|v| v == "1" || v == "true")
+            .unwrap_or(false)
+            || self.env.contains_key("__json")
     }
 
     /// Structured attrs (the `__json` variable) parsed, if present.
     pub fn structured_attrs(&self) -> Option<serde_json::Map<String, serde_json::Value>> {
         let j = self.env.get("__json")?;
-        serde_json::from_str::<serde_json::Value>(j).ok()?.as_object().cloned()
+        serde_json::from_str::<serde_json::Value>(j)
+            .ok()?
+            .as_object()
+            .cloned()
     }
 
     /// Look up a scalar attribute in env or structured attrs.
@@ -156,7 +163,9 @@ impl Meta {
     /// `shortName`, else the raw string. Accepts a single license, a list, or a string.
     pub fn from_json(meta: &serde_json::Value) -> Meta {
         let mut m = Meta::default();
-        let Some(obj) = meta.as_object() else { return m };
+        let Some(obj) = meta.as_object() else {
+            return m;
+        };
         fn one(v: &serde_json::Value, out: &mut Vec<String>, unfree: &mut bool) {
             match v {
                 serde_json::Value::String(s) => out.push(s.clone()),
@@ -187,10 +196,15 @@ impl Meta {
         m.licenses.dedup();
         m.homepage = obj.get("homepage").and_then(|h| match h {
             serde_json::Value::String(s) => Some(s.clone()),
-            serde_json::Value::Array(a) => a.first().and_then(|x| x.as_str()).map(|s| s.to_string()),
+            serde_json::Value::Array(a) => {
+                a.first().and_then(|x| x.as_str()).map(|s| s.to_string())
+            }
             _ => None,
         });
-        m.description = obj.get("description").and_then(|d| d.as_str()).map(|s| s.to_string());
+        m.description = obj
+            .get("description")
+            .and_then(|d| d.as_str())
+            .map(|s| s.to_string());
         if let Some(sp) = obj.get("sourceProvenance").and_then(|x| x.as_array()) {
             for p in sp {
                 if let Some(s) = p.get("shortName").and_then(|x| x.as_str()) {

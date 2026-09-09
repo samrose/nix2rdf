@@ -1,0 +1,5 @@
+# statix configuration. repeated_keys is disabled on purpose: NixOS modules
+# conventionally write `systemd.services.x = ...;` per unit, which reads better
+# than one merged attribute set.
+disabled = ["repeated_keys"]
+nix_version = "2.4"

@@ -21,34 +21,89 @@ pub struct LiveState {
 
 fn resources() -> Vec<(&'static str, ApiResource)> {
     vec![
-        ("Namespace", ApiResource::erase::<k::core::v1::Namespace>(&())),
+        (
+            "Namespace",
+            ApiResource::erase::<k::core::v1::Namespace>(&()),
+        ),
         ("Node", ApiResource::erase::<k::core::v1::Node>(&())),
-        ("Deployment", ApiResource::erase::<k::apps::v1::Deployment>(&())),
-        ("StatefulSet", ApiResource::erase::<k::apps::v1::StatefulSet>(&())),
-        ("DaemonSet", ApiResource::erase::<k::apps::v1::DaemonSet>(&())),
-        ("ReplicaSet", ApiResource::erase::<k::apps::v1::ReplicaSet>(&())),
+        (
+            "Deployment",
+            ApiResource::erase::<k::apps::v1::Deployment>(&()),
+        ),
+        (
+            "StatefulSet",
+            ApiResource::erase::<k::apps::v1::StatefulSet>(&()),
+        ),
+        (
+            "DaemonSet",
+            ApiResource::erase::<k::apps::v1::DaemonSet>(&()),
+        ),
+        (
+            "ReplicaSet",
+            ApiResource::erase::<k::apps::v1::ReplicaSet>(&()),
+        ),
         ("Job", ApiResource::erase::<k::batch::v1::Job>(&())),
         ("CronJob", ApiResource::erase::<k::batch::v1::CronJob>(&())),
         ("Service", ApiResource::erase::<k::core::v1::Service>(&())),
-        ("Ingress", ApiResource::erase::<k::networking::v1::Ingress>(&())),
-        ("ConfigMap", ApiResource::erase::<k::core::v1::ConfigMap>(&())),
-        ("PersistentVolumeClaim", ApiResource::erase::<k::core::v1::PersistentVolumeClaim>(&())),
-        ("PersistentVolume", ApiResource::erase::<k::core::v1::PersistentVolume>(&())),
-        ("StorageClass", ApiResource::erase::<k::storage::v1::StorageClass>(&())),
-        ("NetworkPolicy", ApiResource::erase::<k::networking::v1::NetworkPolicy>(&())),
-        ("ServiceAccount", ApiResource::erase::<k::core::v1::ServiceAccount>(&())),
+        (
+            "Ingress",
+            ApiResource::erase::<k::networking::v1::Ingress>(&()),
+        ),
+        (
+            "ConfigMap",
+            ApiResource::erase::<k::core::v1::ConfigMap>(&()),
+        ),
+        (
+            "PersistentVolumeClaim",
+            ApiResource::erase::<k::core::v1::PersistentVolumeClaim>(&()),
+        ),
+        (
+            "PersistentVolume",
+            ApiResource::erase::<k::core::v1::PersistentVolume>(&()),
+        ),
+        (
+            "StorageClass",
+            ApiResource::erase::<k::storage::v1::StorageClass>(&()),
+        ),
+        (
+            "NetworkPolicy",
+            ApiResource::erase::<k::networking::v1::NetworkPolicy>(&()),
+        ),
+        (
+            "ServiceAccount",
+            ApiResource::erase::<k::core::v1::ServiceAccount>(&()),
+        ),
         ("Role", ApiResource::erase::<k::rbac::v1::Role>(&())),
-        ("RoleBinding", ApiResource::erase::<k::rbac::v1::RoleBinding>(&())),
-        ("ClusterRole", ApiResource::erase::<k::rbac::v1::ClusterRole>(&())),
-        ("ClusterRoleBinding", ApiResource::erase::<k::rbac::v1::ClusterRoleBinding>(&())),
-        ("PodDisruptionBudget", ApiResource::erase::<k::policy::v1::PodDisruptionBudget>(&())),
+        (
+            "RoleBinding",
+            ApiResource::erase::<k::rbac::v1::RoleBinding>(&()),
+        ),
+        (
+            "ClusterRole",
+            ApiResource::erase::<k::rbac::v1::ClusterRole>(&()),
+        ),
+        (
+            "ClusterRoleBinding",
+            ApiResource::erase::<k::rbac::v1::ClusterRoleBinding>(&()),
+        ),
+        (
+            "PodDisruptionBudget",
+            ApiResource::erase::<k::policy::v1::PodDisruptionBudget>(&()),
+        ),
     ]
 }
 
 async fn client_for(context: Option<&str>) -> Result<Client> {
     let cfg = match context {
-        Some(ctx) => Config::from_kubeconfig(&kube::config::KubeConfigOptions { context: Some(ctx.to_string()), ..Default::default() }).await.map_err(|e| Error::Kube(e.to_string()))?,
-        None => Config::infer().await.map_err(|e| Error::Kube(e.to_string()))?,
+        Some(ctx) => Config::from_kubeconfig(&kube::config::KubeConfigOptions {
+            context: Some(ctx.to_string()),
+            ..Default::default()
+        })
+        .await
+        .map_err(|e| Error::Kube(e.to_string()))?,
+        None => Config::infer()
+            .await
+            .map_err(|e| Error::Kube(e.to_string()))?,
     };
     Client::try_from(cfg).map_err(|e| Error::Kube(e.to_string()))
 }
@@ -64,7 +119,10 @@ fn to_json(o: DynamicObject, kind: &str, api_version: &str) -> Value {
 }
 
 pub fn list_live(context: Option<&str>) -> Result<LiveState> {
-    let rt = tokio::runtime::Builder::new_current_thread().enable_all().build().map_err(|e| Error::Kube(e.to_string()))?;
+    let rt = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .map_err(|e| Error::Kube(e.to_string()))?;
     rt.block_on(async {
         let client = client_for(context).await?;
         let mut st = LiveState { objects: vec![], pods: vec![], failed_kinds: vec![] };
