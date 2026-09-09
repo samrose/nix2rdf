@@ -1,0 +1,13 @@
+@prefix attest: <https://w3id.org/nix/attest#> .
+@prefix policy: <https://w3id.org/nix/policy/policy-examples/> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+policy:pinned-inputs a owl:NamedIndividual ; rdfs:label "pinned-inputs" ;
+    rdfs:comment "Every flake input must resolve to a pin with a git revision (no floating branches, paths or tarballs)." .
+policy:no-unfree-in-runtime-closure a owl:NamedIndividual ; rdfs:label "no-unfree-in-runtime-closure" ;
+    rdfs:comment "No derivation with an unfree license may ship in a snapshot's runtime closure." .
+policy:signed-images-only a owl:NamedIndividual ; rdfs:label "signed-images-only" ;
+    rdfs:comment "Every image a workload runs must carry a verified attestation (attest:verifiedBy), which an attestation pack derives." .
+attest:verifiedBy a owl:ObjectProperty ; rdfs:label "verifiedBy" ;
+    rdfs:comment "An image was verified against an attestation/signature by the named verifier. Derived by an attestation pack (e.g. from cosign/sigstore bundles loaded as fragments)." .

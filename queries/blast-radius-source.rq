@@ -1,0 +1,9 @@
+# Blast radius of a source revision: which pins/commits/images depend on any
+# derivation that fetched or was built from a pin at this git rev.
+# Start from the literal (most selective), walk to inputs and snapshots.
+SELECT DISTINCT ?rootPin ?input ?commit WHERE {
+  ?pin nix:rev "a391f95d4557d685fd8e5dc0d4b1f9271aa2f342" .
+  ?input nix:resolvesTo|nix:pinnedTo ?pin .
+  ?rootPin nix:locksInput ?input .
+  OPTIONAL { ?commit nix:snapshot ?rootPin }
+}

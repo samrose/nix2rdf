@@ -1,0 +1,4 @@
+name = "owl-rl-subset"
+version = "0.1.0"
+depends_on = ["rdfs"]
+description = "Only the OWL RL rules the other packs need: transitive, symmetric and inverse properties, and two-step property chains. Not full OWL RL"

@@ -1,0 +1,11 @@
+# Option provenance: who set services.openssh.enable in a generation — every
+# definition with its file, plus the final value. The option path literal is
+# the most selective pattern.
+SELECT ?gen ?file ?definitionValue ?finalValue WHERE {
+  ?opt nix:optionPath "services.openssh.enable" .
+  ?ov nix:option ?opt .
+  ?gen nix:hasOptionValue ?ov .
+  OPTIONAL { ?ov nix:finalValue ?finalValue }
+  OPTIONAL { ?ov nix:hasDefinition ?def . ?def nix:definedIn ?file . OPTIONAL { ?def nix:definitionValue ?definitionValue } }
+}
+ORDER BY ?gen ?file

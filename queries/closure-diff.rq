@@ -1,0 +1,11 @@
+# Closure diff between two snapshots, restricted to the runtime closure:
+# outputs in A's runtime closure that are not in B's, with their derivation.
+# Needs the core pack (runtimeClosureContains) and built outputs (references).
+SELECT ?storePath ?drvName WHERE {
+  VALUES (?a ?b) { (<https://w3id.org/nix/id/gen/AAAA> <https://w3id.org/nix/id/gen/BBBB>) }
+  ?a nix:runtimeClosureContains ?out .
+  FILTER NOT EXISTS { ?b nix:runtimeClosureContains ?out }
+  ?out nix:storePath ?storePath .
+  OPTIONAL { ?drv nix:hasOutput ?out . ?drv nix:name ?drvName }
+}
+ORDER BY ?storePath

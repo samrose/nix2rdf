@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Node
+metadata:
+  name: edge-a
+  labels:
+    node-role.kubernetes.io/control-plane: "true"
+    topology.kubernetes.io/zone: rack-1
+  annotations:
+    nix2rdf.io/generation: 85py0qgpd9llilbkgjpcwc4svrx056ld
+status:
+  nodeInfo:
+    kernelVersion: 6.12.30
+    containerRuntimeVersion: containerd://1.7.23-k3s2
+    kubeletVersion: v1.31.4+k3s1
+    osImage: NixOS 25.05
+---
+apiVersion: v1
+kind: Node
+metadata:
+  name: edge-b
+  labels:
+    node-role.kubernetes.io/control-plane: "true"
+    topology.kubernetes.io/zone: rack-1
+  annotations:
+    nix2rdf.io/generation: 0000000000000000000000000000000b
+status:
+  nodeInfo:
+    kernelVersion: 6.1.0
+    containerRuntimeVersion: containerd://1.7.23-k3s2
+    kubeletVersion: v1.31.4+k3s1
+    osImage: NixOS 25.05

@@ -1,0 +1,6 @@
+<http://example.org/A> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://example.org/B> <http://example.org/g> .
+<http://example.org/B> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://example.org/C> <http://example.org/g> .
+<http://example.org/x> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/A> <http://example.org/g> .
+<http://example.org/p> <http://www.w3.org/2000/01/rdf-schema#range> <http://example.org/R> <http://example.org/g> .
+<http://example.org/x> <http://example.org/p> "literal" <http://example.org/g> .
+<http://example.org/x> <http://example.org/p> <http://example.org/y> <http://example.org/g> .

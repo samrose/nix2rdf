@@ -1,0 +1,10 @@
+# Pin membership over time: for each commit, which derivations (by name) its
+# snapshot contains. Restrict by repo for selectivity.
+SELECT DISTINCT ?committedAt ?commit ?name WHERE {
+  ?commit nix:repo "fixture" .
+  ?commit nix:committedAt ?committedAt .
+  ?commit nix:snapshot ?snap .
+  ?snap nix:closureContains ?drv .
+  ?drv nix:name ?name .
+}
+ORDER BY ?committedAt ?name

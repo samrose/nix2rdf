@@ -1,0 +1,4 @@
+name = "core"
+version = "0.1.0"
+depends_on = []
+description = "The nix: vocabulary and Nix's structural semantics: dependency closure, runtime closure via references, closureContains from roots, image contents, flake input resolution"

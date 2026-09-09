@@ -1,0 +1,3 @@
+_:x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/nix/k8s#Drift> .
+_:x <https://w3id.org/nix/k8s#workload> <https://w3id.org/nix/id/k8s/c1/Deployment/shop/api> .
+_:x <https://w3id.org/nix/k8s#driftKind> "image" .

@@ -1,0 +1,7 @@
+<https://w3id.org/nix/id/gen/g1> <https://w3id.org/nix/ns#hasRoot> <https://w3id.org/nix/id/drv/top> <https://w3id.org/nix/id/gen/g1> .
+<https://w3id.org/nix/id/drv/top> <https://w3id.org/nix/ns#hasOutput> <https://w3id.org/nix/id/out/top> <https://w3id.org/nix/id/drv/top> .
+<https://w3id.org/nix/id/drv/lib> <https://w3id.org/nix/ns#hasOutput> <https://w3id.org/nix/id/out/lib> <https://w3id.org/nix/id/drv/lib> .
+<https://w3id.org/nix/id/drv/doc> <https://w3id.org/nix/ns#hasOutput> <https://w3id.org/nix/id/out/doc> <https://w3id.org/nix/id/drv/doc> .
+<https://w3id.org/nix/id/drv/top> <https://w3id.org/nix/ns#inputDrv> <https://w3id.org/nix/id/drv/doc> <https://w3id.org/nix/id/drv/top> .
+<https://w3id.org/nix/id/out/top> <https://w3id.org/nix/ns#references> <https://w3id.org/nix/id/out/lib> <https://w3id.org/nix/id/fragment/out/top> .
+<https://w3id.org/nix/id/out/lib> <https://w3id.org/nix/ns#references> <https://w3id.org/nix/id/out/glibc> <https://w3id.org/nix/id/fragment/out/lib> .

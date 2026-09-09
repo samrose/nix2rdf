@@ -1,0 +1,24 @@
+@prefix ids:  <https://w3id.org/nix/identifiers#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+<https://w3id.org/nix/identifiers> a owl:Ontology ;
+    rdfs:comment "Heuristic identifiers (PURL, CPE) and the vulnerability join point. All ids:purl / ids:cpe triples are derived by the identifiers pack; none are asserted by nix2rdf." .
+
+ids:purl a owl:DatatypeProperty ; rdfs:label "purl" ; rdfs:range xsd:string ;
+    rdfs:comment "A package URL (https://github.com/package-url/purl-spec) guessed from pname/version/attribute path." .
+ids:cpe a owl:DatatypeProperty ; rdfs:label "cpe" ; rdfs:range xsd:string ;
+    rdfs:comment "A CPE 2.3 name guessed from a curated (pname → vendor, product) table." .
+ids:Vulnerability a owl:Class ; rdfs:label "Vulnerability" ;
+    rdfs:comment "A vulnerability record from an external feed loaded as a fragment: e.g. OSV/NVD converted to RDF with ids:affectsPurl, ids:severity, ids:cvssScore." .
+ids:affectsPurl a owl:DatatypeProperty ; rdfs:label "affectsPurl" ; rdfs:domain ids:Vulnerability ; rdfs:range xsd:string ;
+    rdfs:comment "A PURL (exact, including version) the vulnerability affects. Feeds must expand ranges to concrete versions." .
+ids:affectsCpe a owl:DatatypeProperty ; rdfs:label "affectsCpe" ; rdfs:domain ids:Vulnerability ; rdfs:range xsd:string .
+ids:severity a owl:DatatypeProperty ; rdfs:label "severity" ; rdfs:domain ids:Vulnerability ; rdfs:range xsd:string ;
+    rdfs:comment "CRITICAL, HIGH, MEDIUM, LOW, or NONE." .
+ids:cvssScore a owl:DatatypeProperty ; rdfs:label "cvssScore" ; rdfs:domain ids:Vulnerability ; rdfs:range xsd:decimal .
+ids:vulnerableTo a owl:ObjectProperty ; rdfs:label "vulnerableTo" ; rdfs:range ids:Vulnerability ;
+    rdfs:comment "DERIVED ONLY: a derivation whose derived PURL or CPE a loaded vulnerability affects." .
+ids:severityRank a owl:DatatypeProperty ; rdfs:label "severityRank" ; rdfs:range xsd:integer ;
+    rdfs:comment "DERIVED ONLY: 4 CRITICAL, 3 HIGH, 2 MEDIUM, 1 LOW, 0 NONE — so policies can compare." .

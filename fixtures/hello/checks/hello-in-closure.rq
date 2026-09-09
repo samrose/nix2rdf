@@ -1,0 +1,6 @@
+# ASK: is there a derivation named hello-* in some snapshot's closure? Used by
+# the e2e check with `nix2rdf check`, which exits non-zero on true.
+ASK {
+  ?snap nix:closureContains ?drv .
+  ?drv nix:pname "hello" .
+}

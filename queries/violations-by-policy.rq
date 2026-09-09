@@ -1,0 +1,11 @@
+# Violations by policy, with subject and (when scoped) snapshot. The same
+# violation can appear in several derived graphs (different input sets or
+# rule versions); DISTINCT folds them. which-rules-produced.rq gives the run.
+SELECT DISTINCT ?policy ?subject ?snapshot ?message WHERE {
+  ?v a nix:Violation .
+  ?v nix:violates ?policy .
+  ?v nix:subject ?subject .
+  OPTIONAL { ?v nix:inSnapshot ?snapshot }
+  OPTIONAL { ?v nix:message ?message }
+}
+ORDER BY ?policy ?subject

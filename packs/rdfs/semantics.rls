@@ -1,0 +1,19 @@
+%% rdfs/semantics.rls — the RDFS entailment rules that matter for data.
+%% Vocabulary declarations reach these rules as facts because every
+%% selected pack's vocab.ttl is loaded as input in its pack:<hash> graph.
+
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+% rdfs11: subClassOf is transitive
+t(?a, rdfs:subClassOf, ?c) :- t(?a, rdfs:subClassOf, ?b), t(?b, rdfs:subClassOf, ?c) .
+% rdfs9: instances of a subclass are instances of the superclass
+t(?x, rdf:type, ?c2) :- t(?x, rdf:type, ?c1), t(?c1, rdfs:subClassOf, ?c2) .
+% rdfs5: subPropertyOf is transitive
+t(?p, rdfs:subPropertyOf, ?r) :- t(?p, rdfs:subPropertyOf, ?q), t(?q, rdfs:subPropertyOf, ?r) .
+% rdfs7: a subproperty's triples hold for the superproperty
+t(?x, ?q, ?y) :- t(?x, ?p, ?y), t(?p, rdfs:subPropertyOf, ?q) .
+% rdfs2: domain typing
+t(?x, rdf:type, ?c) :- t(?p, rdfs:domain, ?c), t(?x, ?p, ?y) .
+% rdfs3: range typing — only for IRI objects (literals cannot be subjects)
+t(?y, rdf:type, ?c) :- t(?p, rdfs:range, ?c), t(?x, ?p, ?y), isIri(?y) .

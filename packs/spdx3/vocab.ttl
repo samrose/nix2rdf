@@ -1,0 +1,27 @@
+@prefix spdx: <https://spdx.org/rdf/3.0.1/terms/Core/> .
+@prefix sw:   <https://spdx.org/rdf/3.0.1/terms/Software/> .
+@prefix sl:   <https://spdx.org/rdf/3.0.1/terms/SimpleLicensing/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+
+# The subset of SPDX 3.0.1 this pack targets, as notation. The authoritative
+# definitions are at https://spdx.github.io/spdx-spec/v3.0.1/ .
+spdx:Artifact a owl:Class ; rdfs:isDefinedBy <https://spdx.org/rdf/3.0.1/terms/> .
+spdx:Relationship a owl:Class ; rdfs:isDefinedBy <https://spdx.org/rdf/3.0.1/terms/> .
+spdx:Hash a owl:Class .
+sw:Package a owl:Class ; rdfs:subClassOf spdx:Artifact .
+sw:File a owl:Class ; rdfs:subClassOf spdx:Artifact .
+sl:LicenseExpression a owl:Class .
+spdx:name a owl:DatatypeProperty .
+spdx:description a owl:DatatypeProperty .
+spdx:from a owl:ObjectProperty .
+spdx:to a owl:ObjectProperty .
+spdx:relationshipType a owl:ObjectProperty .
+spdx:verifiedUsing a owl:ObjectProperty .
+spdx:algorithm a owl:ObjectProperty .
+spdx:hashValue a owl:DatatypeProperty .
+sw:packageVersion a owl:DatatypeProperty .
+sw:homePage a owl:DatatypeProperty .
+sw:primaryPurpose a owl:ObjectProperty .
+sw:hasDeclaredLicense a owl:ObjectProperty .
+sl:licenseExpression a owl:DatatypeProperty .

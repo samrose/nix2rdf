@@ -1,0 +1,10 @@
+<https://w3id.org/nix/id/k8s/c1/snapshot/d> <https://w3id.org/nix/k8s#snapshotKind> <https://w3id.org/nix/k8s#desiredState> <https://w3id.org/nix/id/k8s/c1/snapshot/d> .
+<https://w3id.org/nix/id/k8s/c1/snapshot/d> <https://w3id.org/nix/k8s#ofCluster> <https://w3id.org/nix/id/k8s/cluster/c1> <https://w3id.org/nix/id/k8s/c1/snapshot/d> .
+<https://w3id.org/nix/id/k8s/c1/snapshot/l> <https://w3id.org/nix/k8s#snapshotKind> <https://w3id.org/nix/k8s#liveState> <https://w3id.org/nix/id/k8s/c1/snapshot/l> .
+<https://w3id.org/nix/id/k8s/c1/snapshot/l> <https://w3id.org/nix/k8s#ofCluster> <https://w3id.org/nix/id/k8s/cluster/c1> <https://w3id.org/nix/id/k8s/c1/snapshot/l> .
+<https://w3id.org/nix/id/k8s/c1/Deployment/shop/api> <https://w3id.org/nix/k8s#hasContainer> <https://w3id.org/nix/id/k8s/c1/Deployment/shop/api/c/api> <https://w3id.org/nix/id/k8s/c1/snapshot/d> .
+<https://w3id.org/nix/id/k8s/c1/Deployment/shop/api/c/api> <https://w3id.org/nix/k8s#runsImage> <https://w3id.org/nix/id/oci/sha256/new> <https://w3id.org/nix/id/k8s/c1/snapshot/d> .
+<https://w3id.org/nix/id/k8s/c1/Deployment/shop/api> <https://w3id.org/nix/k8s#replicas> "3"^^<http://www.w3.org/2001/XMLSchema#integer> <https://w3id.org/nix/id/k8s/c1/snapshot/d> .
+<https://w3id.org/nix/id/k8s/c1/Deployment/shop/api> <https://w3id.org/nix/k8s#hasContainer> <https://w3id.org/nix/id/k8s/c1/Deployment/shop/api/c/api> <https://w3id.org/nix/id/k8s/c1/snapshot/l> .
+<https://w3id.org/nix/id/k8s/c1/Deployment/shop/api/c/api> <https://w3id.org/nix/k8s#runsImage> <https://w3id.org/nix/id/oci/sha256/old> <https://w3id.org/nix/id/k8s/c1/snapshot/l> .
+<https://w3id.org/nix/id/k8s/c1/Deployment/shop/api> <https://w3id.org/nix/k8s#replicas> "3"^^<http://www.w3.org/2001/XMLSchema#integer> <https://w3id.org/nix/id/k8s/c1/snapshot/l> .

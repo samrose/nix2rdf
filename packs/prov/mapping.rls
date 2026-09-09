@@ -1,0 +1,26 @@
+%% prov/mapping.rls — PROV-O view of builds and rule runs.
+
+@prefix nix:  <https://w3id.org/nix/ns#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+t(?d, rdf:type, prov:Activity) :- t(?d, rdf:type, nix:Derivation) .
+t(?o, rdf:type, prov:Entity) :- t(?o, rdf:type, nix:Output) .
+t(?s, rdf:type, prov:Entity) :- t(?s, rdf:type, nix:Source) .
+t(?o, prov:wasGeneratedBy, ?d) :- t(?d, nix:hasOutput, ?o) .
+t(?d, prov:used, ?s) :- t(?d, nix:inputSrc, ?s) .
+% A build uses the outputs of its input derivations.
+t(?d, prov:used, ?o) :- t(?d, nix:inputDrv, ?b), t(?b, nix:hasOutput, ?o) .
+t(?o, prov:wasDerivedFrom, ?i) :- t(?d, nix:hasOutput, ?o), t(?d, prov:used, ?i) .
+% The builder as an agent. One agent node per derivation (Nemo cannot mint an
+% IRI from the builder string); its label carries the builder path.
+t(!a, rdf:type, prov:SoftwareAgent), t(!a, rdfs:label, ?b), t(?d, prov:wasAssociatedWith, !a) :- t(?d, nix:builder, ?b) .
+% Commits and rule runs on the time axis.
+t(?c, rdf:type, prov:Entity) :- t(?c, rdf:type, nix:Commit) .
+t(?c, prov:generatedAtTime, ?t) :- t(?c, nix:committedAt, ?t) .
+t(?r, rdf:type, prov:Activity) :- t(?r, rdf:type, nix:RuleRun) .
+t(?r, prov:used, ?g) :- t(?r, nix:inputGraph, ?g) .
+t(?r, prov:endedAtTime, ?t) :- t(?r, nix:ranAt, ?t) .
+t(?r, prov:wasAssociatedWith, ?p) :- t(?r, nix:usesPack, ?p) .
+t(?p, rdf:type, prov:SoftwareAgent) :- t(?p, rdf:type, nix:OntologyPack) .

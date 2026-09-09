@@ -1,0 +1,5 @@
+<https://w3id.org/nix/id/pin/sha256-root/input/root/nixpkgs> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/nix/ns#FlakeInput> <https://w3id.org/nix/id/pin/sha256-root> .
+<https://w3id.org/nix/id/pin/sha256-root/input/root/nixpkgs> <https://w3id.org/nix/ns#pinnedTo> <https://w3id.org/nix/id/pin/sha256-nixpkgs> <https://w3id.org/nix/id/pin/sha256-root> .
+<https://w3id.org/nix/id/pin/sha256-nixpkgs> <https://w3id.org/nix/ns#rev> "abc" <https://w3id.org/nix/id/pin/sha256-root> .
+<https://w3id.org/nix/id/pin/sha256-root/input/root/local> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/nix/ns#FlakeInput> <https://w3id.org/nix/id/pin/sha256-root> .
+<https://w3id.org/nix/id/pin/sha256-root/input/root/local> <https://w3id.org/nix/ns#pinnedTo> <https://w3id.org/nix/id/pin/sha256-local> <https://w3id.org/nix/id/pin/sha256-root> .

@@ -1,0 +1,2 @@
+<https://w3id.org/nix/id/pin/sha256-root> <https://w3id.org/nix/ns#closureContains> <https://w3id.org/nix/id/drv/x> .
+<https://w3id.org/nix/id/drv/c> <https://w3id.org/nix/ns#dependsOnTransitively> <https://w3id.org/nix/id/drv/a> .

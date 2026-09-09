@@ -1,0 +1,4 @@
+name = "identifiers"
+version = "0.1.0"
+depends_on = ["core"]
+description = "PURL and CPE derivation from raw facts via a curated mapping table, and the join point for vulnerability feeds. nix2rdf itself never emits these; every guess is a visible, correctable derived triple"

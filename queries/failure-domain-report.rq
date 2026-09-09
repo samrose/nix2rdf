@@ -1,0 +1,10 @@
+# Failure-domain report per production workload: replicas, zones spanned.
+SELECT ?workload ?replicas ?zones (GROUP_CONCAT(STR(?zone); separator=",") AS ?zoneList) WHERE {
+  ?ns k8s:production true .
+  ?workload k8s:inNamespace ?ns .
+  ?workload k8s:replicas ?replicas .
+  OPTIONAL { ?workload k8s:failureDomainCount ?zones }
+  OPTIONAL { ?workload k8s:spreadsOver ?dom . ?dom k8s:name ?zone }
+}
+GROUP BY ?workload ?replicas ?zones
+ORDER BY ?zones

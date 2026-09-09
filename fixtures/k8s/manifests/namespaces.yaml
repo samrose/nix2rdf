@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: shop
+  labels:
+    environment: production
+    team: payments
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lab

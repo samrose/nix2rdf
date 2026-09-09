@@ -1,0 +1,7 @@
+# Image layer sharing: layers used by more than one image, with the images.
+SELECT ?layer (COUNT(?img) AS ?images) (GROUP_CONCAT(STR(?img); separator=" ") AS ?imageList) WHERE {
+  ?img nix:hasLayer ?layer .
+}
+GROUP BY ?layer
+HAVING (COUNT(?img) > 1)
+ORDER BY DESC(?images)

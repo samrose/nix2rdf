@@ -1,0 +1,6 @@
+<https://w3id.org/nix/id/oci/sha256/img1> <https://w3id.org/nix/ns#runtimeClosureContains> <https://w3id.org/nix/id/out/app> .
+<https://w3id.org/nix/id/oci/sha256/img1> <https://w3id.org/nix/ns#closureContains> <https://w3id.org/nix/id/drv/app> .
+<https://w3id.org/nix/id/oci/sha256/img1> <https://w3id.org/nix/ns#closureContains> <https://w3id.org/nix/id/drv/glibc> .
+<https://w3id.org/nix/id/oci/sha256/img1> <https://w3id.org/nix/ns#sharesLayerWith> <https://w3id.org/nix/id/oci/sha256/img2> .
+<https://w3id.org/nix/id/oci/sha256/img2> <https://w3id.org/nix/ns#sharesLayerWith> <https://w3id.org/nix/id/oci/sha256/img1> .
+<https://w3id.org/nix/id/oci/sha256/img2> <https://w3id.org/nix/ns#runtimeClosureContains> <https://w3id.org/nix/id/out/glibc> .

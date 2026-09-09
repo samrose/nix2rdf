@@ -1,0 +1,4 @@
+name = "rdfs"
+version = "0.1.0"
+depends_on = []
+description = "RDFS entailment rules (rdfs2, rdfs3, rdfs5, rdfs7, rdfs9, rdfs11) transcribed to Nemo; the vocabularies' subClassOf/subPropertyOf/domain/range declarations become facts"

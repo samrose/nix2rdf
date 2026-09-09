@@ -1,0 +1,524 @@
+@prefix nix:  <https://w3id.org/nix/ns#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+
+# ---------------------------------------------------------------------------
+# The nix: vocabulary
+#
+# This document is the lossless ground truth for Nix concepts. Other
+# vocabularies (SPDX, PROV, PURL/CPE) are *projected from* it by Nemo rules;
+# nothing here is modelled in their terms.
+#
+# OWL and RDFS are used AS NOTATION ONLY. rdfs:subClassOf, rdfs:domain,
+# rdfs:range, owl:TransitiveProperty and owl:inverseOf record intent for
+# readers and for the `rdfs` / `owl-rl-subset` rule packs. No OWL reasoner is
+# ever run over this file; every entailment that exists in the dataset was
+# produced by an authored Nemo rule in a pack.
+#
+# Terms are immutable. Add, never remove; deprecate with owl:deprecated true
+# and provide a mapping rule from the old term to the new one.
+# ---------------------------------------------------------------------------
+
+<https://w3id.org/nix/ns> a owl:Ontology ;
+    dcterms:title "The Nix vocabulary" ;
+    dcterms:description "A small, lossless RDF vocabulary for Nix derivations, outputs, sources, flakes, nixpkgs revisions, NixOS configurations and OCI images built with Nix. OWL/RDFS terms are notation only; semantics are given by Nemo rule packs." ;
+    owl:versionIRI <https://w3id.org/nix/ontology/0.1.0> ;
+    owl:versionInfo "0.1.0" ;
+    vann:preferredNamespacePrefix "nix" ;
+    vann:preferredNamespaceUri "https://w3id.org/nix/ns#" ;
+    rdfs:seeAlso <https://w3id.org/nix/k8s> ;
+    rdfs:comment "Instance IRIs live under https://w3id.org/nix/id/ (see IRI.md). This namespace holds vocabulary only." .
+
+# ============================== Classes ====================================
+
+nix:Snapshot a rdfs:Class, owl:Class ;
+    rdfs:label "Snapshot" ;
+    rdfs:comment "Anything that has a reachable derivation closure: a flake pin used as a root, a NixOS generation, an OCI image, a nixpkgs revision. Domain of closureContains." .
+
+nix:Derivation a rdfs:Class, owl:Class ;
+    rdfs:label "Derivation" ;
+    rdfs:comment "A Nix derivation (.drv). Identity: the store-path hash of the .drv file. Everything Nix knows at evaluation time about a build step." .
+
+nix:Output a rdfs:Class, owl:Class ;
+    rdfs:label "Output" ;
+    rdfs:comment "A derivation output (a store path such as /nix/store/<hash>-hello-2.12). Identity: the store-path hash. For content-addressed derivations the output is only known after the build." .
+
+nix:Source a rdfs:Class, owl:Class ;
+    rdfs:label "Source" ;
+    rdfs:comment "A store path that was added to the store from outside a build: a fetched tree, a local file, a flake source. Identity: its NAR hash." .
+
+nix:FlakeInput a rdfs:Class, owl:Class ;
+    rdfs:label "FlakeInput" ;
+    rdfs:comment "A named input edge in a flake.lock (the `inputs.<name>` of a node). Distinct from the pin it resolves to, because two inputs can resolve to one pin and an input can `follow` another." .
+
+nix:FlakePin a rdfs:Class, owl:Class ;
+    rdfs:label "FlakePin" ;
+    rdfs:comment "A locked flake source (a `locked` entry in flake.lock). Identity: its NAR hash. The root flake's own source is also a pin." .
+
+nix:NixpkgsRevision a rdfs:Class, owl:Class ;
+    rdfs:subClassOf nix:Snapshot ;
+    rdfs:label "NixpkgsRevision" ;
+    rdfs:comment "A git revision of nixpkgs. Identity: the full commit SHA. Layer 0 (index) creates these; Layer 1 (full evaluation) attaches evaluatesTo edges." .
+
+nix:Release a rdfs:Class, owl:Class ;
+    rdfs:label "Release" ;
+    rdfs:comment "A NixOS release channel (e.g. 24.11) as recorded in the nixpkgs-multiverse index, pointing at the revision it was at when indexed." .
+
+nix:PackageVersion a rdfs:Class, owl:Class ;
+    rdfs:label "PackageVersion" ;
+    rdfs:comment "An (attribute path, version string) pair from the nixpkgs-multiverse index, with the newest revision that shipped it. Layer 0 data: no evaluation, no derivation." .
+
+nix:Attribute a rdfs:Class, owl:Class ;
+    rdfs:label "Attribute" ;
+    rdfs:comment "An attribute path evaluated at a specific nixpkgs revision (Layer 1). Links the path string to the derivation it evaluates to." .
+
+nix:Commit a rdfs:Class, owl:Class ;
+    rdfs:label "Commit" ;
+    rdfs:comment "A commit of a consumer repository, as handed to nix2rdf by CI. The time axis: it links a snapshot to when it was committed." .
+
+nix:NixosConfiguration a rdfs:Class, owl:Class ;
+    rdfs:label "NixosConfiguration" ;
+    rdfs:comment "A `nixosConfigurations.<name>` attribute of a flake: the named, un-evaluated configuration a generation was produced from." .
+
+nix:NixosGeneration a rdfs:Class, owl:Class ;
+    rdfs:subClassOf nix:Snapshot ;
+    rdfs:label "NixosGeneration" ;
+    rdfs:comment "An evaluated NixOS system closure (config.system.build.toplevel). Identity: the store-path hash of the toplevel output." .
+
+nix:NixosOption a rdfs:Class, owl:Class ;
+    rdfs:label "NixosOption" ;
+    rdfs:comment "A NixOS option declaration, identified by its dotted path (e.g. services.nginx.enable). Global, not per generation." .
+
+nix:OptionValue a rdfs:Class, owl:Class ;
+    rdfs:label "OptionValue" ;
+    rdfs:comment "The final value of an option in one generation, with its definitions." .
+
+nix:OptionDefinition a rdfs:Class, owl:Class ;
+    rdfs:label "OptionDefinition" ;
+    rdfs:comment "One definition of an option (a `services.foo.x = ...;` in some file) that contributed to a final value. Carries the file it was defined in." .
+
+nix:Image a rdfs:Class, owl:Class ;
+    rdfs:subClassOf nix:Snapshot ;
+    rdfs:label "Image" ;
+    rdfs:comment "An OCI/Docker image built by Nix (dockerTools or nix2container). Identity: the sha256 of the image configuration (the image ID)." .
+
+nix:Layer a rdfs:Class, owl:Class ;
+    rdfs:label "Layer" ;
+    rdfs:comment "One image layer. Identity: the sha256 of the uncompressed layer tarball (the diff ID), so identical layers in different images are one node." .
+
+nix:Violation a rdfs:Class, owl:Class ;
+    rdfs:label "Violation" ;
+    rdfs:comment "A policy violation derived by a rule pack. Never asserted by the extractor; always created by a Nemo existential rule in a derived graph." .
+
+nix:OntologyPack a rdfs:Class, owl:Class ;
+    rdfs:label "OntologyPack" ;
+    rdfs:comment "A rule pack (vocabulary + Nemo rules) as used by a rule run. Identity: the content hash of the pack directory." .
+
+nix:RuleRun a rdfs:Class, owl:Class ;
+    rdfs:label "RuleRun" ;
+    rdfs:comment "One execution of a set of packs over a set of input graphs. Its IRI is the derived graph's name: derived:<ruleset-hash>:<input-hash>." .
+
+nix:Fragment a rdfs:Class, owl:Class ;
+    rdfs:label "Fragment" ;
+    rdfs:comment "A named graph that is one immutable, content-addressed N-Quads file in the store. The graph IRI is the fragment's identity." .
+
+# ============================ Object properties ============================
+
+nix:inputDrv a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "inputDrv" ;
+    rdfs:domain nix:Derivation ; rdfs:range nix:Derivation ;
+    rdfs:comment "Direct build-time input derivation, exactly as listed in the .drv's inputDrvs. Not transitive." .
+
+nix:dependsOn a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "dependsOn" ;
+    rdfs:domain nix:Derivation ; rdfs:range nix:Derivation ;
+    rdfs:comment "Direct build-time dependency (derivation to derivation). Asserted as a synonym of inputDrv; the core pack computes its transitive closure into dependsOnTransitively." .
+
+nix:dependsOnTransitively a rdf:Property, owl:ObjectProperty, owl:TransitiveProperty ;
+    rdfs:label "dependsOnTransitively" ;
+    rdfs:domain nix:Derivation ; rdfs:range nix:Derivation ;
+    rdfs:comment "DERIVED ONLY (core pack). Transitive closure of dependsOn. Never asserted." .
+
+nix:inputSrc a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "inputSrc" ;
+    rdfs:domain nix:Derivation ; rdfs:range nix:Source ;
+    rdfs:comment "A store path listed in the .drv's inputSrcs: a source file or tree the build reads." .
+
+nix:hasOutput a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "hasOutput" ;
+    rdfs:domain nix:Derivation ; rdfs:range nix:Output ;
+    rdfs:comment "An output of the derivation. Emitted in the derivation fragment for input-addressed derivations, in a separate outputs fragment for content-addressed ones." .
+
+nix:producedBy a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "producedBy" ;
+    owl:inverseOf nix:hasOutput ;
+    rdfs:domain nix:Output ; rdfs:range nix:Derivation ;
+    rdfs:comment "DERIVED ONLY (core pack). Inverse of hasOutput." .
+
+nix:references a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "references" ;
+    rdfs:domain nix:Output ; rdfs:range nix:Output ;
+    rdfs:comment "Runtime reference from one built store path to another, as recorded in the Nix store database (nix path-info). Only known after a build. Direct edges only." .
+
+nix:runtimeDependsOn a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "runtimeDependsOn" ;
+    rdfs:domain nix:Derivation ; rdfs:range nix:Derivation ;
+    rdfs:comment "DERIVED ONLY (core pack). Derivation A runtime-depends on B when an output of A references an output of B (transitively). Never asserted." .
+
+nix:evaluatesTo a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "evaluatesTo" ;
+    rdfs:range nix:Derivation ;
+    rdfs:comment "A nixpkgs revision (or an Attribute at a revision) evaluates to this derivation: it COULD be built from that tree. Layer 1 data. Contrast closureContains (actually depended on)." .
+
+nix:closureContains a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "closureContains" ;
+    rdfs:domain nix:Snapshot ; rdfs:range nix:Derivation ;
+    rdfs:comment "A snapshot's reachable derivation set. Asserted by front-ends from what Nix reported reachable (nix derivation show -r); the core pack additionally closes it under dependsOn from hasRoot so images and generations stay complete." .
+
+nix:hasRoot a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "hasRoot" ;
+    rdfs:domain nix:Snapshot ; rdfs:range nix:Derivation ;
+    rdfs:comment "The derivation(s) a snapshot was evaluated from: the installables of a flake snapshot, the toplevel of a generation, the image derivation." .
+
+nix:runtimeClosureContains a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "runtimeClosureContains" ;
+    rdfs:domain nix:Snapshot ; rdfs:range nix:Output ;
+    rdfs:comment "DERIVED ONLY (core pack). Outputs reachable from the snapshot's root outputs via references. The runtime closure, as opposed to the build closure." .
+
+nix:pinnedTo a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "pinnedTo" ;
+    rdfs:domain nix:FlakeInput ; rdfs:range nix:FlakePin ;
+    rdfs:comment "The locked source a flake input resolves to in flake.lock." .
+
+nix:locksInput a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "locksInput" ;
+    rdfs:domain nix:FlakePin ; rdfs:range nix:FlakeInput ;
+    rdfs:comment "A pin (a flake) declares this input. The root pin locks the root inputs; nested pins lock their own." .
+
+nix:follows a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "follows" ;
+    rdfs:domain nix:FlakeInput ; rdfs:range nix:FlakeInput ;
+    rdfs:comment "This input is an alias for another input (an `inputs.x.follows = \"y\"` entry). The core pack resolves follows chains to the final pin." .
+
+nix:resolvesTo a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "resolvesTo" ;
+    rdfs:domain nix:FlakeInput ; rdfs:range nix:FlakePin ;
+    rdfs:comment "DERIVED ONLY (core pack). The pin an input ends up at after following any `follows` chain." .
+
+nix:snapshot a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "snapshot" ;
+    rdfs:domain nix:Commit ; rdfs:range nix:Snapshot ;
+    rdfs:comment "The snapshot (root pin, generation, image) that a consumer commit evaluated to." .
+
+nix:configuration a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "configuration" ;
+    rdfs:domain nix:NixosGeneration ; rdfs:range nix:NixosConfiguration ;
+    rdfs:comment "The named configuration this generation was evaluated from." .
+
+nix:fromPin a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "fromPin" ;
+    rdfs:range nix:FlakePin ;
+    rdfs:comment "The root flake pin a generation or image was evaluated from." .
+
+nix:hasOptionValue a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "hasOptionValue" ;
+    rdfs:domain nix:NixosGeneration ; rdfs:range nix:OptionValue .
+
+nix:option a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "option" ;
+    rdfs:domain nix:OptionValue ; rdfs:range nix:NixosOption ;
+    rdfs:comment "The option this value is the final value of." .
+
+nix:hasDefinition a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "hasDefinition" ;
+    rdfs:domain nix:OptionValue ; rdfs:range nix:OptionDefinition ;
+    rdfs:comment "A definition that contributed to the final value (from definitionsWithLocations). Priorities and merge internals are not reconstructed." .
+
+nix:hasLayer a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "hasLayer" ;
+    rdfs:domain nix:Image ; rdfs:range nix:Layer ;
+    rdfs:comment "An image contains this layer. Order is carried by layerIndex on a per-image basis is NOT modelled; use the manifest literal for order." .
+
+nix:layerContains a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "layerContains" ;
+    rdfs:domain nix:Layer ; rdfs:range nix:Output ;
+    rdfs:comment "A store path whose files are in this layer." .
+
+nix:imageDerivation a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "imageDerivation" ;
+    rdfs:domain nix:Image ; rdfs:range nix:Derivation ;
+    rdfs:comment "The derivation that built the image artifact." .
+
+nix:derivedBy a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "derivedBy" ;
+    rdfs:range nix:RuleRun ;
+    rdfs:comment "A derived graph (as a named-graph IRI) was produced by this rule run." .
+
+nix:usesPack a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "usesPack" ;
+    rdfs:domain nix:RuleRun ; rdfs:range nix:OntologyPack .
+
+nix:inputGraph a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "inputGraph" ;
+    rdfs:domain nix:RuleRun ;
+    rdfs:comment "A named graph that was part of the rule run's input." .
+
+nix:dependsOnPack a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "dependsOnPack" ;
+    rdfs:domain nix:OntologyPack ; rdfs:range nix:OntologyPack .
+
+nix:violates a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "violates" ;
+    rdfs:domain nix:Violation ;
+    rdfs:comment "The policy IRI (a term in a pack's policy namespace) that the subject violates." .
+
+nix:subject a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "subject" ;
+    rdfs:domain nix:Violation ;
+    rdfs:comment "The node the violation is about." .
+
+nix:inSnapshot a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "inSnapshot" ;
+    rdfs:domain nix:Violation ; rdfs:range nix:Snapshot ;
+    rdfs:comment "The snapshot in which the violation was found, when the policy is snapshot-scoped." .
+
+nix:hasAttribute a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "hasAttribute" ;
+    rdfs:domain nix:NixpkgsRevision ; rdfs:range nix:Attribute .
+
+nix:lastSeenIn a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "lastSeenIn" ;
+    rdfs:domain nix:PackageVersion ; rdfs:range nix:NixpkgsRevision ;
+    rdfs:comment "The newest indexed revision that shipped this (attribute, version). From nixpkgs-multiverse index/versions.json." .
+
+nix:releasePinnedTo a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "releasePinnedTo" ;
+    rdfs:domain nix:Release ; rdfs:range nix:NixpkgsRevision .
+
+nix:sharesLayerWith a rdf:Property, owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:label "sharesLayerWith" ;
+    rdfs:domain nix:Image ; rdfs:range nix:Image ;
+    rdfs:comment "DERIVED ONLY (core pack). Two images that have at least one layer in common." .
+
+nix:hasFragment a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "hasFragment" ;
+    rdfs:domain nix:RuleRun ; rdfs:range nix:Fragment .
+
+# ============================ Datatype properties ==========================
+
+nix:drvPath a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "drvPath" ; rdfs:domain nix:Derivation ; rdfs:range xsd:string ;
+    rdfs:comment "The full /nix/store/... .drv path." .
+
+nix:storePath a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "storePath" ; rdfs:range xsd:string ;
+    rdfs:comment "The full /nix/store/... path of an Output or Source." .
+
+nix:name a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "name" ; rdfs:range xsd:string ;
+    rdfs:comment "The derivation name (the `name` attribute, e.g. hello-2.12.3), or the name of an input / configuration." .
+
+nix:pname a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "pname" ; rdfs:domain nix:Derivation ; rdfs:range xsd:string ;
+    rdfs:comment "Package name without version, from the derivation's `pname` environment variable (or structured attrs)." .
+
+nix:version a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "version" ; rdfs:range xsd:string ;
+    rdfs:comment "Version string, from the derivation's `version` (or a PackageVersion's version)." .
+
+nix:system a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "system" ; rdfs:domain nix:Derivation ; rdfs:range xsd:string ;
+    rdfs:comment "The platform string the derivation builds on (x86_64-linux, aarch64-darwin, ...)." .
+
+nix:builder a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "builder" ; rdfs:domain nix:Derivation ; rdfs:range xsd:string ;
+    rdfs:comment "The builder executable path (e.g. .../bin/bash). A store path string, not a node, because builders are not always derivation outputs." .
+
+nix:arg a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "arg" ; rdfs:domain nix:Derivation ; rdfs:range xsd:string ;
+    rdfs:comment "One builder argument, as an indexed literal \"<index>:<value>\" so ordering survives set semantics." .
+
+nix:outputName a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "outputName" ; rdfs:domain nix:Output ; rdfs:range xsd:string ;
+    rdfs:comment "out, dev, lib, doc, ..." .
+
+nix:inputDrvOutput a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "inputDrvOutput" ; rdfs:domain nix:Derivation ; rdfs:range xsd:string ;
+    rdfs:comment "Which outputs of an input derivation are consumed, as \"<input-drv-hash>!<outputName>\". Keeps inputDrv lossless without a node per (drv, output) pair." .
+
+nix:envHash a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "envHash" ; rdfs:domain nix:Derivation ; rdfs:range xsd:string ;
+    rdfs:comment "sha256 of the canonical JSON of the derivation's environment. The full environment is not inlined; use --env full to emit it as a side fragment." .
+
+nix:envVar a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "envVar" ; rdfs:domain nix:Derivation ; rdfs:range xsd:string ;
+    rdfs:comment "One environment variable as \"<name>=<value>\". Only emitted in the optional env side fragment." .
+
+nix:structuredAttrs a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "structuredAttrs" ; rdfs:domain nix:Derivation ; rdfs:range xsd:boolean ;
+    rdfs:comment "True when the derivation uses __structuredAttrs (its attributes live in the __json variable)." .
+
+nix:contentAddressed a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "contentAddressed" ; rdfs:domain nix:Derivation ; rdfs:range xsd:boolean ;
+    rdfs:comment "True when outputs are content-addressed and therefore unknown at evaluation time." .
+
+nix:license a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "license" ; rdfs:range xsd:string ;
+    rdfs:comment "The raw nixpkgs license identifier(s) from meta.license (the `spdxId` when present, else the `shortName`). Never an SPDX expression; the spdx3 pack maps it." .
+
+nix:homepage a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "homepage" ; rdfs:range xsd:anyURI .
+
+nix:description a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "description" ; rdfs:range xsd:string ;
+    rdfs:comment "meta.description, or an option's description." .
+
+nix:sourceProvenance a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "sourceProvenance" ; rdfs:range xsd:string ;
+    rdfs:comment "meta.sourceProvenance short names (fromSource, binaryNativeCode, ...)." .
+
+nix:unfree a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "unfree" ; rdfs:range xsd:boolean ;
+    rdfs:comment "meta.license.free == false for at least one license." .
+
+nix:attrPath a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "attrPath" ; rdfs:range xsd:string ;
+    rdfs:comment "Dotted attribute path (hello, python3Packages.requests)." .
+
+nix:narHash a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "narHash" ; rdfs:range xsd:string ;
+    rdfs:comment "SRI NAR hash (sha256-...) exactly as Nix prints it." .
+
+nix:rev a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "rev" ; rdfs:range xsd:string ;
+    rdfs:comment "Git revision (full SHA) of a pin or nixpkgs revision." .
+
+nix:ref a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "ref" ; rdfs:range xsd:string ;
+    rdfs:comment "Git ref (branch/tag) recorded in a lock entry." .
+
+nix:lastModified a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "lastModified" ; rdfs:range xsd:integer ;
+    rdfs:comment "lastModified from flake.lock: Unix seconds. Part of the locked identity, hence allowed inside a fragment." .
+
+nix:committedAt a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "committedAt" ; rdfs:domain nix:Commit ; rdfs:range xsd:dateTime .
+
+nix:repo a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "repo" ; rdfs:domain nix:Commit ; rdfs:range xsd:string ;
+    rdfs:comment "The operator-assigned repository id used in git:<repo-id>/<sha>." .
+
+nix:lockedType a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "lockedType" ; rdfs:domain nix:FlakePin ; rdfs:range xsd:string ;
+    rdfs:comment "flake.lock locked.type: github, gitlab, git, path, tarball, ..." .
+
+nix:lockedOwner a rdf:Property, owl:DatatypeProperty ; rdfs:label "lockedOwner" ; rdfs:domain nix:FlakePin ; rdfs:range xsd:string .
+nix:lockedRepo  a rdf:Property, owl:DatatypeProperty ; rdfs:label "lockedRepo"  ; rdfs:domain nix:FlakePin ; rdfs:range xsd:string .
+nix:lockedUrl   a rdf:Property, owl:DatatypeProperty ; rdfs:label "lockedUrl"   ; rdfs:domain nix:FlakePin ; rdfs:range xsd:string .
+nix:lockedDir   a rdf:Property, owl:DatatypeProperty ; rdfs:label "lockedDir"   ; rdfs:domain nix:FlakePin ; rdfs:range xsd:string .
+
+nix:originalRef a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "originalRef" ; rdfs:domain nix:FlakeInput ; rdfs:range xsd:string ;
+    rdfs:comment "The `original` entry of the lock node as a flake reference string (what the flake.nix asked for)." .
+
+nix:isFlake a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "isFlake" ; rdfs:domain nix:FlakeInput ; rdfs:range xsd:boolean ;
+    rdfs:comment "False when the input was declared with flake = false." .
+
+nix:lockNodeId a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "lockNodeId" ; rdfs:domain nix:FlakeInput ; rdfs:range xsd:string ;
+    rdfs:comment "The node key inside flake.lock (nixpkgs, nixpkgs_2, ...)." .
+
+nix:channelName a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "channelName" ; rdfs:domain nix:NixpkgsRevision ; rdfs:range xsd:string ;
+    rdfs:comment "The channel release name (nixos-24.11pre123.abcdef)." .
+
+nix:date a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "date" ; rdfs:range xsd:date ;
+    rdfs:comment "Calendar date of a revision or release as recorded by the index." .
+
+nix:indexOffset a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "indexOffset" ; rdfs:domain nix:NixpkgsRevision ; rdfs:range xsd:integer ;
+    rdfs:comment "Position in nixpkgs-multiverse revisions.json (0 = oldest). Lets SPARQL order revisions without parsing dates." .
+
+nix:currentAtIndexTip a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "currentAtIndexTip" ; rdfs:domain nix:PackageVersion ; rdfs:range xsd:boolean ;
+    rdfs:comment "True when the index records no newest revision for this version, i.e. it is still shipped at the tip." .
+
+nix:releaseBuild a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "releaseBuild" ; rdfs:domain nix:Release ; rdfs:range xsd:integer .
+
+nix:optionPath a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "optionPath" ; rdfs:domain nix:NixosOption ; rdfs:range xsd:string .
+
+nix:optionType a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "optionType" ; rdfs:domain nix:NixosOption ; rdfs:range xsd:string ;
+    rdfs:comment "type.description of the option (e.g. \"boolean\", \"list of string\")." .
+
+nix:declaredIn a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "declaredIn" ; rdfs:domain nix:NixosOption ; rdfs:range xsd:string ;
+    rdfs:comment "A file that declares the option (options.<x>.declarations)." .
+
+nix:definedIn a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "definedIn" ; rdfs:domain nix:OptionDefinition ; rdfs:range xsd:string ;
+    rdfs:comment "The file a definition came from (definitionsWithLocations[].file)." .
+
+nix:finalValue a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "finalValue" ; rdfs:range xsd:string ;
+    rdfs:comment "The value as canonical JSON, inlined when below the size threshold; otherwise absent and valueHash points to a side fragment." .
+
+nix:definitionValue a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "definitionValue" ; rdfs:domain nix:OptionDefinition ; rdfs:range xsd:string ;
+    rdfs:comment "A definition's value as canonical JSON, subject to the same size threshold as finalValue." .
+
+nix:valueHash a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "valueHash" ; rdfs:range xsd:string ;
+    rdfs:comment "sha256 of the canonical JSON value. The value itself lives in values/<hash>.nq.zst as a nix:value literal on the node <nixid:value/<hash>>." .
+
+nix:value a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "value" ; rdfs:range xsd:string ;
+    rdfs:comment "A large canonical-JSON value, stored in a side fragment keyed by its hash." .
+
+nix:isDefined a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "isDefined" ; rdfs:domain nix:OptionValue ; rdfs:range xsd:boolean ;
+    rdfs:comment "Whether any module defined the option (as opposed to the default applying)." .
+
+nix:digest a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "digest" ; rdfs:range xsd:string ;
+    rdfs:comment "sha256:<hex> of an image config or layer, as OCI prints it." .
+
+nix:mediaType a rdf:Property, owl:DatatypeProperty ; rdfs:label "mediaType" ; rdfs:range xsd:string .
+
+nix:layerIndex a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "layerIndex" ; rdfs:domain nix:Image ; rdfs:range xsd:string ;
+    rdfs:comment "Layer order within an image as \"<index>:<layer-digest>\", because a layer node is shared across images." .
+
+nix:imageTool a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "imageTool" ; rdfs:domain nix:Image ; rdfs:range xsd:string ;
+    rdfs:comment "dockerTools or nix2container." .
+
+nix:imageName a rdf:Property, owl:DatatypeProperty ; rdfs:label "imageName" ; rdfs:domain nix:Image ; rdfs:range xsd:string .
+nix:imageTag  a rdf:Property, owl:DatatypeProperty ; rdfs:label "imageTag"  ; rdfs:domain nix:Image ; rdfs:range xsd:string .
+
+nix:packName a rdf:Property, owl:DatatypeProperty ; rdfs:label "packName" ; rdfs:domain nix:OntologyPack ; rdfs:range xsd:string .
+nix:packVersion a rdf:Property, owl:DatatypeProperty ; rdfs:label "packVersion" ; rdfs:domain nix:OntologyPack ; rdfs:range xsd:string .
+
+nix:rulesetHash a rdf:Property, owl:DatatypeProperty ; rdfs:label "rulesetHash" ; rdfs:domain nix:RuleRun ; rdfs:range xsd:string .
+nix:inputHash a rdf:Property, owl:DatatypeProperty ; rdfs:label "inputHash" ; rdfs:domain nix:RuleRun ; rdfs:range xsd:string .
+nix:ranAt a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "ranAt" ; rdfs:domain nix:RuleRun ; rdfs:range xsd:dateTime ;
+    rdfs:comment "Wall-clock time of the run. Lives on the RuleRun node in the run's provenance fragment, never inside a derived fragment." .
+nix:derivedQuadCount a rdf:Property, owl:DatatypeProperty ; rdfs:label "derivedQuadCount" ; rdfs:domain nix:RuleRun ; rdfs:range xsd:integer .
+nix:nemoVersion a rdf:Property, owl:DatatypeProperty ; rdfs:label "nemoVersion" ; rdfs:domain nix:RuleRun ; rdfs:range xsd:string .
+
+nix:fragmentKind a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "fragmentKind" ; rdfs:domain nix:Fragment ; rdfs:range xsd:string ;
+    rdfs:comment "drv, out, src, pin, nixpkgs, commit, gen, image, index, derived, k8s-snapshot, ..." .
+
+nix:message a rdf:Property, owl:DatatypeProperty ;
+    rdfs:label "message" ; rdfs:domain nix:Violation ; rdfs:range xsd:string ;
+    rdfs:comment "Optional human-readable detail attached by the policy rule." .

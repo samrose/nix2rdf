@@ -1,0 +1,8 @@
+<https://w3id.org/nix/id/oci/sha256/img1> <https://w3id.org/nix/ns#hasLayer> <https://w3id.org/nix/id/oci/layer/sha256/l1> <https://w3id.org/nix/id/oci/sha256/img1> .
+<https://w3id.org/nix/id/oci/sha256/img1> <https://w3id.org/nix/ns#hasLayer> <https://w3id.org/nix/id/oci/layer/sha256/l2> <https://w3id.org/nix/id/oci/sha256/img1> .
+<https://w3id.org/nix/id/oci/sha256/img2> <https://w3id.org/nix/ns#hasLayer> <https://w3id.org/nix/id/oci/layer/sha256/l1> <https://w3id.org/nix/id/oci/sha256/img2> .
+<https://w3id.org/nix/id/oci/layer/sha256/l1> <https://w3id.org/nix/ns#layerContains> <https://w3id.org/nix/id/out/glibc> <https://w3id.org/nix/id/oci/sha256/img1> .
+<https://w3id.org/nix/id/oci/layer/sha256/l2> <https://w3id.org/nix/ns#layerContains> <https://w3id.org/nix/id/out/app> <https://w3id.org/nix/id/oci/sha256/img1> .
+<https://w3id.org/nix/id/drv/app> <https://w3id.org/nix/ns#hasOutput> <https://w3id.org/nix/id/out/app> <https://w3id.org/nix/id/drv/app> .
+<https://w3id.org/nix/id/drv/glibc> <https://w3id.org/nix/ns#hasOutput> <https://w3id.org/nix/id/out/glibc> <https://w3id.org/nix/id/drv/glibc> .
+<https://w3id.org/nix/id/out/app> <https://w3id.org/nix/ns#references> <https://w3id.org/nix/id/out/glibc> <https://w3id.org/nix/id/fragment/out/app> .

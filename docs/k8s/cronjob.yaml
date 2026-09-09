@@ -1,0 +1,62 @@
+# Scheduled live snapshots from inside the cluster, shipped to an object
+# store bucket as a published fragment set (manifest.json + fragments).
+# Uses in-cluster service-account auth (no kubeconfig). Replace the image
+# with your build of nix2rdf (e.g. from `nix build .#nix2rdf` via dockerTools)
+# and the bucket/credentials with yours. The snapshot is written locally first,
+# so a failed upload never loses data: the next run re-publishes everything
+# still present on the volume.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nix2rdf-live-snapshot
+  namespace: nix2rdf
+spec:
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          serviceAccountName: nix2rdf-snapshot
+          restartPolicy: Never
+          containers:
+            - name: snapshot
+              image: ghcr.io/example/nix2rdf@sha256:REPLACE_WITH_DIGEST
+              env:
+                - name: CLUSTER_ID
+                  value: edge-site-1            # operator-assigned, stable
+                - name: NIX2RDF_LOG_FORMAT
+                  value: json
+                - name: BUCKET
+                  value: s3://fragments-bucket/clusters/edge-site-1
+              command: ["/bin/sh", "-ec"]
+              args:
+                - |
+                  nix2rdf --store /data/store k8s snapshot --cluster-id "$CLUSTER_ID" --live
+                  nix2rdf --store /data/store publish --all --dest /data/publish
+                  # Any S3-compatible copier works; the set is plain files + manifest.json.
+                  aws s3 sync /data/publish "$BUCKET" --only-show-errors
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+              resources:
+                limits: { cpu: "500m", memory: 512Mi }
+                requests: { cpu: "100m", memory: 128Mi }
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: nix2rdf-snapshots
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nix2rdf-snapshots
+  namespace: nix2rdf
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 2Gi

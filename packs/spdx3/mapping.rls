@@ -1,0 +1,44 @@
+%% spdx3/mapping.rls — project nix: ground truth onto SPDX 3.0.1.
+%% Never the other way round: nix: stays lossless, SPDX is a view.
+
+@prefix nix:  <https://w3id.org/nix/ns#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix spdx: <https://spdx.org/rdf/3.0.1/terms/Core/> .
+@prefix sw:   <https://spdx.org/rdf/3.0.1/terms/Software/> .
+@prefix sl:   <https://spdx.org/rdf/3.0.1/terms/SimpleLicensing/> .
+
+% Derivation → Package
+t(?d, rdf:type, sw:Package) :- t(?d, rdf:type, nix:Derivation) .
+t(?d, spdx:name, ?n) :- t(?d, nix:pname, ?n) .
+t(?d, spdx:name, ?n) :- t(?d, nix:name, ?n), t(?d, rdf:type, nix:Derivation) .
+t(?d, sw:packageVersion, ?v) :- t(?d, nix:version, ?v), t(?d, rdf:type, nix:Derivation) .
+t(?d, sw:homePage, ?h) :- t(?d, nix:homepage, ?h) .
+t(?d, spdx:description, ?x) :- t(?d, nix:description, ?x) .
+
+% Output → Artifact (a built store path); Source → Artifact with purpose "source"
+t(?o, rdf:type, spdx:Artifact) :- t(?o, rdf:type, nix:Output) .
+t(?o, spdx:name, ?p) :- t(?o, rdf:type, nix:Output), t(?o, nix:storePath, ?p) .
+t(?s, rdf:type, spdx:Artifact) :- t(?s, rdf:type, nix:Source) .
+t(?s, sw:primaryPurpose, <https://spdx.org/rdf/3.0.1/terms/Software/SoftwarePurpose/source>) :- t(?s, rdf:type, nix:Source) .
+
+% NAR hashes → verifiedUsing Hash nodes
+t(!h, rdf:type, spdx:Hash), t(!h, spdx:algorithm, <https://spdx.org/rdf/3.0.1/terms/Core/HashAlgorithm/sha256>), t(!h, spdx:hashValue, ?nar), t(?x, spdx:verifiedUsing, !h) :- t(?x, nix:narHash, ?nar), t(?x, rdf:type, spdx:Artifact) .
+
+% Build dependencies → Relationship(dependsOn); runtime → Relationship(hasDynamicLink is wrong; use dependsOn with runtime scope via a second type)
+t(!r, rdf:type, spdx:Relationship), t(!r, spdx:from, ?a), t(!r, spdx:to, ?b), t(!r, spdx:relationshipType, <https://spdx.org/rdf/3.0.1/terms/Core/RelationshipType/dependsOn>) :- t(?a, nix:dependsOn, ?b) .
+t(!r, rdf:type, spdx:Relationship), t(!r, spdx:from, ?d), t(!r, spdx:to, ?o), t(!r, spdx:relationshipType, <https://spdx.org/rdf/3.0.1/terms/Core/RelationshipType/generates>) :- t(?d, nix:hasOutput, ?o) .
+t(!r, rdf:type, spdx:Relationship), t(!r, spdx:from, ?d), t(!r, spdx:to, ?s), t(!r, spdx:relationshipType, <https://spdx.org/rdf/3.0.1/terms/Core/RelationshipType/hasInput>) :- t(?d, nix:inputSrc, ?s) .
+
+% Licenses. nixpkgs' spdxId is used when the extractor found one; the ids
+% nixpkgs has no SPDX id for are mapped here to LicenseRef-* names. Every
+% row is a guess you can correct.
+licenseRef("unfree", "LicenseRef-nixpkgs-unfree") .
+licenseRef("unfreeRedistributable", "LicenseRef-nixpkgs-unfreeRedistributable") .
+licenseRef("unfreeRedistributableFirmware", "LicenseRef-nixpkgs-unfreeRedistributableFirmware") .
+licenseRef("free", "LicenseRef-nixpkgs-free") .
+licenseRef("issl", "LicenseRef-nixpkgs-issl") .
+licenseRef("elastic", "LicenseRef-nixpkgs-elastic") .
+hasRef(?id) :- licenseRef(?id, ?ref) .
+licenseExpr(?d, ?ref) :- t(?d, nix:license, ?id), licenseRef(?id, ?ref) .
+licenseExpr(?d, ?id) :- t(?d, nix:license, ?id), ~hasRef(?id) .
+t(!l, rdf:type, sl:LicenseExpression), t(!l, sl:licenseExpression, ?e), t(?d, sw:hasDeclaredLicense, !l) :- licenseExpr(?d, ?e) .

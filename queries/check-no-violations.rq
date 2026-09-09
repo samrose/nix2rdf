@@ -1,0 +1,5 @@
+# CI check: ASK whether any violation exists for a given policy. Used with
+# `nix2rdf check`, which exits non-zero on true.
+ASK {
+  ?v nix:violates <https://w3id.org/nix/policy/policy-examples/no-unfree-in-runtime-closure> .
+}

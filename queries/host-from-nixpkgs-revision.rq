@@ -1,0 +1,12 @@
+# Workloads whose host node runs a kernel/runtime from a given nixpkgs
+# revision: node → NixOS generation → closure ∩ revision's evaluatesTo.
+SELECT DISTINCT ?workload ?node ?drvName WHERE {
+  VALUES ?rev { <https://w3id.org/nix/id/nixpkgs/a391f95d4557d685fd8e5dc0d4b1f9271aa2f342> }
+  ?rev nix:evaluatesTo ?drv .
+  ?drv nix:pname ?pname .
+  FILTER(?pname IN ("linux", "containerd", "k3s"))
+  ?gen nix:closureContains ?drv .
+  ?node k8s:hostGeneration ?gen .
+  ?workload k8s:scheduledOn ?node .
+  ?drv nix:name ?drvName .
+}

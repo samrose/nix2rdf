@@ -1,0 +1,71 @@
+%% core/semantics.rls — the structural meaning of the nix: vocabulary.
+%%
+%% Convention: t(?s, ?p, ?o) is the working triple set (asserted + derived);
+%% q(?g, ?s, ?p, ?o) carries the named graph when scope matters. Rules add
+%% to t; the tool writes t \ asserted as the derived graph.
+%%
+%% Only direct edges are ever asserted by the extractor. Everything
+%% transitive lives here.
+
+@prefix nix: <https://w3id.org/nix/ns#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+%% --- Build-time dependencies -------------------------------------------
+
+% inputDrv and dependsOn are the same edge, seen from the .drv and from the
+% graph; keep them in sync whichever one a source asserted.
+t(?a, nix:dependsOn, ?b) :- t(?a, nix:inputDrv, ?b) .
+
+% Transitive closure of the direct build dependency (never asserted).
+t(?a, nix:dependsOnTransitively, ?b) :- t(?a, nix:dependsOn, ?b) .
+t(?a, nix:dependsOnTransitively, ?c) :- t(?a, nix:dependsOnTransitively, ?b), t(?b, nix:dependsOn, ?c) .
+
+%% --- Outputs ---------------------------------------------------------------
+
+t(?o, nix:producedBy, ?d) :- t(?d, nix:hasOutput, ?o) .
+t(?o, rdf:type, nix:Output) :- t(?d, nix:hasOutput, ?o) .
+t(?d, rdf:type, nix:Derivation) :- t(?d, nix:drvPath, ?p) .
+
+%% --- Runtime dependencies (after a build; from store references) ----------
+
+% Reference closure between outputs.
+refT(?x, ?y) :- t(?x, nix:references, ?y) .
+refT(?x, ?z) :- refT(?x, ?y), t(?y, nix:references, ?z) .
+
+% Derivation A runtime-depends on B when an output of A (transitively)
+% references an output of B.
+t(?a, nix:runtimeDependsOn, ?b) :- t(?a, nix:hasOutput, ?oa), refT(?oa, ?ob), t(?b, nix:hasOutput, ?ob), ?a != ?b .
+
+%% --- Snapshots: build closure and runtime closure ---------------------------
+
+% A snapshot's build closure: its roots and everything they depend on.
+% (Front-ends also assert what Nix reported reachable; this makes the set
+% complete and gives images/generations the same semantics as pins.)
+t(?s, nix:closureContains, ?d) :- t(?s, nix:hasRoot, ?d) .
+t(?s, nix:closureContains, ?d2) :- t(?s, nix:closureContains, ?d1), t(?d1, nix:dependsOn, ?d2) .
+t(?s, rdf:type, nix:Snapshot) :- t(?s, nix:closureContains, ?d) .
+
+% Runtime closure: outputs of the roots and everything they reference.
+t(?s, nix:runtimeClosureContains, ?o) :- t(?s, nix:hasRoot, ?d), t(?d, nix:hasOutput, ?o) .
+t(?s, nix:runtimeClosureContains, ?o2) :- t(?s, nix:runtimeClosureContains, ?o1), t(?o1, nix:references, ?o2) .
+
+% A commit stands for its snapshot on the time axis.
+t(?c, nix:closureContains, ?d) :- t(?c, nix:snapshot, ?s), t(?s, nix:closureContains, ?d) .
+t(?c, nix:runtimeClosureContains, ?o) :- t(?c, nix:snapshot, ?s), t(?s, nix:runtimeClosureContains, ?o) .
+
+%% --- Images -----------------------------------------------------------------
+
+% What an image ships is what its layers hold (plus their references).
+t(?img, nix:runtimeClosureContains, ?o) :- t(?img, nix:hasLayer, ?l), t(?l, nix:layerContains, ?o) .
+
+% The derivation that produced a shipped output is part of the image's closure.
+t(?img, nix:closureContains, ?d) :- t(?img, nix:runtimeClosureContains, ?o), t(?d, nix:hasOutput, ?o) .
+
+% Layer sharing between images.
+t(?a, nix:sharesLayerWith, ?b) :- t(?a, nix:hasLayer, ?l), t(?b, nix:hasLayer, ?l), ?a != ?b .
+
+%% --- Flake inputs: follows resolution ---------------------------------------
+
+t(?i, nix:resolvesTo, ?p) :- t(?i, nix:pinnedTo, ?p) .
+t(?i, nix:resolvesTo, ?p) :- t(?i, nix:follows, ?j), t(?j, nix:resolvesTo, ?p) .

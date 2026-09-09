@@ -1,0 +1,14 @@
+%% host-container-mismatch (k3s/NixOS): nodes sharing a role run different
+%% generations, or a node's kernel is below the configured minimum.
+%% Version comparison is lexicographic on the version string; set the
+%% minimum accordingly or override in a downstream pack.
+@prefix nix: <https://w3id.org/nix/ns#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+minKernel("6.6") .
+roleGen(?n, ?role, ?cl, ?g) :- kNodeRole(?n, ?role), kInCluster(?n, ?cl), kHostGeneration(?n, ?g) .
+genMismatch(?n) :- roleGen(?n, ?role, ?cl, ?g1), roleGen(?m, ?role, ?cl, ?g2), ?g1 != ?g2 .
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/k8s/host-container-mismatch>), out(!v, nix:subject, ?n), out(!v, nix:message, "generation differs from a node with the same role") :-
+    genMismatch(?n) .
+oldKernel(?n) :- kKernelVersion(?n, ?kv), minKernel(?min), ?kv < ?min .
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/k8s/host-container-mismatch>), out(!v, nix:subject, ?n), out(!v, nix:message, "kernel below minimum") :-
+    oldKernel(?n) .

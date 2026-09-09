@@ -1,0 +1,9 @@
+# Effective permissions for a ServiceAccount (through bindings and aggregation).
+SELECT DISTINCT ?apiGroup ?resource ?verb WHERE {
+  VALUES ?sa { <https://w3id.org/nix/id/k8s/fixture/ServiceAccount/shop/api> }
+  ?sa k8s:effectivePermission ?perm .
+  ?perm k8s:apiGroup ?apiGroup .
+  ?perm k8s:resource ?resource .
+  ?perm k8s:verb ?verb .
+}
+ORDER BY ?apiGroup ?resource ?verb

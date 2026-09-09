@@ -1,0 +1,6 @@
+<https://w3id.org/nix/id/k8s/c1/Deployment/shop/api> <https://w3id.org/nix/k8s#runningClosure> <https://w3id.org/nix/id/drv/openssl> .
+<https://w3id.org/nix/id/k8s/cluster/c1> <https://w3id.org/nix/k8s#runningOn> <https://w3id.org/nix/id/drv/openssl> .
+<https://w3id.org/nix/id/k8s/c1/node/n1> <https://w3id.org/nix/k8s#runningOnNode> <https://w3id.org/nix/id/drv/openssl> .
+<https://w3id.org/nix/id/k8s/c1/node/n1> <https://w3id.org/nix/k8s#runningOnNode> <https://w3id.org/nix/id/drv/kernel> .
+<https://w3id.org/nix/id/k8s/cluster/c1> <https://w3id.org/nix/k8s#runningOn> <https://w3id.org/nix/id/drv/kernel> .
+<https://w3id.org/nix/id/k8s/c1/Deployment/shop/api/c/api> <https://w3id.org/nix/k8s#unknownImage> <https://w3id.org/nix/id/oci/sha256/unknown> .

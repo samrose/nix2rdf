@@ -1,0 +1,204 @@
+@prefix k8s:  <https://w3id.org/nix/k8s#> .
+@prefix nix:  <https://w3id.org/nix/ns#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+
+# ---------------------------------------------------------------------------
+# The k8s: vocabulary
+#
+# Deliberately thinner than the Kubernetes API: identity, references,
+# placement and ownership, at the image-digest level. It describes what is
+# RUNNING; nix: describes what was BUILT. The bridge is k8s:runsImage, whose
+# object is an oci: image node from the nix: image front-end.
+#
+# As with nix:, OWL/RDFS are notation only; the k8s rule pack gives meaning.
+# Secrets: identity and references only, never values.
+# ---------------------------------------------------------------------------
+
+<https://w3id.org/nix/k8s> a owl:Ontology ;
+    dcterms:title "The Kubernetes deployment vocabulary for nix2rdf" ;
+    dcterms:description "Identity, references, placement and ownership of Kubernetes objects at the image-digest level, so build-time rules and queries also govern deployments." ;
+    owl:versionIRI <https://w3id.org/nix/k8s/0.1.0> ;
+    owl:versionInfo "0.1.0" ;
+    owl:imports <https://w3id.org/nix/ns> ;
+    vann:preferredNamespacePrefix "k8s" ;
+    vann:preferredNamespaceUri "https://w3id.org/nix/k8s#" .
+
+# ============================== Classes ====================================
+
+k8s:Cluster a rdfs:Class, owl:Class ; rdfs:label "Cluster" ;
+    rdfs:comment "A Kubernetes cluster under an operator-assigned stable id (never the kubeconfig context name)." .
+k8s:Node a rdfs:Class, owl:Class ; rdfs:label "Node" ;
+    rdfs:comment "A cluster node. When the node is a NixOS host, hostGeneration links it to its nix:NixosGeneration." .
+k8s:Namespace a rdfs:Class, owl:Class ; rdfs:label "Namespace" .
+k8s:Workload a rdfs:Class, owl:Class ; rdfs:label "Workload" ;
+    rdfs:comment "A pod-owning controller. Subclasses per kind." .
+k8s:Deployment  a rdfs:Class, owl:Class ; rdfs:subClassOf k8s:Workload ; rdfs:label "Deployment" .
+k8s:StatefulSet a rdfs:Class, owl:Class ; rdfs:subClassOf k8s:Workload ; rdfs:label "StatefulSet" .
+k8s:DaemonSet   a rdfs:Class, owl:Class ; rdfs:subClassOf k8s:Workload ; rdfs:label "DaemonSet" .
+k8s:Job         a rdfs:Class, owl:Class ; rdfs:subClassOf k8s:Workload ; rdfs:label "Job" .
+k8s:CronJob     a rdfs:Class, owl:Class ; rdfs:subClassOf k8s:Workload ; rdfs:label "CronJob" .
+k8s:ContainerSpec a rdfs:Class, owl:Class ; rdfs:label "ContainerSpec" ;
+    rdfs:comment "One container entry of a workload's pod template (init containers included, flagged with initContainer)." .
+k8s:Service a rdfs:Class, owl:Class ; rdfs:label "Service" .
+k8s:Ingress a rdfs:Class, owl:Class ; rdfs:label "Ingress" .
+k8s:ConfigMap a rdfs:Class, owl:Class ; rdfs:label "ConfigMap" .
+k8s:Secret a rdfs:Class, owl:Class ; rdfs:label "Secret" ;
+    rdfs:comment "Identity and references only. Values are never read, hashed or stored." .
+k8s:PersistentVolumeClaim a rdfs:Class, owl:Class ; rdfs:label "PersistentVolumeClaim" .
+k8s:PersistentVolume a rdfs:Class, owl:Class ; rdfs:label "PersistentVolume" .
+k8s:StorageClass a rdfs:Class, owl:Class ; rdfs:label "StorageClass" .
+k8s:NetworkPolicy a rdfs:Class, owl:Class ; rdfs:label "NetworkPolicy" .
+k8s:ServiceAccount a rdfs:Class, owl:Class ; rdfs:label "ServiceAccount" .
+k8s:User a rdfs:Class, owl:Class ; rdfs:label "User" ; rdfs:comment "A User subject of a binding." .
+k8s:Group a rdfs:Class, owl:Class ; rdfs:label "Group" ; rdfs:comment "A Group subject of a binding." .
+k8s:Role a rdfs:Class, owl:Class ; rdfs:label "Role" .
+k8s:ClusterRole a rdfs:Class, owl:Class ; rdfs:label "ClusterRole" .
+k8s:RoleBinding a rdfs:Class, owl:Class ; rdfs:label "RoleBinding" .
+k8s:ClusterRoleBinding a rdfs:Class, owl:Class ; rdfs:label "ClusterRoleBinding" .
+k8s:PodDisruptionBudget a rdfs:Class, owl:Class ; rdfs:label "PodDisruptionBudget" .
+k8s:Permission a rdfs:Class, owl:Class ; rdfs:label "Permission" ;
+    rdfs:comment "A structured (verb, resource, apiGroup) node granted by a Role or ClusterRole." .
+k8s:Snapshot a rdfs:Class, owl:Class ; rdfs:label "Snapshot" ;
+    rdfs:comment "One observation of a cluster, live or desired. Identity: hash of the normalized content, so an unchanged cluster produces the same snapshot." .
+k8s:SnapshotKind a rdfs:Class, owl:Class ; rdfs:label "SnapshotKind" .
+k8s:liveState a k8s:SnapshotKind ; rdfs:label "liveState" ; rdfs:comment "Read from the API server." .
+k8s:desiredState a k8s:SnapshotKind ; rdfs:label "desiredState" ; rdfs:comment "Read from rendered manifests (GitOps)." .
+k8s:FailureDomain a rdfs:Class, owl:Class ; rdfs:label "FailureDomain" ;
+    rdfs:comment "A zone, region, rack or site, taken from node labels only. Never inferred." .
+k8s:Owner a rdfs:Class, owl:Class ; rdfs:label "Owner" ;
+    rdfs:comment "An owning team/person from a configured label or annotation." .
+
+# ============================ Object properties ============================
+
+k8s:contains a rdf:Property, owl:ObjectProperty ; rdfs:label "contains" ;
+    rdfs:domain k8s:Snapshot ;
+    rdfs:comment "Every object observed in a snapshot. Object IRIs are stable across snapshots; scope-dependent facts are in the snapshot's named graph." .
+k8s:snapshotKind a rdf:Property, owl:ObjectProperty ; rdfs:label "snapshotKind" ; rdfs:domain k8s:Snapshot ; rdfs:range k8s:SnapshotKind .
+k8s:ofCluster a rdf:Property, owl:ObjectProperty ; rdfs:label "ofCluster" ; rdfs:domain k8s:Snapshot ; rdfs:range k8s:Cluster .
+k8s:inCluster a rdf:Property, owl:ObjectProperty ; rdfs:label "inCluster" ; rdfs:range k8s:Cluster .
+k8s:inNamespace a rdf:Property, owl:ObjectProperty ; rdfs:label "inNamespace" ; rdfs:range k8s:Namespace .
+k8s:hasContainer a rdf:Property, owl:ObjectProperty ; rdfs:label "hasContainer" ; rdfs:domain k8s:Workload ; rdfs:range k8s:ContainerSpec .
+k8s:runsImage a rdf:Property, owl:ObjectProperty ; rdfs:label "runsImage" ;
+    rdfs:domain k8s:ContainerSpec ; rdfs:range nix:Image ;
+    rdfs:comment "The image by digest (oci:sha256/<digest>). In live snapshots this is the digest that was pulled (containerStatuses[].imageID); in desired snapshots the digest in the spec, if any." .
+k8s:scheduledOn a rdf:Property, owl:ObjectProperty ; rdfs:label "scheduledOn" ;
+    rdfs:domain k8s:Workload ; rdfs:range k8s:Node ;
+    rdfs:comment "A node that ran at least one replica of the workload at snapshot time. Pods themselves are not stored." .
+k8s:selects a rdf:Property, owl:ObjectProperty ; rdfs:label "selects" ; rdfs:domain k8s:Service ; rdfs:range k8s:Workload ;
+    rdfs:comment "Service selector matched the workload's pod template labels." .
+k8s:routesTo a rdf:Property, owl:ObjectProperty ; rdfs:label "routesTo" ; rdfs:domain k8s:Ingress ; rdfs:range k8s:Service .
+k8s:mounts a rdf:Property, owl:ObjectProperty ; rdfs:label "mounts" ; rdfs:domain k8s:Workload ;
+    rdfs:comment "A ConfigMap, Secret or PVC referenced by a volume, env, or envFrom. Typed edge, so dangling references are detectable." .
+k8s:boundTo a rdf:Property, owl:ObjectProperty ; rdfs:label "boundTo" ; rdfs:domain k8s:PersistentVolumeClaim ; rdfs:range k8s:PersistentVolume .
+k8s:pinnedToNode a rdf:Property, owl:ObjectProperty ; rdfs:label "pinnedToNode" ; rdfs:domain k8s:PersistentVolume ; rdfs:range k8s:Node ;
+    rdfs:comment "From the PV's nodeAffinity (local volumes, hostPath on k3s)." .
+k8s:usesStorageClass a rdf:Property, owl:ObjectProperty ; rdfs:label "usesStorageClass" ; rdfs:range k8s:StorageClass .
+k8s:usesServiceAccount a rdf:Property, owl:ObjectProperty ; rdfs:label "usesServiceAccount" ; rdfs:domain k8s:Workload ; rdfs:range k8s:ServiceAccount .
+k8s:grants a rdf:Property, owl:ObjectProperty ; rdfs:label "grants" ;
+    rdfs:comment "Binding to the Role or ClusterRole it grants." .
+k8s:permits a rdf:Property, owl:ObjectProperty ; rdfs:label "permits" ; rdfs:range k8s:Permission ;
+    rdfs:comment "Role/ClusterRole to a structured Permission node." .
+k8s:subjectOf a rdf:Property, owl:ObjectProperty ; rdfs:label "subjectOf" ;
+    rdfs:comment "Binding to a subject (ServiceAccount, User, Group)." .
+k8s:aggregates a rdf:Property, owl:ObjectProperty ; rdfs:label "aggregates" ; rdfs:domain k8s:ClusterRole ; rdfs:range k8s:ClusterRole ;
+    rdfs:comment "ClusterRole aggregation (aggregationRule matched the other role's labels)." .
+k8s:allowsIngressFrom a rdf:Property, owl:ObjectProperty ; rdfs:label "allowsIngressFrom" ; rdfs:domain k8s:NetworkPolicy ;
+    rdfs:comment "Policy allows ingress to the workloads it selects from this workload or namespace." .
+k8s:allowsEgressTo a rdf:Property, owl:ObjectProperty ; rdfs:label "allowsEgressTo" ; rdfs:domain k8s:NetworkPolicy .
+k8s:appliesTo a rdf:Property, owl:ObjectProperty ; rdfs:label "appliesTo" ; rdfs:domain k8s:NetworkPolicy ; rdfs:range k8s:Workload ;
+    rdfs:comment "The workloads the policy's podSelector matched." .
+k8s:inFailureDomain a rdf:Property, owl:ObjectProperty ; rdfs:label "inFailureDomain" ; rdfs:domain k8s:Node ; rdfs:range k8s:FailureDomain .
+k8s:hasPDB a rdf:Property, owl:ObjectProperty ; rdfs:label "hasPDB" ; rdfs:domain k8s:Workload ; rdfs:range k8s:PodDisruptionBudget .
+k8s:ownedBy a rdf:Property, owl:ObjectProperty ; rdfs:label "ownedBy" ; rdfs:range k8s:Owner ;
+    rdfs:comment "From the configured owner label/annotation. Workload label wins over namespace label; documented in DESIGN.md." .
+k8s:hostGeneration a rdf:Property, owl:ObjectProperty ; rdfs:label "hostGeneration" ; rdfs:domain k8s:Node ; rdfs:range nix:NixosGeneration ;
+    rdfs:comment "The NixOS generation the node runs, from --nixos-node-map or the nix2rdf.io/generation annotation." .
+
+# ============================ Datatype properties ==========================
+
+k8s:clusterId a rdf:Property, owl:DatatypeProperty ; rdfs:label "clusterId" ; rdfs:domain k8s:Cluster ; rdfs:range xsd:string .
+k8s:name a rdf:Property, owl:DatatypeProperty ; rdfs:label "name" ; rdfs:range xsd:string ; rdfs:comment "metadata.name" .
+k8s:kind a rdf:Property, owl:DatatypeProperty ; rdfs:label "kind" ; rdfs:range xsd:string .
+k8s:apiVersion a rdf:Property, owl:DatatypeProperty ; rdfs:label "apiVersion" ; rdfs:range xsd:string .
+k8s:label a rdf:Property, owl:DatatypeProperty ; rdfs:label "label" ; rdfs:range xsd:string ;
+    rdfs:comment "A metadata label as \"key=value\". Stored for Nodes, Namespaces and Workloads so policies can match on them." .
+k8s:imageRef a rdf:Property, owl:DatatypeProperty ; rdfs:label "imageRef" ; rdfs:domain k8s:ContainerSpec ; rdfs:range xsd:string ;
+    rdfs:comment "The image string exactly as written in the spec." .
+k8s:imageTag a rdf:Property, owl:DatatypeProperty ; rdfs:label "imageTag" ; rdfs:domain k8s:ContainerSpec ; rdfs:range xsd:string ;
+    rdfs:comment "The tag part of imageRef. A property, never identity." .
+k8s:imageRepository a rdf:Property, owl:DatatypeProperty ; rdfs:label "imageRepository" ; rdfs:domain k8s:ContainerSpec ; rdfs:range xsd:string .
+k8s:unresolvedImage a rdf:Property, owl:DatatypeProperty ; rdfs:label "unresolvedImage" ; rdfs:domain k8s:ContainerSpec ; rdfs:range xsd:string ;
+    rdfs:comment "Set (to the image reference) when the container has a mutable tag and no digest could be resolved. A policy violation by default." .
+k8s:initContainer a rdf:Property, owl:DatatypeProperty ; rdfs:label "initContainer" ; rdfs:domain k8s:ContainerSpec ; rdfs:range xsd:boolean .
+k8s:replicas a rdf:Property, owl:DatatypeProperty ; rdfs:label "replicas" ; rdfs:domain k8s:Workload ; rdfs:range xsd:integer .
+k8s:readyReplicas a rdf:Property, owl:DatatypeProperty ; rdfs:label "readyReplicas" ; rdfs:domain k8s:Workload ; rdfs:range xsd:integer .
+k8s:replicasOnNode a rdf:Property, owl:DatatypeProperty ; rdfs:label "replicasOnNode" ; rdfs:domain k8s:Workload ; rdfs:range xsd:string ;
+    rdfs:comment "\"<node-name>:<count>\" so failure-domain spread can be computed without pods." .
+k8s:requestsCpu a rdf:Property, owl:DatatypeProperty ; rdfs:label "requestsCpu" ; rdfs:domain k8s:ContainerSpec ; rdfs:range xsd:string .
+k8s:requestsMemory a rdf:Property, owl:DatatypeProperty ; rdfs:label "requestsMemory" ; rdfs:domain k8s:ContainerSpec ; rdfs:range xsd:string .
+k8s:limitsCpu a rdf:Property, owl:DatatypeProperty ; rdfs:label "limitsCpu" ; rdfs:domain k8s:ContainerSpec ; rdfs:range xsd:string .
+k8s:limitsMemory a rdf:Property, owl:DatatypeProperty ; rdfs:label "limitsMemory" ; rdfs:domain k8s:ContainerSpec ; rdfs:range xsd:string .
+k8s:verb a rdf:Property, owl:DatatypeProperty ; rdfs:label "verb" ; rdfs:domain k8s:Permission ; rdfs:range xsd:string .
+k8s:resource a rdf:Property, owl:DatatypeProperty ; rdfs:label "resource" ; rdfs:domain k8s:Permission ; rdfs:range xsd:string .
+k8s:apiGroup a rdf:Property, owl:DatatypeProperty ; rdfs:label "apiGroup" ; rdfs:domain k8s:Permission ; rdfs:range xsd:string .
+k8s:domainKind a rdf:Property, owl:DatatypeProperty ; rdfs:label "domainKind" ; rdfs:domain k8s:FailureDomain ; rdfs:range xsd:string ;
+    rdfs:comment "zone, region, rack or site." .
+k8s:ownerUnknown a rdf:Property, owl:DatatypeProperty ; rdfs:label "ownerUnknown" ; rdfs:range xsd:boolean ;
+    rdfs:comment "True when no configured owner label/annotation was present. Data, not an error." .
+k8s:costCenter a rdf:Property, owl:DatatypeProperty ; rdfs:label "costCenter" ; rdfs:range xsd:string .
+k8s:observedAt a rdf:Property, owl:DatatypeProperty ; rdfs:label "observedAt" ; rdfs:domain k8s:Snapshot ; rdfs:range xsd:dateTime ;
+    rdfs:comment "When the snapshot was taken. Lives in the snapshot's provenance fragment (k8s/<cluster>/observations), NOT in the content-addressed snapshot fragment, so identical states dedupe." .
+k8s:partial a rdf:Property, owl:DatatypeProperty ; rdfs:label "partial" ; rdfs:domain k8s:Snapshot ; rdfs:range xsd:boolean ;
+    rdfs:comment "True when at least one resource kind could not be listed (k3s edge, partial API availability)." .
+k8s:failedKind a rdf:Property, owl:DatatypeProperty ; rdfs:label "failedKind" ; rdfs:domain k8s:Snapshot ; rdfs:range xsd:string ;
+    rdfs:comment "A resource kind that failed to list in a partial snapshot." .
+k8s:nodeRole a rdf:Property, owl:DatatypeProperty ; rdfs:label "nodeRole" ; rdfs:domain k8s:Node ; rdfs:range xsd:string ;
+    rdfs:comment "From node-role.kubernetes.io/<role> labels." .
+k8s:kubeletVersion a rdf:Property, owl:DatatypeProperty ; rdfs:label "kubeletVersion" ; rdfs:domain k8s:Node ; rdfs:range xsd:string .
+k8s:containerRuntimeVersion a rdf:Property, owl:DatatypeProperty ; rdfs:label "containerRuntimeVersion" ; rdfs:domain k8s:Node ; rdfs:range xsd:string .
+k8s:kernelVersion a rdf:Property, owl:DatatypeProperty ; rdfs:label "kernelVersion" ; rdfs:domain k8s:Node ; rdfs:range xsd:string .
+k8s:osImage a rdf:Property, owl:DatatypeProperty ; rdfs:label "osImage" ; rdfs:domain k8s:Node ; rdfs:range xsd:string .
+k8s:policyType a rdf:Property, owl:DatatypeProperty ; rdfs:label "policyType" ; rdfs:domain k8s:NetworkPolicy ; rdfs:range xsd:string ; rdfs:comment "Ingress or Egress." .
+k8s:allowsAllIngress a rdf:Property, owl:DatatypeProperty ; rdfs:label "allowsAllIngress" ; rdfs:domain k8s:NetworkPolicy ; rdfs:range xsd:boolean .
+k8s:allowsAllEgress a rdf:Property, owl:DatatypeProperty ; rdfs:label "allowsAllEgress" ; rdfs:domain k8s:NetworkPolicy ; rdfs:range xsd:boolean .
+k8s:minAvailable a rdf:Property, owl:DatatypeProperty ; rdfs:label "minAvailable" ; rdfs:domain k8s:PodDisruptionBudget ; rdfs:range xsd:string .
+k8s:maxUnavailable a rdf:Property, owl:DatatypeProperty ; rdfs:label "maxUnavailable" ; rdfs:domain k8s:PodDisruptionBudget ; rdfs:range xsd:string .
+k8s:danglingRef a rdf:Property, owl:DatatypeProperty ; rdfs:label "danglingRef" ; rdfs:range xsd:string ;
+    rdfs:comment "DERIVED ONLY (k8s pack). A typed reference whose target is absent from the same snapshot, as \"<property>:<target-iri>\"." .
+k8s:exemptSingleDomain a rdf:Property, owl:DatatypeProperty ; rdfs:label "exemptSingleDomain" ; rdfs:domain k8s:Workload ; rdfs:range xsd:boolean ;
+    rdfs:comment "Explicit exemption from the single-failure-domain policy, from the nix2rdf.io/exempt-single-domain annotation." .
+
+@prefix k8s:  <https://w3id.org/nix/k8s#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+# DERIVED-ONLY k8s: terms, declared by the pack that derives them.
+k8s:runningClosure a owl:ObjectProperty ; rdfs:label "runningClosure" ; rdfs:domain k8s:Workload ;
+    rdfs:comment "DERIVED: a derivation whose output is in the runtime closure of an image the workload runs. The bridge between build time and run time." .
+k8s:runningOn a owl:ObjectProperty ; rdfs:label "runningOn" ; rdfs:domain k8s:Cluster ;
+    rdfs:comment "DERIVED: a derivation running somewhere in the cluster (containers or NixOS hosts)." .
+k8s:runningOnNode a owl:ObjectProperty ; rdfs:label "runningOnNode" ; rdfs:domain k8s:Node ;
+    rdfs:comment "DERIVED: a derivation running on the node, in a container scheduled there or in the node's own NixOS generation." .
+k8s:effectiveReachability a owl:ObjectProperty ; rdfs:label "effectiveReachability" ;
+    rdfs:comment "DERIVED: workload A can reach workload B (ingress side): no ingress policy selects B, or one allows A / A's namespace / everything." .
+k8s:effectivePermission a owl:ObjectProperty ; rdfs:label "effectivePermission" ; rdfs:range k8s:Permission ;
+    rdfs:comment "DERIVED: a permission a subject holds through bindings and ClusterRole aggregation." .
+k8s:spreadsOver a owl:ObjectProperty ; rdfs:label "spreadsOver" ; rdfs:range k8s:FailureDomain ;
+    rdfs:comment "DERIVED: a zone that hosts at least one replica of the workload." .
+k8s:failureDomainCount a owl:DatatypeProperty ; rdfs:label "failureDomainCount" ; rdfs:range xsd:integer ;
+    rdfs:comment "DERIVED: number of distinct zones a workload's replicas span." .
+k8s:unknownImage a owl:ObjectProperty ; rdfs:label "unknownImage" ;
+    rdfs:comment "DERIVED: a container runs an image digest for which no nix:Image fragment is loaded (the build side is not ingested yet)." .
+k8s:Drift a owl:Class ; rdfs:label "Drift" ;
+    rdfs:comment "DERIVED: a workload whose image digest or replica count differs between a desired and a live snapshot of the same cluster." .
+k8s:desiredSnapshot a owl:ObjectProperty ; rdfs:domain k8s:Drift ; rdfs:range k8s:Snapshot .
+k8s:liveSnapshot a owl:ObjectProperty ; rdfs:domain k8s:Drift ; rdfs:range k8s:Snapshot .
+k8s:workload a owl:ObjectProperty ; rdfs:domain k8s:Drift ; rdfs:range k8s:Workload .
+k8s:driftKind a owl:DatatypeProperty ; rdfs:domain k8s:Drift ; rdfs:range xsd:string ; rdfs:comment "image or replicas" .
+k8s:production a owl:DatatypeProperty ; rdfs:range xsd:boolean ;
+    rdfs:comment "DERIVED: the namespace carries a production label (see LabelConfig.production_labels)." .

@@ -1,0 +1,14 @@
+<https://w3id.org/nix/id/k8s/c1/Deployment/shop/api> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/nix/k8s#Workload> <https://w3id.org/nix/id/k8s/c1/snapshot/s1> .
+<https://w3id.org/nix/id/k8s/c1/Deployment/shop/api> <https://w3id.org/nix/k8s#inCluster> <https://w3id.org/nix/id/k8s/cluster/c1> <https://w3id.org/nix/id/k8s/c1/snapshot/s1> .
+<https://w3id.org/nix/id/k8s/c1/Deployment/shop/api> <https://w3id.org/nix/k8s#hasContainer> <https://w3id.org/nix/id/k8s/c1/Deployment/shop/api/c/api> <https://w3id.org/nix/id/k8s/c1/snapshot/s1> .
+<https://w3id.org/nix/id/k8s/c1/Deployment/shop/api/c/api> <https://w3id.org/nix/k8s#runsImage> <https://w3id.org/nix/id/oci/sha256/img1> <https://w3id.org/nix/id/k8s/c1/snapshot/s1> .
+<https://w3id.org/nix/id/k8s/c1/Deployment/shop/api> <https://w3id.org/nix/k8s#scheduledOn> <https://w3id.org/nix/id/k8s/c1/node/n1> <https://w3id.org/nix/id/k8s/c1/snapshot/s1> .
+<https://w3id.org/nix/id/k8s/c1/node/n1> <https://w3id.org/nix/k8s#inCluster> <https://w3id.org/nix/id/k8s/cluster/c1> <https://w3id.org/nix/id/k8s/c1/nodes/x> .
+<https://w3id.org/nix/id/k8s/c1/node/n1> <https://w3id.org/nix/k8s#hostGeneration> <https://w3id.org/nix/id/gen/g1> <https://w3id.org/nix/id/k8s/c1/nodes/x> .
+<https://w3id.org/nix/id/gen/g1> <https://w3id.org/nix/ns#hasRoot> <https://w3id.org/nix/id/drv/kernel> <https://w3id.org/nix/id/gen/g1> .
+<https://w3id.org/nix/id/oci/sha256/img1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/nix/ns#Image> <https://w3id.org/nix/id/oci/sha256/img1> .
+<https://w3id.org/nix/id/oci/sha256/img1> <https://w3id.org/nix/ns#hasLayer> <https://w3id.org/nix/id/oci/layer/sha256/l1> <https://w3id.org/nix/id/oci/sha256/img1> .
+<https://w3id.org/nix/id/oci/layer/sha256/l1> <https://w3id.org/nix/ns#layerContains> <https://w3id.org/nix/id/out/ssl> <https://w3id.org/nix/id/oci/sha256/img1> .
+<https://w3id.org/nix/id/drv/openssl> <https://w3id.org/nix/ns#hasOutput> <https://w3id.org/nix/id/out/ssl> <https://w3id.org/nix/id/drv/openssl> .
+<https://w3id.org/nix/id/k8s/c1/Deployment/shop/api/c/api> <https://w3id.org/nix/k8s#runsImage> <https://w3id.org/nix/id/oci/sha256/unknown> <https://w3id.org/nix/id/k8s/c1/snapshot/s1> .
+<https://w3id.org/nix/id/oci/sha256/img1> <https://w3id.org/nix/ns#digest> "sha256:img1" <https://w3id.org/nix/id/oci/sha256/img1> .

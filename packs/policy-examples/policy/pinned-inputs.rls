@@ -1,0 +1,7 @@
+%% pinned-inputs: every FlakeInput must resolve to a pin that has a git rev.
+@prefix nix: <https://w3id.org/nix/ns#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+pinnedWithRev(?i) :- t(?i, nix:resolvesTo, ?p), t(?p, nix:rev, ?r) .
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/policy-examples/pinned-inputs>), out(!v, nix:subject, ?i) :-
+    t(?i, rdf:type, nix:FlakeInput), ~pinnedWithRev(?i) .

@@ -1,0 +1,3 @@
+<https://w3id.org/nix/id/pin/sha256-root/input/root/nixpkgs> <https://w3id.org/nix/ns#pinnedTo> <https://w3id.org/nix/id/pin/sha256-nixpkgs> <https://w3id.org/nix/id/pin/sha256-root> .
+<https://w3id.org/nix/id/pin/sha256-root/input/utils/nixpkgs> <https://w3id.org/nix/ns#follows> <https://w3id.org/nix/id/pin/sha256-root/input/root/nixpkgs> <https://w3id.org/nix/id/pin/sha256-root> .
+<https://w3id.org/nix/id/pin/sha256-root/input/deep/nixpkgs> <https://w3id.org/nix/ns#follows> <https://w3id.org/nix/id/pin/sha256-root/input/utils/nixpkgs> <https://w3id.org/nix/id/pin/sha256-root> .

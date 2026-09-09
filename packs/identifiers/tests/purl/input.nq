@@ -1,0 +1,8 @@
+<https://w3id.org/nix/id/drv/h> <https://w3id.org/nix/ns#pname> "hello" <https://w3id.org/nix/id/drv/h> .
+<https://w3id.org/nix/id/drv/h> <https://w3id.org/nix/ns#version> "2.12.3" <https://w3id.org/nix/id/drv/h> .
+<https://w3id.org/nix/id/drv/r> <https://w3id.org/nix/ns#pname> "requests" <https://w3id.org/nix/id/drv/r> .
+<https://w3id.org/nix/id/drv/r> <https://w3id.org/nix/ns#version> "2.32.0" <https://w3id.org/nix/id/drv/r> .
+<https://w3id.org/nix/id/nixpkgs/abc/attr/python3Packages.requests> <https://w3id.org/nix/ns#attrPath> "python3Packages.requests" <https://w3id.org/nix/id/nixpkgs/abc> .
+<https://w3id.org/nix/id/nixpkgs/abc/attr/python3Packages.requests> <https://w3id.org/nix/ns#evaluatesTo> <https://w3id.org/nix/id/drv/r> <https://w3id.org/nix/id/nixpkgs/abc> .
+<https://example.org/vuln/CVE-2026-0001> <https://w3id.org/nix/identifiers#affectsPurl> "pkg:pypi/requests@2.32.0" <https://example.org/feed> .
+<https://example.org/vuln/CVE-2026-0001> <https://w3id.org/nix/identifiers#severity> "HIGH" <https://example.org/feed> .

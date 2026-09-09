@@ -1,0 +1,51 @@
+# Minimal RBAC for `nix2rdf k8s snapshot` in API mode. Read-only.
+# Secrets: the API has no "metadata only" verb; `list` is required and nix2rdf
+# requests metadata only (PartialObjectMetadata), so values never leave the
+# API server. If that is still too much for your policy, omit "secrets" here:
+# the snapshot is then marked k8s:partial with failedKind "Secret", and
+# mounts of secrets show up as dangling references you can exempt in a pack.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nix2rdf-snapshot
+  namespace: nix2rdf
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: nix2rdf-snapshot
+rules:
+  - apiGroups: [""]
+    resources: [namespaces, nodes, pods, services, configmaps, secrets, persistentvolumeclaims, persistentvolumes, serviceaccounts]
+    verbs: [get, list]
+  - apiGroups: [apps]
+    resources: [deployments, statefulsets, daemonsets, replicasets]
+    verbs: [get, list]
+  - apiGroups: [batch]
+    resources: [jobs, cronjobs]
+    verbs: [get, list]
+  - apiGroups: [networking.k8s.io]
+    resources: [ingresses, networkpolicies]
+    verbs: [get, list]
+  - apiGroups: [storage.k8s.io]
+    resources: [storageclasses]
+    verbs: [get, list]
+  - apiGroups: [rbac.authorization.k8s.io]
+    resources: [roles, rolebindings, clusterroles, clusterrolebindings]
+    verbs: [get, list]
+  - apiGroups: [policy]
+    resources: [poddisruptionbudgets]
+    verbs: [get, list]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: nix2rdf-snapshot
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: nix2rdf-snapshot
+subjects:
+  - kind: ServiceAccount
+    name: nix2rdf-snapshot
+    namespace: nix2rdf

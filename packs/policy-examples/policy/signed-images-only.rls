@@ -1,0 +1,9 @@
+%% signed-images-only: every image run by a workload needs a verified attestation.
+@prefix nix: <https://w3id.org/nix/ns#> .
+@prefix k8s: <https://w3id.org/nix/k8s#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix attest: <https://w3id.org/nix/attest#> .
+
+signed(?img) :- t(?img, attest:verifiedBy, ?who) .
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/policy-examples/signed-images-only>), out(!v, nix:subject, ?img) :-
+    t(?c, k8s:runsImage, ?img), ~signed(?img) .

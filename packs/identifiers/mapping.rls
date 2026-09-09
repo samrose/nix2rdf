@@ -1,0 +1,59 @@
+%% identifiers/mapping.rls — PURLs and CPEs as derived, correctable guesses.
+
+@prefix nix: <https://w3id.org/nix/ns#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ids: <https://w3id.org/nix/identifiers#> .
+
+% Narrow helper relations first: Nemo joins are far cheaper over these
+% than over repeated self-joins of the whole triple set.
+pv(?d, ?n, ?v) :- t(?d, nix:pname, ?n), t(?d, nix:version, ?v) .
+attrOf(?d, ?path) :- t(?a, nix:attrPath, ?path), t(?a, nix:evaluatesTo, ?d) .
+
+% The generic Nix PURL type (pkg:nix/<pname>@<version>).
+t(?d, ids:purl, ?u) :- pv(?d, ?n, ?v), ?u = CONCAT("pkg:nix/", ?n, "@", ?v) .
+
+% Ecosystem PURLs from the attribute path a revision/pin reached the derivation by.
+ecosystem("python3Packages.", "pypi") .
+ecosystem("python311Packages.", "pypi") .
+ecosystem("python312Packages.", "pypi") .
+ecosystem("python313Packages.", "pypi") .
+ecosystem("nodePackages.", "npm") .
+ecosystem("haskellPackages.", "hackage") .
+ecosystem("rubyPackages.", "gem") .
+ecosystem("perlPackages.", "cpan") .
+ecosystem("luaPackages.", "luarocks") .
+ecosystem("rustPackages.", "cargo") .
+ecosystem("ocamlPackages.", "opam") .
+ecoOf(?d, ?type) :- attrOf(?d, ?path), ecosystem(?prefix, ?type), STRSTARTS(?path, ?prefix) .
+t(?d, ids:purl, ?u) :- ecoOf(?d, ?type), pv(?d, ?n, ?v), ?u = CONCAT("pkg:", ?type, "/", ?n, "@", ?v) .
+
+% CPE 2.3 from a curated table: pname → (vendor, product). Extend freely.
+cpe("openssl", "openssl", "openssl") .
+cpe("curl", "haxx", "curl") .
+cpe("bash", "gnu", "bash") .
+cpe("glibc", "gnu", "glibc") .
+cpe("hello", "gnu", "hello") .
+cpe("coreutils", "gnu", "coreutils") .
+cpe("zlib", "zlib", "zlib") .
+cpe("nginx", "f5", "nginx") .
+cpe("openssh", "openbsd", "openssh") .
+cpe("python3", "python", "python") .
+cpe("sqlite", "sqlite", "sqlite") .
+cpe("libxml2", "xmlsoft", "libxml2") .
+cpe("linux", "linux", "linux_kernel") .
+cpe("systemd", "systemd_project", "systemd") .
+cpe("git", "git-scm", "git") .
+cpe("xz", "tukaani", "xz") .
+t(?d, ids:cpe, ?c) :- pv(?d, ?n, ?v), cpe(?n, ?vendor, ?product),
+    ?c = CONCAT("cpe:2.3:a:", ?vendor, ":", ?product, ":", ?v, ":*:*:*:*:*:*:*") .
+% GNU heuristic: a gnu.org homepage means vendor "gnu" when the table is silent.
+inTable(?n) :- cpe(?n, ?v, ?p) .
+gnuHome(?d) :- t(?d, nix:homepage, ?h), CONTAINS(?h, "gnu.org") .
+t(?d, ids:cpe, ?c) :- pv(?d, ?n, ?v), ~inTable(?n), gnuHome(?d),
+    ?c = CONCAT("cpe:2.3:a:gnu:", ?n, ":", ?v, ":*:*:*:*:*:*:*") .
+
+% Vulnerability join: a loaded feed says a PURL/CPE is affected.
+t(?d, ids:vulnerableTo, ?vuln) :- t(?d, ids:purl, ?u), t(?vuln, ids:affectsPurl, ?u) .
+t(?d, ids:vulnerableTo, ?vuln) :- t(?d, ids:cpe, ?c), t(?vuln, ids:affectsCpe, ?c) .
+rank("CRITICAL", 4) . rank("HIGH", 3) . rank("MEDIUM", 2) . rank("LOW", 1) . rank("NONE", 0) .
+t(?vuln, ids:severityRank, ?r) :- t(?vuln, ids:severity, ?s), rank(?s, ?r) .

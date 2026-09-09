@@ -1,0 +1,10 @@
+# Drift between desired and live per cluster (k8s pack, k8s:Drift nodes).
+SELECT DISTINCT ?cluster ?workload ?kind ?desired ?live WHERE {
+  ?d a k8s:Drift .
+  ?d k8s:workload ?workload .
+  ?d k8s:driftKind ?kind .
+  ?d k8s:desiredSnapshot ?desired .
+  ?d k8s:liveSnapshot ?live .
+  ?live k8s:ofCluster ?cluster .
+}
+ORDER BY ?cluster ?workload

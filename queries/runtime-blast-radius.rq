@@ -1,0 +1,15 @@
+# Runtime blast radius (live state only): from a source pin rev → derivations
+# built from it → images → workloads → clusters, nodes, owners.
+# Requires: core + k8s packs, image fragments, live k8s snapshots.
+SELECT DISTINCT ?drv ?image ?workload ?cluster ?node ?owner WHERE {
+  ?drv nix:pname "openssl" .
+  ?image a nix:Image .
+  ?image nix:closureContains ?drv .
+  ?container k8s:runsImage ?image .
+  ?workload k8s:hasContainer ?container .
+  GRAPH ?snap { ?workload k8s:hasContainer ?container }
+  ?snap k8s:snapshotKind k8s:liveState .
+  ?workload k8s:inCluster ?cluster .
+  OPTIONAL { ?workload k8s:scheduledOn ?node }
+  OPTIONAL { ?workload k8s:ownedBy ?owner }
+}

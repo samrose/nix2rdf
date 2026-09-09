@@ -1,0 +1,54 @@
+[workspace]
+resolver = "2"
+members = ["crates/nix2rdf-core", "crates/nix2rdf"]
+exclude = ["vendor/nemo"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/samrose/nix2rdf"
+rust-version = "1.85"
+
+[workspace.dependencies]
+# RDF: Oxigraph is the SPARQL store; oxrdf/oxttl are its data-model and
+# parser/serializer crates, used directly so fragments never depend on the store.
+oxigraph = "=0.5.9"
+oxrdf = "=0.3.3"
+oxttl = "0.2"
+# Nemo is the reasoning engine. It is git-only, its API is unstable, and it
+# requires nightly Rust. A patched copy of upstream commit e578c283 is vendored
+# under vendor/nemo (see vendor/PATCHES.md) and used from exactly one module
+# (`nix2rdf_core::nemo_engine`), so an upgrade touches one file.
+nemo = { path = "vendor/nemo/nemo" }
+nemo-physical = { path = "vendor/nemo/nemo-physical" }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+serde_yaml_ng = "0.10"
+zstd = "0.13"
+sha2 = "0.10"
+hex = "0.4"
+base64 = "0.22"
+thiserror = "2"
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json", "fmt"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+tempfile = "3"
+toml = "0.8"
+walkdir = "2"
+ureq = { version = "3", features = ["json"] }
+tar = "0.4"
+flate2 = "1"
+clap = { version = "4", features = ["derive", "env"] }
+axum = "0.8"
+kube = { version = "4.2", default-features = false, features = ["client", "rustls-tls", "ring"] }
+k8s-openapi = { version = "0.28", features = ["v1_34"] }
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+indexmap = { version = "2", features = ["serde"] }
+regex = "1"
+
+[profile.release]
+lto = "thin"
+codegen-units = 4
+strip = true

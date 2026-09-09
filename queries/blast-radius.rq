@@ -1,0 +1,13 @@
+# Blast radius of a derivation: every pin, commit, image and generation whose
+# closure contains it (directly asserted or derived by the core pack).
+# Bind ?drv to a derivation IRI, or replace the first pattern with a lookup
+# by name (?drv nix:pname "openssl").
+# Most selective pattern first: the derivation's own triples.
+SELECT DISTINCT ?snapshot ?kind ?committedAt WHERE {
+  ?drv nix:pname "openssl" .
+  ?snapshot nix:closureContains ?drv .
+  ?snapshot a ?kind .
+  FILTER(?kind IN (nix:FlakePin, nix:NixosGeneration, nix:Image, nix:Commit, nix:NixpkgsRevision))
+  OPTIONAL { ?snapshot nix:committedAt ?committedAt }
+}
+ORDER BY ?kind ?snapshot

@@ -1,0 +1,8 @@
+/target
+/result
+/result-*
+/store
+*.nq.zst
+!fixtures/**/*.nq.zst
+!packs/**/tests/**/*.nq
+.direnv

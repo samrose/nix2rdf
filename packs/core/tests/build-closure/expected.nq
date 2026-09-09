@@ -1,0 +1,6 @@
+<https://w3id.org/nix/id/drv/a> <https://w3id.org/nix/ns#dependsOn> <https://w3id.org/nix/id/drv/b> .
+<https://w3id.org/nix/id/drv/a> <https://w3id.org/nix/ns#dependsOnTransitively> <https://w3id.org/nix/id/drv/c> .
+<https://w3id.org/nix/id/pin/sha256-root> <https://w3id.org/nix/ns#closureContains> <https://w3id.org/nix/id/drv/a> .
+<https://w3id.org/nix/id/pin/sha256-root> <https://w3id.org/nix/ns#closureContains> <https://w3id.org/nix/id/drv/c> .
+<https://w3id.org/nix/id/pin/sha256-root> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/nix/ns#Snapshot> .
+<https://w3id.org/nix/id/drv/c> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/nix/ns#Derivation> .

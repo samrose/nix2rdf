@@ -1,0 +1,18 @@
+%% owl-rl-subset/semantics.rls — the subset of OWL 2 RL actually used.
+%% Subclass/subproperty come from the rdfs pack (cax-sco, scm-sco, prp-spo1).
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+% prp-trp
+t(?x, ?p, ?z) :- t(?p, rdf:type, owl:TransitiveProperty), t(?x, ?p, ?y), t(?y, ?p, ?z) .
+% prp-symp
+t(?y, ?p, ?x) :- t(?p, rdf:type, owl:SymmetricProperty), t(?x, ?p, ?y) .
+% prp-inv1 / prp-inv2
+t(?y, ?q, ?x) :- t(?p, owl:inverseOf, ?q), t(?x, ?p, ?y) .
+t(?y, ?p, ?x) :- t(?p, owl:inverseOf, ?q), t(?x, ?q, ?y) .
+% prp-spo2, for chains of length two written as an RDF list
+t(?x, ?p, ?z) :- t(?p, owl:propertyChainAxiom, ?l), t(?l, rdf:first, ?p1), t(?l, rdf:rest, ?r), t(?r, rdf:first, ?p2), t(?r, rdf:rest, rdf:nil), t(?x, ?p1, ?y), t(?y, ?p2, ?z) .
+% eq-sym / eq-trans (owl:sameAs), used when CI links a registry digest to a build-time image id
+t(?y, owl:sameAs, ?x) :- t(?x, owl:sameAs, ?y) .
+t(?x, owl:sameAs, ?z) :- t(?x, owl:sameAs, ?y), t(?y, owl:sameAs, ?z) .

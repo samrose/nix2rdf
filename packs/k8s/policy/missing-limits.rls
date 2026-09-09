@@ -1,0 +1,6 @@
+%% missing-limits / missing-owner
+@prefix nix: <https://w3id.org/nix/ns#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/k8s/missing-limits>), out(!v, nix:subject, ?c) :- kContainer(?c), ~kLimitsCpu(?c) .
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/k8s/missing-limits>), out(!v, nix:subject, ?c) :- kContainer(?c), ~kLimitsMemory(?c) .
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/k8s/missing-owner>), out(!v, nix:subject, ?w) :- kWorkload(?w), kOwnerUnknown(?w) .

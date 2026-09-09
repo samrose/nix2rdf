@@ -1,0 +1,5 @@
+<https://w3id.org/nix/id/drv/h> <https://w3id.org/nix/identifiers#purl> "pkg:nix/hello@2.12.3" .
+<https://w3id.org/nix/id/drv/h> <https://w3id.org/nix/identifiers#cpe> "cpe:2.3:a:gnu:hello:2.12.3:*:*:*:*:*:*:*" .
+<https://w3id.org/nix/id/drv/r> <https://w3id.org/nix/identifiers#purl> "pkg:pypi/requests@2.32.0" .
+<https://w3id.org/nix/id/drv/r> <https://w3id.org/nix/identifiers#vulnerableTo> <https://example.org/vuln/CVE-2026-0001> .
+<https://example.org/vuln/CVE-2026-0001> <https://w3id.org/nix/identifiers#severityRank> "3"^^<http://www.w3.org/2001/XMLSchema#integer> .

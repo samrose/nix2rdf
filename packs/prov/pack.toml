@@ -1,0 +1,4 @@
+name = "prov"
+version = "0.1.0"
+depends_on = ["core"]
+description = "PROV-O projection: derivation as prov:Activity, outputs/sources as prov:Entity, builder as prov:SoftwareAgent, rule runs as activities"

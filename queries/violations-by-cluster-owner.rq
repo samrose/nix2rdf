@@ -1,0 +1,9 @@
+# Violations by policy, cluster and owner (k8s subjects).
+SELECT ?policy ?cluster ?owner (COUNT(DISTINCT ?subject) AS ?violations) WHERE {
+  ?v nix:violates ?policy .
+  ?v nix:subject ?subject .
+  OPTIONAL { ?subject k8s:inCluster ?cluster }
+  OPTIONAL { ?subject k8s:ownedBy ?owner }
+}
+GROUP BY ?policy ?cluster ?owner
+ORDER BY DESC(?violations)

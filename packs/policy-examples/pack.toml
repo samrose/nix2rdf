@@ -1,0 +1,4 @@
+name = "policy-examples"
+version = "0.1.0"
+depends_on = ["core"]
+description = "Reference policies: pinned-inputs, no-unfree-in-runtime-closure, signed-images-only. Each derives nix:Violation nodes; CI checks are SPARQL ASKs over the derived graph"

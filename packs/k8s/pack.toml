@@ -1,0 +1,4 @@
+name = "k8s"
+version = "0.1.0"
+depends_on = ["core", "identifiers", "rdfs"]
+description = "Kubernetes deployment semantics: runningClosure (the build↔run bridge), running-on-cluster/node incl. NixOS host closures, effective reachability and permissions, failure-domain spread, drift; plus the deployment policies"

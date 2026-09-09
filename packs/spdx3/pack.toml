@@ -1,0 +1,4 @@
+name = "spdx3"
+version = "0.1.0"
+depends_on = ["core"]
+description = "SPDX 3.0.1 projection: derivation → software Package, output/source → Artifact, dependsOn → Relationship, nixpkgs license id → declared license expression"

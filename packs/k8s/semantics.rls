@@ -1,0 +1,127 @@
+%% k8s/semantics.rls — structural rules bridging what was built to what runs.
+%%
+%% Performance note: Nemo materializes a fresh ordering of the whole triple
+%% table for every distinct join pattern over t/3. Every k8s property used
+%% in a rule body is therefore extracted ONCE into a narrow relation below,
+%% and all rules (including the policies) join those. Keep it that way.
+
+@prefix nix: <https://w3id.org/nix/ns#> .
+@prefix k8s: <https://w3id.org/nix/k8s#> .
+@prefix ids: <https://w3id.org/nix/identifiers#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+%% --- Narrow relations extracted from t -------------------------------------
+kWorkload(?w) :- t(?w, rdf:type, k8s:Workload) .
+kStatefulSet(?w) :- t(?w, rdf:type, k8s:StatefulSet) .
+kContainer(?c) :- t(?c, rdf:type, k8s:ContainerSpec) .
+kNamespace(?ns) :- t(?ns, rdf:type, k8s:Namespace) .
+kServiceAccount(?sa) :- t(?sa, rdf:type, k8s:ServiceAccount) .
+kClusterRoleBinding(?b) :- t(?b, rdf:type, k8s:ClusterRoleBinding) .
+kSnapshot(?s) :- t(?s, rdf:type, k8s:Snapshot) .
+kInNamespace(?x, ?ns) :- t(?x, k8s:inNamespace, ?ns) .
+kInCluster(?x, ?cl) :- t(?x, k8s:inCluster, ?cl) .
+kName(?x, ?n) :- t(?x, k8s:name, ?n) .
+kLabel(?x, ?l) :- t(?x, k8s:label, ?l) .
+kHasContainer(?w, ?c) :- t(?w, k8s:hasContainer, ?c) .
+kRunsImage(?c, ?img) :- t(?c, k8s:runsImage, ?img) .
+kUnresolvedImage(?c, ?ref) :- t(?c, k8s:unresolvedImage, ?ref) .
+kScheduledOn(?w, ?n) :- t(?w, k8s:scheduledOn, ?n) .
+kReplicas(?w, ?r) :- t(?w, k8s:replicas, ?r) .
+kHasPDB(?w, ?p) :- t(?w, k8s:hasPDB, ?p) .
+kMounts(?w, ?x) :- t(?w, k8s:mounts, ?x) .
+kBoundTo(?pvc, ?pv) :- t(?pvc, k8s:boundTo, ?pv) .
+kPinnedToNode(?pv, ?n) :- t(?pv, k8s:pinnedToNode, ?n) .
+kOwnerUnknown(?w) :- t(?w, k8s:ownerUnknown, "true"^^xsd:boolean) .
+kExempt(?w) :- t(?w, k8s:exemptSingleDomain, "true"^^xsd:boolean) .
+kLimitsCpu(?c) :- t(?c, k8s:limitsCpu, ?x) .
+kLimitsMemory(?c) :- t(?c, k8s:limitsMemory, ?x) .
+kInFailureDomain(?n, ?d) :- t(?n, k8s:inFailureDomain, ?d) .
+kDomainKind(?d, ?k) :- t(?d, k8s:domainKind, ?k) .
+kHostGeneration(?n, ?g) :- t(?n, k8s:hostGeneration, ?g) .
+kNodeRole(?n, ?r) :- t(?n, k8s:nodeRole, ?r) .
+kKernelVersion(?n, ?v) :- t(?n, k8s:kernelVersion, ?v) .
+kAppliesTo(?np, ?w) :- t(?np, k8s:appliesTo, ?w) .
+kPolicyType(?np, ?ty) :- t(?np, k8s:policyType, ?ty) .
+kAllowsIngressFrom(?np, ?x) :- t(?np, k8s:allowsIngressFrom, ?x) .
+kAllowsAllIngress(?np) :- t(?np, k8s:allowsAllIngress, "true"^^xsd:boolean) .
+kGrants(?b, ?r) :- t(?b, k8s:grants, ?r) .
+kSubjectOf(?b, ?s) :- t(?b, k8s:subjectOf, ?s) .
+kAggregates(?r, ?r2) :- t(?r, k8s:aggregates, ?r2) .
+kPermits(?r, ?p) :- t(?r, k8s:permits, ?p) .
+kVerb(?p, ?v) :- t(?p, k8s:verb, ?v) .
+kResource(?p, ?r) :- t(?p, k8s:resource, ?r) .
+kSnapshotKind(?s, ?k) :- t(?s, k8s:snapshotKind, ?k) .
+kOfCluster(?s, ?cl) :- t(?s, k8s:ofCluster, ?cl) .
+nImageDigest(?img) :- t(?img, nix:digest, ?d) .
+nRuntimeClosure(?snap, ?o) :- t(?snap, nix:runtimeClosureContains, ?o) .
+nClosure(?snap, ?d) :- t(?snap, nix:closureContains, ?d) .
+nHasOutput(?d, ?o) :- t(?d, nix:hasOutput, ?o) .
+iVulnerableTo(?d, ?v) :- t(?d, ids:vulnerableTo, ?v) .
+iSeverityRank(?v, ?r) :- t(?v, ids:severityRank, ?r) .
+
+%% --- Production namespaces (label set is configurable in the extractor) ------
+prodNs(?ns) :- kNamespace(?ns), kLabel(?ns, "environment=production") .
+prodNs(?ns) :- kNamespace(?ns), kLabel(?ns, "env=prod") .
+prodNs(?ns) :- kNamespace(?ns), kLabel(?ns, "nix2rdf.io/production=true") .
+t(?ns, k8s:production, "true"^^xsd:boolean) :- prodNs(?ns) .
+prodWorkload(?w) :- kWorkload(?w), kInNamespace(?w, ?ns), prodNs(?ns) .
+
+%% --- runningClosure: the build↔run bridge -----------------------------------
+wImage(?w, ?img) :- kHasContainer(?w, ?c), kRunsImage(?c, ?img) .
+imgDrv(?img, ?d) :- nRuntimeClosure(?img, ?o), nHasOutput(?d, ?o) .
+t(?w, k8s:runningClosure, ?d) :- wImage(?w, ?img), imgDrv(?img, ?d) .
+% Images without layer data but with a known build closure: fall back to it.
+hasRuntime(?img) :- nRuntimeClosure(?img, ?o) .
+out(?w, k8s:runningClosure, ?d) :- wImage(?w, ?img), ~hasRuntime(?img), nClosure(?img, ?d) .
+% `running` is what policies read: both layers.
+running(?w, ?d) :- wImage(?w, ?img), imgDrv(?img, ?d) .
+running(?w, ?d) :- out(?w, k8s:runningClosure, ?d) .
+
+% An image is "known" when its own fragment is loaded, i.e. it carries a
+% digest. (rdf:type alone is not enough: the rdfs pack types every
+% runsImage object as nix:Image through the property's range.)
+out(?c, k8s:unknownImage, ?img) :- kRunsImage(?c, ?img), ~nImageDigest(?img) .
+
+%% --- runningOn / runningOnNode: containers and hosts as one relation --------
+runningOnNode(?n, ?d) :- running(?w, ?d), kScheduledOn(?w, ?n) .
+runningOnNode(?n, ?d) :- kHostGeneration(?n, ?g), nClosure(?g, ?d) .
+out(?n, k8s:runningOnNode, ?d) :- runningOnNode(?n, ?d) .
+out(?cl, k8s:runningOn, ?d) :- running(?w, ?d), kInCluster(?w, ?cl) .
+out(?cl, k8s:runningOn, ?d) :- runningOnNode(?n, ?d), kInCluster(?n, ?cl) .
+
+%% --- Effective reachability (ingress side) ------------------------------------
+ingressPolicy(?np) :- kPolicyType(?np, "Ingress") .
+hasIngressPolicy(?w) :- kAppliesTo(?np, ?w), ingressPolicy(?np) .
+wCluster(?w, ?cl) :- kWorkload(?w), kInCluster(?w, ?cl) .
+sameCluster(?a, ?b) :- wCluster(?a, ?cl), wCluster(?b, ?cl) .
+% Default allow: nothing selects the target.
+out(?a, k8s:effectiveReachability, ?b) :- sameCluster(?a, ?b), ~hasIngressPolicy(?b) .
+% A policy selecting the target admits A directly, A's namespace, or everyone.
+out(?a, k8s:effectiveReachability, ?b) :- kAppliesTo(?np, ?b), ingressPolicy(?np), kAllowsIngressFrom(?np, ?a), kWorkload(?a) .
+out(?a, k8s:effectiveReachability, ?b) :- kAppliesTo(?np, ?b), ingressPolicy(?np), kAllowsIngressFrom(?np, ?ns), kNamespace(?ns), kInNamespace(?a, ?ns), kWorkload(?a) .
+out(?a, k8s:effectiveReachability, ?b) :- kAppliesTo(?np, ?b), ingressPolicy(?np), kAllowsAllIngress(?np), sameCluster(?a, ?b) .
+
+%% --- Effective permissions -----------------------------------------------------
+roleOf(?b, ?r) :- kGrants(?b, ?r) .
+roleOf(?b, ?r2) :- roleOf(?b, ?r), kAggregates(?r, ?r2) .
+effPerm(?subj, ?perm) :- kSubjectOf(?b, ?subj), roleOf(?b, ?r), kPermits(?r, ?perm) .
+t(?subj, k8s:effectivePermission, ?perm) :- effPerm(?subj, ?perm) .
+
+%% --- Failure-domain spread ------------------------------------------------------
+zone(?d) :- kDomainKind(?d, "zone") .
+spread(?w, ?d) :- kScheduledOn(?w, ?n), kInFailureDomain(?n, ?d), zone(?d) .
+t(?w, k8s:spreadsOver, ?d) :- spread(?w, ?d) .
+domainCount(?w, #count(?d)) :- spread(?w, ?d) .
+out(?w, k8s:failureDomainCount, ?c) :- domainCount(?w, ?c) .
+
+%% --- Drift between desired and live state of the same cluster -----------------
+live(?s) :- kSnapshotKind(?s, k8s:liveState) .
+desired(?s) :- kSnapshotKind(?s, k8s:desiredState) .
+imgIn(?s, ?w, ?img) :- q(?s, ?w, k8s:hasContainer, ?c), q(?s, ?c, k8s:runsImage, ?img) .
+replIn(?s, ?w, ?r) :- q(?s, ?w, k8s:replicas, ?r) .
+pair(?d, ?l) :- desired(?d), live(?l), kOfCluster(?d, ?cl), kOfCluster(?l, ?cl) .
+imageDrift(?d, ?l, ?w) :- pair(?d, ?l), imgIn(?d, ?w, ?i1), imgIn(?l, ?w, ?i2), ?i1 != ?i2 .
+replicaDrift(?d, ?l, ?w) :- pair(?d, ?l), replIn(?d, ?w, ?r1), replIn(?l, ?w, ?r2), ?r1 != ?r2 .
+out(!x, rdf:type, k8s:Drift), out(!x, k8s:desiredSnapshot, ?d), out(!x, k8s:liveSnapshot, ?l), out(!x, k8s:workload, ?w), out(!x, k8s:driftKind, "image") :- imageDrift(?d, ?l, ?w) .
+out(!x, rdf:type, k8s:Drift), out(!x, k8s:desiredSnapshot, ?d), out(!x, k8s:liveSnapshot, ?l), out(!x, k8s:workload, ?w), out(!x, k8s:driftKind, "replicas") :- replicaDrift(?d, ?l, ?w) .

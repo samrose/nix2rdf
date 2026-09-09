@@ -1,0 +1,14 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+# PROV-O terms used, as notation. Authoritative: https://www.w3.org/TR/prov-o/
+prov:Activity a owl:Class ; rdfs:isDefinedBy <http://www.w3.org/ns/prov#> .
+prov:Entity a owl:Class .
+prov:Agent a owl:Class .
+prov:SoftwareAgent a owl:Class ; rdfs:subClassOf prov:Agent .
+prov:used a owl:ObjectProperty .
+prov:wasGeneratedBy a owl:ObjectProperty .
+prov:wasDerivedFrom a owl:ObjectProperty .
+prov:wasAssociatedWith a owl:ObjectProperty .
+prov:generatedAtTime a owl:DatatypeProperty .
+prov:endedAtTime a owl:DatatypeProperty .

@@ -1,0 +1,6 @@
+# Nemo (the reasoning engine, a git dependency) uses unstable `#![feature]`
+# gates and therefore requires nightly. The date is pinned so that builds are
+# reproducible; bump it together with the Nemo commit in Cargo.toml.
+[toolchain]
+channel = "nightly-2026-09-01"
+components = ["rustfmt", "clippy"]
