@@ -514,6 +514,22 @@ fn main() -> Result<()> {
                     bail!("a flake reference is required unless --from-recorded is given")
                 }
             };
+            // Accept `.#`, `.#hello` and `github:o/r#pkg`: the fragment is an attribute.
+            let (flake_ref, mut attrs) = match flake_ref.split_once('#') {
+                Some((r, frag)) => {
+                    let mut attrs = attrs;
+                    if !frag.is_empty() {
+                        attrs.push(frag.to_string());
+                    }
+                    (r.to_string(), attrs)
+                }
+                None => (flake_ref, attrs),
+            };
+            if flake_ref.is_empty() {
+                bail!("empty flake reference");
+            }
+            attrs.sort();
+            attrs.dedup();
             let opts = FlakeOptions {
                 flake_ref,
                 attrs,
