@@ -111,3 +111,14 @@ Two costs to plan for: the filesystem block overhead of many small files
 transitive-closure graphs, which dominate derived size; run `core` per
 snapshot (`--root <snapshot> --input-closure`) rather than over the whole
 store, and `gc-derived` when rules change.
+
+## License
+
+nix2rdf is MIT licensed (see `LICENSE`). Everything it links is
+permissively licensed and compatible: Oxigraph (MIT OR Apache-2.0),
+Nemo (MIT OR Apache-2.0; the vendored copy under `vendor/nemo` keeps its
+`LICENSE-MIT`/`LICENSE-APACHE` and is used under MIT), kube (Apache-2.0),
+RocksDB via oxrocksdb-sys (Apache-2.0), zstd (BSD-3-Clause). The
+nixpkgs-multiverse index files it ingests are MIT. `cargo deny check
+licenses` (in the dev shell and in `nix flake check`) enforces the allow
+list in `deny.toml`.
