@@ -5,9 +5,11 @@
 use crate::iri::{k8s, nix, xsd};
 use oxrdf::NamedNode;
 
+/// Raw identifiers (`r#ref`) stringify with their `r#` prefix; strip it so
+/// the term is `nix:ref`, not `nix:r#ref` (which is not even a valid IRI).
 macro_rules! terms {
     ($ns:ident; $($name:ident),* $(,)?) => {
-        $( #[allow(non_snake_case)] pub fn $name() -> NamedNode { $ns(stringify!($name)) } )*
+        $( #[allow(non_snake_case)] pub fn $name() -> NamedNode { $ns(stringify!($name).trim_start_matches("r#")) } )*
         pub const ALL: &[&str] = &[ $( stringify!($name) ),* ];
     };
 }
@@ -76,4 +78,18 @@ pub fn xsd_date_time() -> NamedNode {
 }
 pub fn xsd_any_uri() -> NamedNode {
     xsd("anyURI")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn raw_identifier_terms_have_no_prefix() {
+        assert_eq!(nix_terms::r#ref().as_str(), "https://w3id.org/nix/ns#ref");
+        assert_eq!(nix_terms::name().as_str(), "https://w3id.org/nix/ns#name");
+        for t in nix_terms::ALL.iter().chain(k8s_terms::ALL) {
+            assert!(!t.trim_start_matches("r#").contains('#'), "{t}");
+        }
+    }
 }
