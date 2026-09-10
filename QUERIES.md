@@ -20,6 +20,30 @@ outward. Rules of thumb used in every shipped query:
 4. Scope by named graph (`GRAPH ?snap { … }`) when you need "in this
    snapshot", and by `k8s:snapshotKind` for live vs desired.
 
+## Set differences over closures: subquery + MINUS, not NOT EXISTS
+
+"Derivations reachable from A but not from B" is the most common question
+over `dependsOnTransitively`, and the obvious spelling is the slow one:
+
+```sparql
+# SLOW: the NOT EXISTS is re-evaluated per candidate over millions of edges
+?rootA nix:dependsOnTransitively ?d .
+FILTER NOT EXISTS { ?rootB nix:dependsOnTransitively ?d }
+```
+
+Correlated `FILTER NOT EXISTS` re-joins the closure for every binding of
+`?d`; with a 6.6 M-edge closure that is minutes to hours. Compute both
+sides as sets once and subtract:
+
+```sparql
+{ SELECT DISTINCT ?d WHERE { ?rootA nix:dependsOnTransitively ?d } }
+MINUS { ?rootB nix:dependsOnTransitively ?d }
+```
+
+`closure-diff.rq` is written this way. Keep the selective pattern that
+binds `?rootA` (an `nix:attrPath` or `nix:pname` literal) first inside the
+subquery; `MINUS` then runs once over the right-hand set.
+
 ## The library
 
 | File | Answers |
