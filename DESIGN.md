@@ -219,6 +219,27 @@ query, check), Kubernetes snapshot determinism, and ontology validation
 declared). Live extraction is not exercised inside the sandbox by design;
 `nix2rdf flake --record <dir>` refreshes the fixture from a real run.
 
+## Nix versions and the recorded fixtures
+
+`nix derivation show` changed its JSON schema in Nix 2.34 (top-level
+`{"version": 4, "derivations": …}`, store base names instead of paths,
+`inputs.{drvs,srcs}`, `structuredAttrs` as an object instead of the `__json`
+environment variable, and no `path` for fixed-output outputs). The parser
+(`nix::model::parse_derivation_show`) accepts both and normalizes the new
+shape to the classic one, re-serializing structured attributes exactly as
+Nix does, so a derivation fragment is byte-identical whichever Nix produced
+the JSON. That property is what lets independently produced fragments be
+shared, and it is verified: `fixtures/hello` was recorded with Nix 2.24,
+`fixtures/hello-v4` with Nix 2.34 (the version the binary is wrapped with),
+and the `schema-compat` check requires identical `drv/` and `src/` fragments
+from both.
+
+The wrapped binary always runs the flake's pinned `pkgs.nix`; that is the
+supported version. When the nixpkgs input moves to a Nix with a new schema,
+re-record the fixture (`nix2rdf flake … --record fixtures/hello-vN` under
+`nix shell nixpkgs#nix`) and extend the check. `nix run .#smoke` runs the
+real front-end live for CI runners that have Nix.
+
 ## Known limitations
 
 - Runtime `references` require built outputs; without them, runtime closure

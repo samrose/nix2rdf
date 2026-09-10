@@ -1,0 +1,2074 @@
+{
+  "/nix/store/01gahr13mk3p411jhgxk7ab3pnl0c9yv-0001-No-impure-bin-sh.patch": {
+    "narHash": "sha256-Adg4bvZq87bOTUHy9i2cejIB/NFQClyttbiVENc7GV4=",
+    "narSize": 1768,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0phr7gbi15dqnnnmq2jhs7y02ckskhnzdwj19p7bdwvayrp3in01",
+    "signatures": []
+  },
+  "/nix/store/03hvw6lkwjka6cr1zr60p2lvjzyz3n2a-kyua-check-hook.sh": {
+    "narHash": "sha256-h6QUGx/mHbrd9tjXDKJgEwYVsRhGMjK1hwkzxTCfndw=",
+    "narSize": 360,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1p4xkwqcacq9hysk4cj632qia1hkc2i0rmyqyvfvl7g63wdi9947",
+    "signatures": []
+  },
+  "/nix/store/0kzzha3wv08i1qbx1l7lxqwmvlz3968x-pypa-install-hook.sh": {
+    "narHash": "sha256-G0U6Gsi94yu26ePtI89lInHjWZ4EFj3Q09CaSmcwMGg=",
+    "narSize": 768,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0s1h61klm6nhsg83s5h4krcy6w92cp7j7vg3x6v2pqxxr0d3li8v",
+    "signatures": []
+  },
+  "/nix/store/0rw1qmkghff7lf6lm75c6i0pi7jrm2jm-export-variable.patch": {
+    "narHash": "sha256-82xrCCSwlh1ZJjr9j7u5ACMYth574+ovP4PLpfWspgk=",
+    "narSize": 1032,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:02d6mkssbjw37wpymqvv3sv1h8q0p6xqzz9s4rciv5mh4h46nv7k",
+    "signatures": []
+  },
+  "/nix/store/0v7w62jca8nw6w31zs4y2805jj670f6p-no-arch_only-8.2.patch": {
+    "narHash": "sha256-kCgmS+kBSukVz7C7JnuG0tpRgUmhjumPGCV219xxvAE=",
+    "narSize": 592,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:00dwf7fdfxi5327yk3m1960m3nnjhrxjdfxhrwayjjh1x55jca4h",
+    "signatures": []
+  },
+  "/nix/store/0wkh2m9jzdlbrq2zkdm0hn5gkb7lzl73-make-binary-wrapper.sh": {
+    "narHash": "sha256-gDn3l5UczctNixMDh1iAKnea53BcA6LCvpn/sXiUIw4=",
+    "narSize": 17856,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:03i3jiwb3zwrpv1a40swf3krlxrah1c8f0qkid6wpk8wjnbzffc0",
+    "signatures": []
+  },
+  "/nix/store/0y5xmdb7qfvimjwbq7ibg1xdgkgjwqng-no-broken-symlinks.sh": {
+    "narHash": "sha256-1JWwvafXMkWBWP7fn+TdHLPAb1dy/YjStDYtG0VmNxM=",
+    "narSize": 3320,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:04rpcr2inb9nnk98izbjaxpw1cqwvpj9zpzyb20lacnplyyv15fl",
+    "signatures": []
+  },
+  "/nix/store/0yanklhkvs3ygb149mxayfvd8vwjqfra-setup-hook.sh": {
+    "narHash": "sha256-RwpkJQ+pYYhY7HxcxlI/Tq7ZimFNmCC5kf/sWpHFz18=",
+    "narSize": 11856,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0pygqn8mmv7zj6wj162dc65dkbjf7x9ccp3wxic8hqd91wjn82j7",
+    "signatures": []
+  },
+  "/nix/store/119w10l5ic8izi6igxqpq0wdmccs9mbc-builder.sh": {
+    "narHash": "sha256-gjCMtpdZMM+UD9mWy+0KoaHGwI2lbZLaJJISjyZ/npk=",
+    "narSize": 1288,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:16cygwk8y4lj4kd94vd5ip0cd8d11bnwp5nr1yacyc2rjyv8qc42",
+    "signatures": []
+  },
+  "/nix/store/16lp1ifq13ziy7np661pjvsa0bmhsbw1-meson.build.in": {
+    "narHash": "sha256-04/UCo4LAWKWqMVKHJtK1LbT6dW7JdyaG/AD7sQUmM8=",
+    "narSize": 12136,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1kwq2k2fw0zh3fddq9dvsplx7dnl9adiqjn5m2b6408biq5d93yk",
+    "signatures": []
+  },
+  "/nix/store/1k1wn8807yizgz3ghnbd4k6zsc0dzfkr-CVE-2014-9913.patch": {
+    "narHash": "sha256-VAiEF08SVYb3PLkZK4H1VpABxqdxLiVt59Puu4KtUTg=",
+    "narSize": 1408,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0f2imn1bpvnkwxnjabkilz30342nyn0jn6dr7kvqcm8j9wbq822l",
+    "signatures": []
+  },
+  "/nix/store/1ksmnsr3m6paw8gs7jp9b623agzdrqi2-add-flags.sh": {
+    "narHash": "sha256-0ihUa2f1+A/q7LW3a7qbDahQuUz883/aOCyH+RGyE48=",
+    "narSize": 392,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:13qkn88zk1rc73d7zwzw9jwm1a0dkfx6pdxmxkm0zy7mcxmm8a6j",
+    "signatures": []
+  },
+  "/nix/store/1md7rx33sylrz6l5nz9zq6ks1m8jzfna-sdag-freeze-condition-in-select-of-load-fold.patch": {
+    "narHash": "sha256-w3ZCqjHIqyk2y/73+TjNLyYqRsneEtMSggWf9hzbXbA=",
+    "narSize": 138872,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1c2xvcfgd7q5h89d64nyr532l9igrlwgkxzyrcv2kay866m44xn3",
+    "signatures": []
+  },
+  "/nix/store/1py1bqrkcp6sipaf3znbprrsc2ac23wi-gnulib-float-h-tests-port-to-C23-PowerPC-GCC.patch": {
+    "narHash": "sha256-L4pshdd2gdmYsut2hdPOhGaCTWAtBkucDUcn/EWW76s=",
+    "narSize": 9888,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1azgjr2zq9s71nf4n1idc16q4rl4rv9qaxpbnacdk0bnsy2nr2ig",
+    "signatures": []
+  },
+  "/nix/store/207bwzp5xxsvf8sn7nq16lfr5b575k6y-003-fix-unexport-env-test.diff": {
+    "narHash": "sha256-prby84WceOZId32dNGDTuR7SSao2ZUZ1A8XIPuoA8So=",
+    "narSize": 592,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0api03m3xj650dslcr9nm94x47mrsdh397bxfx4fcy4whprz5dm6",
+    "signatures": []
+  },
+  "/nix/store/20h02nyn8y3ikbcz5m3nmbhih5h8p03y-sw_vers-CFPriv.patch": {
+    "narHash": "sha256-k8u+jLvdSlO/fYjTaHUGGSGTWaLNGoF/Tyi+BibX/00=",
+    "narSize": 832,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0kgzswk0dgi89xzq26ndl9cr688r0rsnilw8gnzm6jnxpf6bxjwk",
+    "signatures": []
+  },
+  "/nix/store/2cq4hsc1v8ylccspw8351r72s56w1fia-CVE-2015-7697.diff": {
+    "narHash": "sha256-yrNtdQ/Tgmm1+CYLE+ILVFEPiEmy5n+KNYlLrb/OJzo=",
+    "narSize": 1432,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0fi7rszssjw96n57zrmj9640ylal1gi162r6z2snk0nk1xsnvcya",
+    "signatures": []
+  },
+  "/nix/store/2nr8kyh8x11fqppcqp0wmp82wmqbp007-CVE-2026-15534-1.patch": {
+    "narHash": "sha256-S+ilkYgcaY5ga+dD2MYx5lSEAaEARThntcbYdfjjHyQ=",
+    "narSize": 1592,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:090zwgw7bn66nmkkhi80l40q8m76673dhhz7ddh8ws8wi28sbs2b",
+    "signatures": []
+  },
+  "/nix/store/329zjqfysghmg8sa9svgdd10vswbzcka-nuke-refs": {
+    "narHash": "sha256-RyVrr5sui/Zbgzf6yx/GnAeMJmXxgBKnqc7u2Xb8e6c=",
+    "narSize": 968,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:19vvzivdkvnfm6ki507iclk8q1wwqqgwpyiphddzd2rfkfpnn9a7",
+    "signatures": []
+  },
+  "/nix/store/39ipvg8shb5qgxkrd6w9x4vbfqqz24pp-0006-Fix-more-non-Darwin-stuff.patch": {
+    "narHash": "sha256-J69c0HfuKm1r3QUU8uCYzvC6ahwhfDlN7pGSOt0N0bM=",
+    "narSize": 1168,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1cyi1pfkm4lixr6kjz113imbmw6fk3hg4505vmmnsapffz85rbr7",
+    "signatures": []
+  },
+  "/nix/store/3arv9ycnwpj3qcb05spjhyff417d3mxj-0001-Support-static-module-loading.patch": {
+    "narHash": "sha256-+u9QvMELsFH1UUGUPkNEgKJgCHpS9RYcOpWvUo2dPqM=",
+    "narSize": 1936,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:18rykn6m5bwm78f1dxajg84618l08i1kx521a7sm3c0bq6y51vzs",
+    "signatures": []
+  },
+  "/nix/store/3fqlfqqb53qif2b17005n2qvkjq5d8v8-python-runtime-deps-check-hook.py": {
+    "narHash": "sha256-U/rDBGop37perKOCNyQPLdwevi7T82zjtOkRvlesrQQ=",
+    "narSize": 3128,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:015dmibvw4g9nkinrwyk5sz1xp1d1wj3g0m3migbmpr9d82c7yjk",
+    "signatures": []
+  },
+  "/nix/store/3gb2r5srli7xwmvs6mk8bwk374g247cs-musl-llvm.patch": {
+    "narHash": "sha256-yVDAzH5z3kUHz6OfhBPyUrEUFKMw/gSpEdgLyYYLwMQ=",
+    "narSize": 1104,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1i601f3cj2yq26lh9zihlca19cajy89q97x3rw3lbpkkgv6c0l69",
+    "signatures": []
+  },
+  "/nix/store/3q9vpdf0bqlbqr3s867nisz8phx4c9kb-tzdata-setup-hook.sh": {
+    "narHash": "sha256-aMrtUmjLRQJEcuSXqqAj5QUADBI1oPEFR9Cts1ZCA7w=",
+    "narSize": 208,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1g0389bb7bfh8w2z381m286001g54fham5z4f9204ifbd19fvjk8",
+    "signatures": []
+  },
+  "/nix/store/3v3xiyd81sqak1z3qz29i7gvk3bq6qi2-reproducible-wheel.patch": {
+    "narHash": "sha256-gyDkQsMswEqI5EffRSEXt4jkwwHc1vdefys9CV2B6yI=",
+    "narSize": 544,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:08pbh5fhjg9bgxgggmnw071y925p2whlbps7wj44mh1cqd1f8843",
+    "signatures": []
+  },
+  "/nix/store/40dmwwmx2arx4rzz4m4bws6i2wbxfgk1-utils.sh": {
+    "narHash": "sha256-MQg/yMVsGAcmb9J/17FmEXrWyewaA7f1lZEFo5fqOFk=",
+    "narSize": 3088,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0n9qxabs61cijpsvf0qsxk4xcyhicsqxfzyjdwk0f63cqp43y21i",
+    "signatures": []
+  },
+  "/nix/store/431crcjyjs4w8p1ifvqnpp9sqsv62wrd-CVE-2026-15534-2.patch": {
+    "narHash": "sha256-abdnVOUwItxaqMT2qk21PIzmGAKMZ8t1zMhaHDGvqu0=",
+    "narSize": 3152,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1vdamwqiqnn8riswnrwc08cfd31wnm6smxn4m1ddq8ihwma6gdv9",
+    "signatures": []
+  },
+  "/nix/store/4bz5cdpab5rpwpbdimdsmk3zwysvvvf5-cc-wrapper.sh": {
+    "narHash": "sha256-V1yse3YXP8IRgXL5HaoQV9YwzBsOXokHwKx1/+k5NTg=",
+    "narSize": 10152,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0f1m77lzyxdcq03qjphf3g631mjp22m1vybjh48w4gqpfrxsqp2p",
+    "signatures": []
+  },
+  "/nix/store/4cmjzk8yr6i5vls5d2050p653zzdvmvp-setup-hook.sh": {
+    "narHash": "sha256-rbQzuw2NPgxAeCIcfzJsEmX0v3q2wgIMSdb7MJ3SiL4=",
+    "narSize": 248,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1gl8safk1yyn94605hmngazz8r8jdhr7y712g100qgld1nxk7d5d",
+    "signatures": []
+  },
+  "/nix/store/4dq81yma6drk9701h17h64zx47r7p5n8-utils.sh": {
+    "narHash": "sha256-vD4h0WvC5H24VUBOwCOVLq7eVlD9YgBT0IE9uHYUvzQ=",
+    "narSize": 1376,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0d5z2ivbhgc1s19h0qpxa1bdxbifjliw0kj0anw7vr62dg8j2gmw",
+    "signatures": []
+  },
+  "/nix/store/4qh1l55wx654v0ls51dg1wdi5xy93w9b-purity.patch": {
+    "narHash": "sha256-5LcRxQs9rAUpspE3IwG/Zf8wOWGUmk4U4LVjsDEnleA=",
+    "narSize": 984,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1q4m4wqv0qxmw0a4x6llc4wk1zv5pw0j6dwin8lhbb1x1g2i3dz4",
+    "signatures": []
+  },
+  "/nix/store/4r8s8hcwyvvvnpcncps09zscqkh5qapx-no-install-statedir.patch": {
+    "narHash": "sha256-bHIBVJ5ma1IzZev4AEub/16A44Vi7l7N1I7Wtj4xl6Q=",
+    "narSize": 456,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:194p64zbdmlfsk6mxvk2hpiq0ppzkd5h1y7bclrm4sv6kra02wkc",
+    "signatures": []
+  },
+  "/nix/store/4raaxh379jg81ib5zd0nqwfrxnmlw8y9-cross.patch": {
+    "narHash": "sha256-d6NOZRAJfvKKPF5CLwaX/qbrI9yLte+wAQ3l4UzmdmM=",
+    "narSize": 2096,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0qvnwr6f3r8d06qfzdcbvhiyp9pyjw32yhjy7j5g4zh921jlx8vp",
+    "signatures": []
+  },
+  "/nix/store/56lkv35h4hbjg79a5snyxm4rbvarh50i-001-fix-rpath.patch": {
+    "narHash": "sha256-B+uRhHLGZD/ZkYZaqUWFug9iEdTzfcdBZdKHJ8R/XGY=",
+    "narSize": 1240,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0rjwgz22g1yjcm0wfzgksh8n43xshm2sjnl6j7ckyr66fa293sq7",
+    "signatures": []
+  },
+  "/nix/store/5hzqc9frk0lc4kk0v46m75h1cwy466j5-007-freebsd-pkgconfig-path.patch": {
+    "narHash": "sha256-+h/obGXEQCjtxqppLF8y2Y8dDtmzEbWU1/QPA8GxIO8=",
+    "narSize": 1104,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1vr0n70h63zlsyaba4dkv471v3yr69gjqsdaqvnjhh64cmnfh7zs",
+    "signatures": []
+  },
+  "/nix/store/5xr8gnqhk4s0ygg85hykglmi28v28l84-0003-Do-not-search-for-a-C-compiler-and-set-MAKE_CXX.patch": {
+    "narHash": "sha256-AQb/ugbF1uNPeld5x/bspAyhDnjyM2JNiji2MeR0880=",
+    "narSize": 2720,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1kgkfkj33diqi96n4czjg07a2354xkvcfyapg97y7mn50sxgy1h1",
+    "signatures": []
+  },
+  "/nix/store/5y9npfmzh5p28jlbgjsabkh3mn97vlsc-004-gir-fallback-path.patch": {
+    "narHash": "sha256-yIEm8+/TpgIVeHSipg2aFYW5RhEZCvGow+rfXih1YP0=",
+    "narSize": 1368,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1zb0fll5xpzaqflg22hr253bk18mk86sd8klg0ah59nkxzrjd0f8",
+    "signatures": []
+  },
+  "/nix/store/5yzw0vhkyszf2d179m0qfkgxmp5wjjx4-move-docs.sh": {
+    "narHash": "sha256-LFXKr+/5UKMCEYyEpyotSs23Xr0Vwhzlv6YGyO/dqzI=",
+    "narSize": 816,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0cmbvppwh1m6pzjirhhmpmgbgkaa5lmag14c241a6l7rxypwlm9c",
+    "signatures": []
+  },
+  "/nix/store/6b9v7v02npab086yaba2j4yfqrph5mgp-utils.bash": {
+    "narHash": "sha256-odvgOfPVdmjLD9mMYhT5cP8k8A51fkMzvYRvvCC6hNo=",
+    "narSize": 5472,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1nl4p8hbqvw4plrl6zkm1vq29zvhz4a6536r1z5nhxnmycwy1nx1",
+    "signatures": []
+  },
+  "/nix/store/6dd4aj4q0n602yg42cqz46g76plb7wif-no-sys-dirs.patch": {
+    "narHash": "sha256-JyPBDGhhUFutwGxOTajPUM5yUf81BDUQsHet6tb2ggM=",
+    "narSize": 8072,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:00w2yvbfmbbpn083a11mzx8p5kjhryl4skkcq2nmnl31d06c28r7",
+    "signatures": []
+  },
+  "/nix/store/6djbn4px1wssdh72j51bjg3xkqaix8dl-hook.sh": {
+    "narHash": "sha256-ps6wtX8l3cr0+V5+s9ZkFmcvB4v9D3lfcmjCJpsUMG8=",
+    "narSize": 3352,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0vrh2jdjdhk8f9gpj3zxic3jyrqnckbb6zjyz7scmp95gysv1km6",
+    "signatures": []
+  },
+  "/nix/store/6inzcvqj75cdmg64sm6rhr50vr4k1krm-0001-Add-function-definitions-needed-to-build-zlog-in-sys.patch": {
+    "narHash": "sha256-G5X/wMgnB5l2plV0m+k6Dg00VTAxWL2enKS+piZhOfA=",
+    "narSize": 1608,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1w1rc4kadgm4kjgbsn1i61ak838f7blrnx2mlrv9j1r7r30gz58v",
+    "signatures": []
+  },
+  "/nix/store/6n31khdh5axal16074afb98p4839q786-substitute.sh": {
+    "narHash": "sha256-ApswTN+hiGbB0Ucetip//C99fyHg0fKbLi1A8sLIeCc=",
+    "narSize": 464,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:09vqr31g4h1d5sdz5lg045zpsbzwgwmbc7j7s70nd251vx6316q2",
+    "signatures": []
+  },
+  "/nix/store/6ng27834g0gyaabqchf4192kwlkjmqf5-setup-hook.sh": {
+    "narHash": "sha256-LmWK7qasf/501v0prjTAsNHOZ4IQes4P09ikgHGcwb4=",
+    "narSize": 6520,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1gn1kiqq196qsc7wwyhhh9kwxldhq0sawagxsrsgwzxclvp8lr9f",
+    "signatures": []
+  },
+  "/nix/store/6np2acjv1nxcg0xzsv9a76wyrpxznkna-CVE-2014-8141.diff": {
+    "narHash": "sha256-cpfFadNs8UxuPhJtvu16+j6dYtKdlHWc+1zVvHGnycY=",
+    "narSize": 5312,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1in9lxqvrmawzff7b54xs9i9sgpsgbnvwv8j7rp4rwbcsdlwb5vj",
+    "signatures": []
+  },
+  "/nix/store/6wajvaiid5h7c9yxgcligs8bl9v5h9mv-meson.build.in": {
+    "narHash": "sha256-Db+N8fvz/WL7sWN2vYqerfz8ZHnQUdAXtjGQYjWMqds=",
+    "narSize": 9176,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1nx9ihsn541inqbx0lfhg5jgrz5dks5bsxk3n7xn5zgkzgqqvgqd",
+    "signatures": []
+  },
+  "/nix/store/6xizqkp4bnhydwc7ihyqi93171gbj5n4-darwin-sdk-setup.bash": {
+    "narHash": "sha256-jg1AjVU6GqYCKja06xof84oBwN89MkhAxq6fklN5P0s=",
+    "narSize": 1024,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0jrzg59r57xfqr04hcixvz0032pk3wdfpd1n581ac6isan6l03cf",
+    "signatures": []
+  },
+  "/nix/store/6zqn6w9rwkgfa6z1hpagnh5xhz2dag6m-CVE-2015-7696.diff": {
+    "narHash": "sha256-T6MmHKSaPYWUtEOGgizEA/40M3oLNoJucKrwyw4RuC4=",
+    "narSize": 2048,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0bmq247cpw5af1p84dhbg8rk9zh3qhn851j3nja8agcslhf2d8sg",
+    "signatures": []
+  },
+  "/nix/store/705g035ind4dzrnxwjaw5gp6wy32bkar-implicit-declarations-fix.patch": {
+    "narHash": "sha256-/W5QLvWlHIM8fohyCDkkaUnCn+wTG8Gdt8IxEunBNy4=",
+    "narSize": 568,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0bipq7li4cf2nyfw26qkxjgw4jb94hwhhwl8gqy86755ylp50vpx",
+    "signatures": []
+  },
+  "/nix/store/71vi2f2zqx45wjrfj9q23fi32a72zk0f-005-boost-Do-not-add-system-paths-on-nix.patch": {
+    "narHash": "sha256-ryP+MvgJ/F5AIY618GDOTTYw90o+f8yHD9iW0z8IxE8=",
+    "narSize": 1120,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0ky410zx75nq1y3wqzry9bvk0djdrrhg1dcf4505xz09z0rgw8xg",
+    "signatures": []
+  },
+  "/nix/store/73bwxvdmw63kgb1x27nqr7hh227nz04g-virtualenv-permissions.patch": {
+    "narHash": "sha256-rOAneb7GVCgUqcN+fT5oLX+0f4GsQlkP96jr4T2Q3j0=",
+    "narSize": 560,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0gfyj0yy3sx8yw7mjhmch5zv8zrdd0z7szn3m4a2hm66prwjgq5c",
+    "signatures": []
+  },
+  "/nix/store/73qy0kda2d5qmnczfh7qqyq1acp62vbq-0008-Fix-configure.ac-not-finding-AR-with-target-prefix.patch": {
+    "narHash": "sha256-dfXwYA/f+sdsnQPh6277SCdC2b/R5vgQbOISeumE8Ro=",
+    "narSize": 1224,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:06pihklpl4p2dh8girnipzcl49s8zdpfpq83kmncgynz1xhg1xbm",
+    "signatures": []
+  },
+  "/nix/store/77r34qkzin35ssw7qmgpidz0qvrqhbr8-Info.plist": {
+    "narHash": "sha256-lYC5ETYtbKzcDM3i1us90jK5iFpSoX3d9vPT3yHVP1Y=",
+    "narSize": 1024,
+    "references": [],
+    "deriver": null,
+    "ca": "text:sha256:0r0mr9k2vq5xw2hfg0f5kcpp6j1rrrignq7sgyfzq30kbird43dn",
+    "signatures": []
+  },
+  "/nix/store/79m0jh37ajirz4r1xy8h13g6y8d4nm7d-meson.build.in": {
+    "narHash": "sha256-RVlWmCDPLymPXrw6wBhG3kXMNprlkVq9naSAZMmeX7w=",
+    "narSize": 400,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1g2zkv4n9054knymm4g5k8vcqify8qcc0fmwbs7jjbyg42c5cna5",
+    "signatures": []
+  },
+  "/nix/store/7d47dgqxcn66f5zgvrc5byhbshwr8rpw-CVE-2026-56391.patch": {
+    "narHash": "sha256-bksO94bGZ+0EFEcLAoLCdEKCRYPpilHew7UcUBOsFVU=",
+    "narSize": 1568,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0m8mmh9m075mqgg532p9hd2q4hklqa1042s72h2fsry6hvvhwjvf",
+    "signatures": []
+  },
+  "/nix/store/7iah903r5rbklqskx7may7qrrihgpc37-0006-Add-Meson-build-system.patch": {
+    "narHash": "sha256-JcR/UxHX9R/TRsDZqPsI2WpEY2VrLg2Vtiduq4sGLto=",
+    "narSize": 8424,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1nif0s5snvi7nsahsbkbcmil8snr13xsinf08v9izxfp259pzi15",
+    "signatures": []
+  },
+  "/nix/store/7kaj69537nv722pgrifzyic4a3wpi7nf-gcc15.patch": {
+    "narHash": "sha256-BiVS5jTPYJe7vaCFgg+hf/mOFLC5d1ZhSPrrSYKSei4=",
+    "narSize": 1648,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0bksja14kszs91hmcxxrn0a8xybzl47q51d0pnxrfq6g6kk54986",
+    "signatures": []
+  },
+  "/nix/store/7nrds3i4r641bjxya8x661b1sb5n3x9v-0020-Fall-back-to-readlink-on-Linux.patch": {
+    "narHash": "sha256-D7uuShrwC8NJrdC7YeBepNV8iUG0O1D1KEI7VoQ/57Q=",
+    "narSize": 1632,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1d777y25cfs253sm0fxl864prmd4bvh63fyhmm4w62zh395axfqg",
+    "signatures": []
+  },
+  "/nix/store/7snfrwmnxcppi47dbd8yasc7yr9h3h3l-0016-Add-dyldinfo-to-the-ld64-build.patch": {
+    "narHash": "sha256-w9TD5rEh25wUezQGX1zV490Liv4dLUZyWttd6ZyofJs=",
+    "narSize": 984,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:16vwm2ffjpfvb9r4cb8xzs50ppg3smf5y1ilgca9rnr1n7kc7m63",
+    "signatures": []
+  },
+  "/nix/store/7xrrh37139i5bs192cp5y6xv38hhjipr-setup-hook.sh": {
+    "narHash": "sha256-XeCInj9I3TgmvmnmtEUsAjfLVckYKt0hYVaLun7yw0c=",
+    "narSize": 2568,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0iy3y9zbm2snc4hxsahqr5awndq25i2v9rk9pqk3ipa87yg8iq2x",
+    "signatures": []
+  },
+  "/nix/store/819fzxfwzp7zhhi4wy5nkapimkb1bsx5-die.sh": {
+    "narHash": "sha256-ydaa8+/PS0WbxNLMGB+8rJ2DYSs+R9TYx7cK1Q9req0=",
+    "narSize": 576,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1bbsdc7xa2mpqzcd8iry5dhq77dcphgiik6jqjdlajygxzrrmmn9",
+    "signatures": []
+  },
+  "/nix/store/81gwh57vnrm6qpw3gxmdmrjsp26dxi7p-find-xml-catalogs.sh": {
+    "narHash": "sha256-Mg8RMgzM9Y9SUHiaY5rHEfGlW0WRtNFyAGlUt0QlmHs=",
+    "narSize": 816,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0ywq4m2bfm3901rd3d4i8mdsbw8iqyd676kqa198zxfc1hr123rj",
+    "signatures": []
+  },
+  "/nix/store/855q8h6y2s570s7p5ipmbl74na7mfy3g-0014-Replace-corecrypto-and-CommonCrypto-with-OpenSSL.patch": {
+    "narHash": "sha256-hCCTBaWy7uowo3RsnXvv/bECJJHwRhuQdJPXbqkK+Bs=",
+    "narSize": 12408,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:06zq1alnxmwkfj81niphj4j05cgxxxxrsv3llcqfmvmjll2r6844",
+    "signatures": []
+  },
+  "/nix/store/85clx3b0xkdf58jn161iy80y5223ilbi-compress-man-pages.sh": {
+    "narHash": "sha256-bjlqmt1KnFZ3MjGVNk+Zn4QCY09e4oIVW1vOb0kc3Ag=",
+    "narSize": 1032,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:026w3i4nzkjvbcaq5qjy9xih514zk57kd59i69vmd72avnd6lfbf",
+    "signatures": []
+  },
+  "/nix/store/87srq5q8fbg306rs8x6mmaibyyxqn3pn-0005-Fix-signatures-for-getenv-getopt.patch": {
+    "narHash": "sha256-ZByd/TASL6tUl0B3iriMogFKn5RwWY/g3ZPmutsaR54=",
+    "narSize": 1024,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:17j73bdvmrlkvph8ynbhjjgll0d2ijw8lxs0jxaanbqj63yrs734",
+    "signatures": []
+  },
+  "/nix/store/89igyzp72y4ky0qyj4x5r52z84w203ki-strip.sh": {
+    "narHash": "sha256-5nG7mrcZOwiVb9seAS0lL5nXfgnzanvMdorTGSWR6rw=",
+    "narSize": 4616,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1g7aj4jiklwafv67nspk15zdg69g4lnh27nvdyahhfqrnydbnwg6",
+    "signatures": []
+  },
+  "/nix/store/8ac7vb95g8kddlgha1p1m09ymkijg0hs-make-wrapper.sh": {
+    "narHash": "sha256-gvPwxyyV9sZJ7OUf8l5JTme1Kp/+wjQ48YzON5LcOjk=",
+    "narSize": 10048,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0f9svj93gklcy4w39hpykwmbarsf95gg47z5xi4wdxlm5k3z1ww2",
+    "signatures": []
+  },
+  "/nix/store/8djp1rizc1dblv8svnb0mpa0c3lwvc17-drop-comments.patch": {
+    "narHash": "sha256-+TPuAim7O22HrqhW5XZTq295YAvlCq6J+SH7hWYE3v8=",
+    "narSize": 2432,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1zyy0ik8byr1z64sw2p51dh7jvxbadvfamm8ms3nsfxv541fwczr",
+    "signatures": []
+  },
+  "/nix/store/8fhj67p4n5lcp9lkl19vdcrlcbl3jcsi-add-hardening.sh": {
+    "narHash": "sha256-fBCKP7UjeipiJPfKXpCDUiL3cQmqsk08eba97kKeWf0=",
+    "narSize": 1656,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1zarkr1fxgdng4y4vcma15qzf8jjhf85xjpp4ii2lyi3nlzql43w",
+    "signatures": []
+  },
+  "/nix/store/8g7v7bdip4qhlvr1rxz2fndm3k0g45f6-0007-Add-CrashReporterClient-header.patch": {
+    "narHash": "sha256-5JxT+UYl51GcomhhgEIMLNta/kCDkxbbNk2amgbNg1Y=",
+    "narSize": 3656,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0ml3rl39m6jd6vdid4w383z5mnrc1i180qb8laf53rr58vwm7774",
+    "signatures": []
+  },
+  "/nix/store/8lics7m8x3n4bj4c0xjzhx96hypj4ybq-nixpkgs-cmake-prefix-path.patch": {
+    "narHash": "sha256-4NOJUQH/Fp2JtFQaE98DTPAqzGuDviKlak9eJjuigMw=",
+    "narSize": 1344,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1k40l8xjcpjgdajj5gl3dg62mw2c0ggi66jlnj4rs5pz058qklz0",
+    "signatures": []
+  },
+  "/nix/store/8mvcwn96881p7v9zgjgl6n37128ppfig-armv6-no-ldrexd-strexd.patch": {
+    "narHash": "sha256-QmgXh9o5nBcRnKUMeKAcXNYddrQUCPMChAQmiZWvROU=",
+    "narSize": 6312,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1ra4myaqj9h4hh1g620lniv1vmjw3jh7h355kh8ig71rva3ifs22",
+    "signatures": []
+  },
+  "/nix/store/8sfk6bmgq5433x3408zikfk8w71ylm2g-0006-Support-target-prefixes-in-ranlib-detection.patch": {
+    "narHash": "sha256-KedV/jjsva6B3mLJbOlSRiwM4nPcKgn88wxoxfbA82U=",
+    "narSize": 952,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0rgkq3vcas0cygy0janwfgi0qb26ablnrjb2vs0sxggc73z5brr9",
+    "signatures": []
+  },
+  "/nix/store/8vrmjbabjdw8n2ncgsb3zwplafgndrlb-darwin-binary-paths.patch": {
+    "narHash": "sha256-KF2gzJ5BDMjI4XN5LML1rx6bFU/4gjn/XqAEVMqtlxg=",
+    "narSize": 1816,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:064pmp558150bvzkk0pq9warn7mgyp12qybkw74ch321kv6a0p98",
+    "signatures": []
+  },
+  "/nix/store/8yrqvlsii837j73ali9pcziv6h4aclgz-stdin.patch": {
+    "narHash": "sha256-t3Md2uEXznrscQFUFBQgYacc5jfUtH6pcEBXWyz3aHo=",
+    "narSize": 2096,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0yk8ywn5nms0f2lpxd6l6zk1r9v140a18m01f7n7mkhpw7d1swxp",
+    "signatures": []
+  },
+  "/nix/store/90gm4fhg7c7pmm16im1295vxsgm2rrc4-meson.options": {
+    "narHash": "sha256-/1RHXF/lUz0O62XKUE0ob8vcTQkWhiQOP25pnNpvWQs=",
+    "narSize": 152,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:02srdzd9qsbf7w7291hn156xrjvg516m1jk5xc73slz5bxf4fm7z",
+    "signatures": []
+  },
+  "/nix/store/96cbfymn788ssbhmay4sy7h268qg81fl-gnu-install-dirs.patch": {
+    "narHash": "sha256-bPY21YhxBe+mB+fswJMY21UXxOYTwdyDZVOhWBatN20=",
+    "narSize": 3320,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0v9pmlb5i8akcn1xrh8kwv21fmfv329w1v770ykfy1bii3akdxkc",
+    "signatures": []
+  },
+  "/nix/store/96rvfw5vlv1hwwm9sdxhdkkpjyym6p2x-update-autotools-gnu-config-scripts.sh": {
+    "narHash": "sha256-iyTjznE+JTrWV0eQB0vGYjMcLRaArMLbWQEdYYoQmNs=",
+    "narSize": 560,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1nwq22562781b7dw5b402qniqcv2qr5hg427azb3l99yf77f694b",
+    "signatures": []
+  },
+  "/nix/store/97d26l91h0db8h0qkmhxwi5d8shrilv6-CVE-2016-9844.patch": {
+    "narHash": "sha256-G+MsYjK5JDG7qmlJqnmkAyvTU0s/E2d3v/bHoILmjkU=",
+    "narSize": 1200,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0icfws1a1iznpxvnf4rz9d9x6aq3liwsljb9maxk295r69i2rqqv",
+    "signatures": []
+  },
+  "/nix/store/9ckkiyf1q5shd87k2v73j8lpmc5krsxz-python-remove-tests-dir-hook.sh": {
+    "narHash": "sha256-vpQ2mNZjEsvK4+lgw1oXCUUjdQiQKQB5kp6bbfIi3Ic=",
+    "narSize": 592,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:11yw4br6v6wyj9wh0ach11sj6i892xdc6q79wg5cn4k3ssc3d55y",
+    "signatures": []
+  },
+  "/nix/store/9h0nl9zxc373ccn2amfps2w32kb03v2i-setup-hook.sh": {
+    "narHash": "sha256-Z4oCGvtICYNpxhvattDOnBwALz7x4d/Mt661RGnaZGA=",
+    "narSize": 2040,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0q34v9ll9ddfnz6dzqgi7qph074wrv8bdnhvqrlq62a8zcd052k7",
+    "signatures": []
+  },
+  "/nix/store/9ipkwjj12lvs757jx3kksycijkbzp4j3-0012-Move-libcodedirectory-to-its-own-subproject.patch": {
+    "narHash": "sha256-4A0LGfIQlxuLQjIaXJEu9grIev7geaaITccaa+2rH8A=",
+    "narSize": 23832,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1h0zmgnnn6n79n4acyg0zrxch2pn5s8mq6ij8a5ip5qhy8chn3g0",
+    "signatures": []
+  },
+  "/nix/store/9izh7wrwfvhz8yhy3252hi63hxbfzkwk-meson.build": {
+    "narHash": "sha256-Bl0JSBYkVoX39uWPqGAEe52szDqQybLPZjPaPHcfLoU=",
+    "narSize": 15960,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:119f3xvkrnikcv7v5jch7b6ar7bv0ihai3z5yvvqami42r40jp86",
+    "signatures": []
+  },
+  "/nix/store/9k3s0j2ji4i7xh370x814gni5jxr19kv-acl-2.4.0-name-conflicts.patch": {
+    "narHash": "sha256-WsobdzohhaiF9La8o4ypokUZU4cnPK3TrT/1oI5Qcyc=",
+    "narSize": 3216,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:09vka27a1x9zmp9ssg17hx9ijid2m66a7g5nyj2si19179vipjjs",
+    "signatures": []
+  },
+  "/nix/store/9md80pvk0v8snxzvcrwc7vblqdaa2wlb-no-ldconfig.patch": {
+    "narHash": "sha256-nWnxSESbZv3cIsIXZ2+CEGRQYeqX18KDH4NcTJSfAME=",
+    "narSize": 1744,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1h80kya4qp433y1w5mwpx9hm0r0hh9pnf5y24bfgsrlv8i4g2scx",
+    "signatures": []
+  },
+  "/nix/store/a0ihxgkpyqhknnq3wjra24hlxwx1rwz9-0020-Remove-private-analytics-APIs.patch": {
+    "narHash": "sha256-lYpF5MmfvW0Zn/7j4T5tmmuw61HZR9HVQjMWg3df7+8=",
+    "narSize": 1456,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1vzgbxvq65ik8bax2iyra7mv0swsdlzf3qzykwcnvgczr7j4b2lm",
+    "signatures": []
+  },
+  "/nix/store/a3msqmkfn0n8fm2pv1npcnnl04v5nsvk-0015-Add-libcd_is_blob_a_linker_signature-implementation.patch": {
+    "narHash": "sha256-+i3790z+2D6+wOCyv/XOgHt1+vigsmxOMYKYKOP+u1c=",
+    "narSize": 4056,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0mxvzviji6426576rcm0z3x7ayw0rvsvzcp0q2z3xn7y9kvznbgs",
+    "signatures": []
+  },
+  "/nix/store/a99kyj8cm1g9pw0d1fdidrf5nd9yva8z-0014-Fix-segfault-when-copying-xattr-buffers.patch": {
+    "narHash": "sha256-nBNLIDcK/79NbJTpq6z/odcYsVGDu7W+EReMh8ubK/8=",
+    "narSize": 4136,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1zrbkg5qg30p26zbbfw3a6qiimx1zynapscldi6vzzqa6wh4n4ww",
+    "signatures": []
+  },
+  "/nix/store/aagwd871ccp01jr45l3fxxy7glq8xwd0-CVE-2026-41991.patch": {
+    "narHash": "sha256-aHespHPWCwfQwzoiPU4FB3ToJG76m3pLIWdNRCBrDNM=",
+    "narSize": 1928,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1lqcdch48kb7455pm6zsdqjfhx070m73s8isqg80f2ynffjaqxv8",
+    "signatures": []
+  },
+  "/nix/store/afd0x108akhbvplb7aqc2vm9rmf586y8-darwin-bsd-binary-paths.patch": {
+    "narHash": "sha256-NbSLFms+2Ox16/zoLUUUIQGmd9l0XxwZIIX9RACZd3U=",
+    "narSize": 3520,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0xbpk4049zc540ciqpvlv5vsc0912i2jvs7wxdsyrn1ydcb8pd1m",
+    "signatures": []
+  },
+  "/nix/store/alh93qg7789azxzvx75jx6xcf335ljv3-002-dont-test-while-installing.diff": {
+    "narHash": "sha256-qrNZhhz/Jkw1u8o1uoC1caQJTd3F1o/w/ZBWnOHddnA=",
+    "narSize": 672,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0w3nvphrqmlhzpq8zmn5vm6hk93inn0bldfapcslq9pz3j35kcxa",
+    "signatures": []
+  },
+  "/nix/store/amajpcq18ncdyibi997ram4rsrghn42b-0009-Support-LTO-in-nixpkgs.patch": {
+    "narHash": "sha256-v3eVMCfDqAEAE66xmhsCDrrr5uEbZu1zUY2FTfiGno4=",
+    "narSize": 3640,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:13lyhvw4v1cda5rysrhvw7kfpfhf08drmcdf2c003a634wq9axxz",
+    "signatures": []
+  },
+  "/nix/store/amci2iinssy84n0wp2m583jdbcwwpzbm-28-cve-2022-0529-and-cve-2022-0530.patch": {
+    "narHash": "sha256-yd/B0Avtq494FJkJ/zWbiE33xm8AXfnuCfOizoKlChI=",
+    "narSize": 6040,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:04haln1cx8pk17pgjp80dz3gfkc8kcszy2cr2iw8zazd1g8c3py9",
+    "signatures": []
+  },
+  "/nix/store/ar1p4gcvlqf8dwbkfrcb01srbywinaj5-check-pc-files-hook.sh": {
+    "narHash": "sha256-GBXa6iK6oqpx6LFTH8cUExh0If6GIN2rUinPXEfGd8s=",
+    "narSize": 888,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1jvpqr3mrkr9aamxs846zqhp860k2k3iylxix1qsm8ms4bmdl58q",
+    "signatures": []
+  },
+  "/nix/store/b8znwq3gri3bjqwnjv95jy76329pcwsp-Make-grepdiff1-test-case-pcre-aware.patch": {
+    "narHash": "sha256-515XuI4Owsl9p6M3Ozgic5sfqZbeeUbsqVFNa+cgTAQ=",
+    "narSize": 1192,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:012c43knnkaim7n4cyfyjsliz6vk48w3ndx3lxywkhhfisw5fpp7",
+    "signatures": []
+  },
+  "/nix/store/bbq4ab17p1d4nlmk88rgr3ngi7551r96-meson.build.in": {
+    "narHash": "sha256-LCLlyoGRPXXyRWKFCYn6lD4DAgVR+p1eXnRdRBRdKXk=",
+    "narSize": 1144,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0y99bla48pblbrg9vyji0l106gllza4hk1b28pr7agcih75fa8ic",
+    "signatures": []
+  },
+  "/nix/store/bd6qgq10q1a160zvzi006zz1s4cz2ry1-Suppress-unknown-key-warnings.patch": {
+    "narHash": "sha256-ir/JL13cQNzJ1Za4V250wQ7vCUaxp2/0rvalYRzfmLU=",
+    "narSize": 1112,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1dcqvwf639gnmvs6z9xi8q4yy3n1fip5gf4nsp4xqh6wblpwkgwa",
+    "signatures": []
+  },
+  "/nix/store/bw6aa38615ww5karcn8kslsf5hxgz412-link-against-ncurses.patch": {
+    "narHash": "sha256-HyU+JKxhNStp+VcNFZYHOO116BUUuzGMjnF0kgOSNOk=",
+    "narSize": 808,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1s9lj81r4x3iis633fql2pl7bv9q0yb1a3apz5ljndb1mhj3w98z",
+    "signatures": []
+  },
+  "/nix/store/bybz12bxjbk94hm58zc70sc0xhj2dxif-add-darwin-ldflags-before.sh": {
+    "narHash": "sha256-fG6lsBUQKq5FnoHDjmzwqZ6XN429CxNGPPf3xol72TQ=",
+    "narSize": 3176,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0d6rgf4wdxzp7i3162xxilvrg7m9y1n8xhw1kr2swahh2nqaavkw",
+    "signatures": []
+  },
+  "/nix/store/c4akajrb4jg50k72jw7zfbyv8z139ri0-setup-hook.sh": {
+    "narHash": "sha256-w68Asi7QisSQn8ec9VPg+mNTEQRfIDMSDvfL6TaITRA=",
+    "narSize": 928,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:042di0vfkjzp1q93682z0h8m6qzsw19zb767ky8c92nh5sr01by3",
+    "signatures": []
+  },
+  "/nix/store/c9wqj29c0ywhx6s9pbm00khjskhrskns-fix-symver-on-non-elf.patch": {
+    "narHash": "sha256-HVJ4XUWY/lV8r6KWV8+9FruF4Wl50iNqlItc7CmoeAI=",
+    "narSize": 976,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:00kqm0lyqp4bjim27lkrd7hqbfqnpp7mg5m2mxy5bzlq8mfphlhx",
+    "signatures": []
+  },
+  "/nix/store/cciw7lgkldvx25d77cxpjhh1iw4xghd9-setup-hook.sh": {
+    "narHash": "sha256-7hGuaIhejEkjlFUziUmw1qdbGMQdyNsVh5Q4+tPODuU=",
+    "narSize": 576,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1r8frv9zlf4lhwaxpj0xqhc5p9ynn14qjcsmjhilk32yi1law4gf",
+    "signatures": []
+  },
+  "/nix/store/cickvswrvann041nqxb0rxilc46svw1n-prune-libtool-files.sh": {
+    "narHash": "sha256-0DC4P4/oI7F2AJ/9K6MUMNP818Ol4i+fvpJt3D2HyJs=",
+    "narSize": 1072,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:16y8hwyxqvcjpsgjzqm5qgbzrlrh2jijpzcz01vb28z8iwzvhc6h",
+    "signatures": []
+  },
+  "/nix/store/cklrwbwi889pp2fdsswdjvn12sdy5i5j-openssl-disable-kernel-detection.patch": {
+    "narHash": "sha256-2Bp4b6iB2iA/L2B/42S68JP/JhDka4eTxgogM9VN3mE=",
+    "narSize": 976,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0qfy9pak680aqs9qfsz420kgz4zhp9jf6zv05wzj1nl1m1pph6nq",
+    "signatures": []
+  },
+  "/nix/store/clw5a2da9maifwc0lxq7i6hyl59kjpw0-003-more-env-vars.patch": {
+    "narHash": "sha256-NtHbyjHvZXB0sztGPPGS+NCrROZGbDoeZF+ZGmyA+2U=",
+    "narSize": 792,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0rgvh1n1m6azchg3lv26wr2apl7qjbqkqiivnds70rgg675dpl9n",
+    "signatures": []
+  },
+  "/nix/store/cmzya9irvxzlkh7lfy6i82gbp0saxqj3-multiple-outputs.sh": {
+    "narHash": "sha256-9xd9l6/GeN1DX0xqIZtdJltbBaUBOAJAuFIlvdduqRc=",
+    "narSize": 8432,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:05x9dvbvs9ajp1004f01ll2mnnr6bndj2sjcbx1xsy66mybps5zp",
+    "signatures": []
+  },
+  "/nix/store/cnss4bmvsa7kjmghgksgcadrxsvkyla1-builder.sh": {
+    "narHash": "sha256-BkR1C57Q4M6Duzbwza00V7fJQss2Bj+rYY/6T7bvhLM=",
+    "narSize": 728,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1cw4xyv4zylgc6mky1inrd1ckdsp6jnwvw1npf1wxq6hkq5pai06",
+    "signatures": []
+  },
+  "/nix/store/cqjcv9q2znmycyp61wfwnyjhwrzi7gcl-automake-1.18.patch": {
+    "narHash": "sha256-eYAuwuX/DsUHTJpkYs5hXItAhc18WGCCyuVL9MomhXc=",
+    "narSize": 544,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0xw54v5g8jz5ra160n3wrn2l12swc7764r4s9h3wa3pzwp12x03r",
+    "signatures": []
+  },
+  "/nix/store/cv1d7p48379km6a85h4zp6kr86brh32q-audit-tmpdir.sh": {
+    "narHash": "sha256-GtEGPN4Le2tf2sgAKyRLpL3GoMHaZ1HFfYCgXVEv8Ko=",
+    "narSize": 2536,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1aph5x8mv840gp2m2rysq6hcdgd49cj2n068v9gnnyqbvqy0dl8s",
+    "signatures": []
+  },
+  "/nix/store/cvqzr3i3m5b3xgni0bv8iby7b6m5lm0n-gnu-install-dirs.patch": {
+    "narHash": "sha256-Yu6tmahHuH08vElwCy7WiMM3Q0l45OatPTwrWW1RpC8=",
+    "narSize": 7064,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0bx4a5nmjarw7nnydr3q951kghw8sqp0nw29phy7vf27m2csvvk2",
+    "signatures": []
+  },
+  "/nix/store/cydfsqlg2j3hvnmprcai0sanmjx272fa-gnu-install-dirs.patch": {
+    "narHash": "sha256-C1sDe2JHymBsanalnuzNGcoDjR19AdLNu5fuAuuMJ2w=",
+    "narSize": 784,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0v17ikmh5vlppg6x40bx3n6h7jhrrpn9x9bnd9n61jj7c9xh6nqb",
+    "signatures": []
+  },
+  "/nix/store/d0h3b1fj9hahy3lvh2kpny75w47la15s-builder.sh": {
+    "narHash": "sha256-Xn1OF/hhTZwh5p6h8nMNjZv9/niVAzhjWyTMw/dVVc4=",
+    "narSize": 5288,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1kjmapvw7k14bdikh0wmg3zgv6wd1mrz58cywqhrqkb1z0blwzay",
+    "signatures": []
+  },
+  "/nix/store/d1hxn7dyd0zkzns9dndi1zaxnislcj7p-0002-Add-CF_EXPORT-To-const-symbols.patch": {
+    "narHash": "sha256-pBD+e4oAkfuKXFpb4UaPAAUg382L5R3oOhWFsllEZx8=",
+    "narSize": 1680,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:07v78icv518m7bl1vrcbrpgj0180ix3f2nssbj5gp480i9xzw454",
+    "signatures": []
+  },
+  "/nix/store/d2iaq0041hkxczq8az864dq2xklmcz09-use-etc-ssl-certs-darwin.patch": {
+    "narHash": "sha256-Ww7RwnfdfZjzrRL8eke+yFvNsIQw8ufhLYNcK6hnBYg=",
+    "narSize": 712,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1205cyl2np435phygwihhjqcsny8pr3pmz0jmprrhzfxfz1d23jv",
+    "signatures": []
+  },
+  "/nix/store/d4ybp0ma7zk8nxxsbdqwzj0qf1y0700j-wrap.sh": {
+    "narHash": "sha256-gWY2ME8fwofrb7SzfTEnzUf5jirsSkN/cyp2VBesvHc=",
+    "narSize": 5656,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0xxwmhbm8xiafdzl6jpc5a7gjiyd4wqpvcxldzmqghhz9wq3crl1",
+    "signatures": []
+  },
+  "/nix/store/d98905jp3axprsgyyzacb5v932b19wni-meson.options": {
+    "narHash": "sha256-w1xuFFy6GCGsyxPUsSkZr8bnDP8jFrhgv7B54Dh8Ymg=",
+    "narSize": 296,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0s32ghwf0ydhpxhbh5i3zw6fgimg34lv3m0krfn2265sbha6wp63",
+    "signatures": []
+  },
+  "/nix/store/d9b2qrrq32jzdsdx4y33inzrra5n5z5n-CVE-2014-8140.diff": {
+    "narHash": "sha256-W+KuBHHRQMxH/dSMMf9GBso70KS0PpQvqJIhijy0Xb4=",
+    "narSize": 1400,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1gjxnhy8l8cjm0pr8gmllk83pjh68vzk336lzm3wqh6if42axqjv",
+    "signatures": []
+  },
+  "/nix/store/dm81j9qdcdr4c458pqbc9wvq9ymgzk4m-setup-hook.sh": {
+    "narHash": "sha256-3CWddmIgOSPkVX7xQcAMI1MU5kBLuCObjr7dUazQ36c=",
+    "narSize": 232,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:19yzs2n53pdyisdj7f2b83k18lr31k043wbyapj26f90c9v9s9fw",
+    "signatures": []
+  },
+  "/nix/store/dnl7k0izh4w3jpw09hf46snlfw114gih-0003-Fix-undefined-EXT2_ECOMPR_FL-for-e2fsprogs.patch": {
+    "narHash": "sha256-/7wrr1ioppnxm0y4OtD1EkoNFm4SU7HebBc+Lo0HVCQ=",
+    "narSize": 1384,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:092l0y6jwghpdkgb2lqjdqb0sjhjyp83mf2ckgqrk9m8b2pjpg7z",
+    "signatures": []
+  },
+  "/nix/store/f4bmyw30gijjmcdz66j724ll3cdzbah7-pypa-build-hook.sh": {
+    "narHash": "sha256-reQZSTIkfKI2FKdnwc50D34bbOTrHvxEWas9aWkRBJU=",
+    "narSize": 800,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:158425lnjgdbb52gq7pbwin1nzhgfk7c2rx72hva4z14694ikr5d",
+    "signatures": []
+  },
+  "/nix/store/f4bvwqvj0y3z6blvh0knz71a8yq1c45p-requires-private.patch": {
+    "narHash": "sha256-M+Y+d+z85GcHLSJ0J8Mik2//ixFyaqe0xMf0pAw4G+0=",
+    "narSize": 632,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1v8v706a9x67qjsafskj265zyvwk4b1jfx125l3ngr7wxivkxrik",
+    "signatures": []
+  },
+  "/nix/store/f6mgh60587jnwg3mbgy79bzjj5zfg32z-0001-Fix-build-issues-with-misc-redo_prebinding.c.patch": {
+    "narHash": "sha256-BlST3GzQBWwU6PjWIFxUNw5MIhtzgqT8RO2kuAyaELg=",
+    "narSize": 1712,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1f0hk86bi97d8kya90kk3ci4q3ipaif21mpqx0a6q1fhdkf96m06",
+    "signatures": []
+  },
+  "/nix/store/fh8zsjjqz743cs3grwb47y6x0d8v2361-meson.build.in": {
+    "narHash": "sha256-/GWhz1cCKQNk+qFVD5yf4AgN8w1WeYUXb/6JpOJiRsA=",
+    "narSize": 1736,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1h26cbia92gydwbqayan1prhs270kyf0ymd1z9j06a82az7s2rgw",
+    "signatures": []
+  },
+  "/nix/store/fs3ahzjhxd42m4hknms96zj71ry6n93c-add-private-frameworks.sh": {
+    "narHash": "sha256-aDj7r5d6BrTgJigBm9fHc0jlNV8SypgaAf6cDJmx/vo=",
+    "narSize": 472,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1ypyn6chr77y04d9ijhjbwsyaj3kqzbrn0984vhb81ksjypznf38",
+    "signatures": []
+  },
+  "/nix/store/fs3yzwjlx81qw5na95ya212r3sfd8qdg-nixpkgs_test.c": {
+    "narHash": "sha256-wZiM0gtdP4xmOazTKSvyKOlEle2za9R6ZFOzylh92k0=",
+    "narSize": 3528,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0kfsgmccmcskcixd8sxkxnal9s98y8mjklxc75k8qgsx1g98r661",
+    "signatures": []
+  },
+  "/nix/store/fscd8f71wmpwphcmi5mx8qnif2402x9m-run_setup.py": {
+    "narHash": "sha256-Q5w13AnIwugS/Zq27C7lts2yFHTag2MZW6vQHc5YZBU=",
+    "narSize": 304,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:05b4b371vl5bbccn70ysfhab5kdnwlpfrdlszl9fihn817f3b723",
+    "signatures": []
+  },
+  "/nix/store/fszrkxdsgplm2bgldyf2d3j8fs5dmq67-06-initialize-the-symlink-flag.patch": {
+    "narHash": "sha256-0Fe14kqtmG23bnupnXqL6ewI/Vat9at44l/Xyx9ETbc=",
+    "narSize": 632,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1dsd8hgwpmszw9wapxddavyhiv79idx9vabvdsvnv65d9bibamyh",
+    "signatures": []
+  },
+  "/nix/store/fw7yyzr7iby63y0qr5dl9j9y4538gb7z-0001-spawn-sh-instead-of-bin-sh.patch": {
+    "narHash": "sha256-+z68vsY7ISx3moiMXB6UepCo6+ahgRhZW5pLqpOuI6w=",
+    "narSize": 1088,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1b13ms9sljwsbdcii0d1wvmsi43sjhg5r348k9vjq89vqszbqgpv",
+    "signatures": []
+  },
+  "/nix/store/fwgifqz2mqs1wx4drppja4girqd8c3sc-0007-replace-initialized-constant-with-define-statement.patch": {
+    "narHash": "sha256-hV4co+xEYS5a2I7L+lnKQGFN/UxuEv4qPsYz0TOnCJA=",
+    "narSize": 1352,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1408lwrx2cy67qmgw4kf9kylsqa0r9czmjwfv1d2wqa4xjiiqpl5",
+    "signatures": []
+  },
+  "/nix/store/fyaryjvghbkpfnsyw97hb3lyb37s1pd6-move-lib64.sh": {
+    "narHash": "sha256-SDQRJiS2AfWlONR8W8dEGuNPeLET7IuPLOm5vQBh2C0=",
+    "narSize": 904,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0bfqc40bvfg95j7qpv0kn5w4zqqs8k3mnz6l72jza0dn4hk12d28",
+    "signatures": []
+  },
+  "/nix/store/fz62pskw7fka0b8xk7dzhrhhgrrqn3fr-getenv-signature.patch": {
+    "narHash": "sha256-FvhQIaNhpL1Hgk1wKmVgPUq7XTzzJG9Wwke5YG+YqS4=",
+    "narSize": 1568,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0bm9k1pn1fa7q9b6y97k7ifvnjixc1jjlw2dh93vv931lchm1y0n",
+    "signatures": []
+  },
+  "/nix/store/g2bgl0dry6k4crmazzwn3s6870j00p1i-python-relax-deps-hook.sh": {
+    "narHash": "sha256-bi9/0o1/Cfjn+w3+/rSRu5EMhKwe7uOQ1kf/gn9FFGw=",
+    "narSize": 3480,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0v0l8mzq5zs7ss8f7vhymj20r4dvj6sgxzhdzgkzh2bzip97ybvf",
+    "signatures": []
+  },
+  "/nix/store/ggi0yb4v4v08pm2nim0hd7ccw0d1i9ip-python-runtime-deps-check-hook.sh": {
+    "narHash": "sha256-XmlmK4NxikvA4gDWE5u8AvvWY2ujgYDOPq8uT4AOzLw=",
+    "narSize": 696,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1g6c1s04ybmg7v7810d3ddixdyq2pjdi7mh0wb04p2kihcmncsay",
+    "signatures": []
+  },
+  "/nix/store/gim3gxx5jkkwk05r355cs023qra55pj1-0002-Update-for-modern-liblzma5-versions.patch": {
+    "narHash": "sha256-9az38UlcgZIWgWqqlwFU2XItN0RZMK8aR+RbpwjqupU=",
+    "narSize": 6136,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:15dsx84afnz48wdayc2r8hvjswnrah0rgakah4b950aw97qzgb7m",
+    "signatures": []
+  },
+  "/nix/store/gl2vqsbjakiw3gypqkpc8z8m5n7v705f-0016-Do-not-set-property-for-empty-ACL.patch": {
+    "narHash": "sha256-HwuLL1JZC7elq/3Uv5zFYHumBGnI+FPVDEphuKTeaAs=",
+    "narSize": 3184,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:02v8vsjbhqaa1kam7y68d42acyv0qnfbzm7xmfjvf2sra8pqn2qz",
+    "signatures": []
+  },
+  "/nix/store/gmfyzxz6qrvkfa3dcp5jncc08xxah59v-0008-Provide-mach-compatibility-headers-based-on-LLVM-s-h.patch": {
+    "narHash": "sha256-Ewovgxg6mg0nKsu9ZBZmyVtUOCRHlxBBKIrY2CAXDB4=",
+    "narSize": 24552,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:07hc2whdin4a510i15s74hw58ny9cqb69gfb58khv6is321jy2hk",
+    "signatures": []
+  },
+  "/nix/store/gqcjy77drp28ra95a2d0xnq66nkhjnqf-0005-Find-ld64-in-the-store.patch": {
+    "narHash": "sha256-YKONgrhtfTS0Y2fXno8GHuxxPRRPph9BjRUj4ndmt/4=",
+    "narSize": 784,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1zmpcrvy48qmim0iz9jg2hyp3v0y0s7rxmv7cfs38zbdp218v8v0",
+    "signatures": []
+  },
+  "/nix/store/gr73nf6sca9nyzl88x58y3qxrav04yhd-polly-lit-cfg-add-libs-to-dylib-path.patch": {
+    "narHash": "sha256-/4Z3XdHPV9+fpU0OvGoKqJAv0VOTvDdjsl8AxJK72AY=",
+    "narSize": 1032,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:01nqpf9c802zn9ikgg4kag8jz45819mbq3jdlngxymygs5fpg1pz",
+    "signatures": []
+  },
+  "/nix/store/gx4pa1m75g8rrrggj7gi3bg38m4lg3q5-sitecustomize.py": {
+    "narHash": "sha256-OnjTAvZLiiIxBcL5ztzRPk+qN1Ff0qx6pWAOvfvdv9U=",
+    "narSize": 1776,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1mdzvpxvs3k0lmxarljza4vslkrys7fcxyf20lqj52jbyq1d6y1s",
+    "signatures": []
+  },
+  "/nix/store/h2fcbw7ghgn3i4qadszdp272w4dab7ln-lzip-setup-hook.sh": {
+    "narHash": "sha256-G3vn5a/fOL3CQmL38smljgiNl4Qolm8QWIOx6WFP+Xk=",
+    "narSize": 224,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0ygr9xhykcc3b086z5i8hjbqs24flp4z5xv28b1bsf6zmzjyfyqv",
+    "signatures": []
+  },
+  "/nix/store/h35snyvwlm08dfbfsfpzja93ddcbnz7m-0001-darwin-compatibility.patch": {
+    "narHash": "sha256-PCI1SA6Gxsgy456mTemDyvYuk0BBAsSt6D/2TuHw3X4=",
+    "narSize": 5368,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0znxy3hlxxizx2nw80j1829jxxnahgllv9lywcrciil61r43a8iw",
+    "signatures": []
+  },
+  "/nix/store/h5w1irii5ysndzw79svj87llmxhj0k7a-includes.patch": {
+    "narHash": "sha256-sHqn/ozbQSgSfYT74gzRw/PwAH/nQ/Vv+7TMgui81ew=",
+    "narSize": 368,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1v6mpkl85k5lzdpzahz7gw0g1wy3s46f5yw4gl92hhfvikzafymh",
+    "signatures": []
+  },
+  "/nix/store/h82l3gsf68s38y8ls49zlbs6gw1nylk9-0004-Use-nixpkgs-clang-with-the-assembler-driver.patch": {
+    "narHash": "sha256-yEUB2tJwzVzgQkls7Zj231mAFyGJltC7lM2ebz7sTLA=",
+    "narSize": 1784,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1c2cxhz6z7ndjjxx15l944bq0nfzyscfsv298bh5rkbhsbd02if8",
+    "signatures": []
+  },
+  "/nix/store/h9vn2sf6z5ikr4cfpsb8scz4z3aiqk6q-setuptools-build-hook.sh": {
+    "narHash": "sha256-N64Q/MDL0Cs4Xvb19Dzc2Ky1F5R1XKAusjgodj00kmo=",
+    "narSize": 1192,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0slj6hypca1qn8pa0p3mjhbvbb6qvhyg9xgnbqw2pl6bq3y11bip",
+    "signatures": []
+  },
+  "/nix/store/hb0qizyzafw50kk7yc1fw5l1jmwvab9p-unifdef-fix-build-with-gcc15.patch": {
+    "narHash": "sha256-WJpHQVV11JZaBWZAwGEYs8IYWkcxrs6sWQj1AbYoNf8=",
+    "narSize": 2040,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1zrm52v03x88b6ncxbii8xd1ihmk31hw0h360md9dm3mam0lg6jq",
+    "signatures": []
+  },
+  "/nix/store/i3zk7wraanzq0xp2njxnnf9q4xl9dkqd-python-metadata-check-hook.sh": {
+    "narHash": "sha256-NEnM4MaVnYe6owL6+1todApraDoEeh+gHnepowZYEbw=",
+    "narSize": 1936,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1g0ib03a7abp3sh1yyh479l6n2kld1dzpyh2lfx8g7cmqvhcqj9l",
+    "signatures": []
+  },
+  "/nix/store/i5l5j0dk17mxas7b3qdk6av9xrakf5f3-fix-tramponline-memory-leak.patch": {
+    "narHash": "sha256-j581uOe+iQu9UE695X2k3kvcJPcSPC3Kg+lSf2W71qI=",
+    "narSize": 576,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:18nnpdjpylp9hg52sg0jywjdqjyyliyybgafa2yhp2dywyw3b7wg",
+    "signatures": []
+  },
+  "/nix/store/ins9k4dw0gs9iqi2gd2dhj1g4y9dcycw-0005-Fix-configure.ac-for-Linux-headers.patch": {
+    "narHash": "sha256-ZGra0fFUHG5zyFsHDpzkrVpjjxVk+HRPgCdgINlTmew=",
+    "narSize": 3888,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1v4ragcj0q17h17p9y342n7n6nmdwjf0w1svr1rnw72ly78xlsk4",
+    "signatures": []
+  },
+  "/nix/store/invqxjaaxm7l6war9l8s35578ladq9rc-5.2.darwin.patch": {
+    "narHash": "sha256-HyTDu7TgsZaY05k+9oRlQ/V+5Vk1AMrXiEkZ9QxXkvI=",
+    "narSize": 1880,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1wljaw6ga6a9i3bwl01mb7jpxxa3cn2gcglrsfc9dcg0njxw690z",
+    "signatures": []
+  },
+  "/nix/store/iy4wp1wspv98nl2hlqn2w7y5pghfl9jh-normalize-var.patch": {
+    "narHash": "sha256-aw/awYyI3ss49FAgoPiL7kQVrXVxZgtHK8RMDRedQ6g=",
+    "narSize": 800,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1a23klbhsk645d3hnrkifnniai7figwa082hyhwcppl8ik0xl3vb",
+    "signatures": []
+  },
+  "/nix/store/j60mwj2bd6rplcllp8gb5asmzm2n3kfy-python-catch-conflicts-hook.sh": {
+    "narHash": "sha256-r5gVuPkZ/LQwBxw3S46uOYSG9D1OgL62iJxSLNILOfc=",
+    "narSize": 464,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1xrr1g92qllwi2vbx02f7ps8d11rms74ndqw0wqb9z0rz6w1b65g",
+    "signatures": []
+  },
+  "/nix/store/j7bd2a4fafw9rchrf1ag9xf920g37kk7-link-libiconv.patch": {
+    "narHash": "sha256-k7Dm3/VqgCF4OG0QplroBbgwE86/EMiGTpAibGYZhAU=",
+    "narSize": 912,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:01c435k6q8lh9s3ch45zrq9k1f05x1dac43d71w2303aypgydc4k",
+    "signatures": []
+  },
+  "/nix/store/j9lspxnlbkrcskxpxg7q6nb74wnn6v2b-darwin-plistbuddy-workaround.patch": {
+    "narHash": "sha256-+Rb83wt9qZoWZs1N5NckkXP4rf6MRw9dw60u0DMKWfQ=",
+    "narSize": 1168,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1x2r18rx0bmdqdfhyiwczsnzhwwi4kby8kfdcqb9mabx1ggzq5pr",
+    "signatures": []
+  },
+  "/nix/store/jh2pda7psaasq85b2rrigmkjdbl8d0a1-llvm-lit-cfg-add-libs-to-dylib-path.patch": {
+    "narHash": "sha256-dRZESNfsrbswT+N3jdnoW5L4+mWRXOowpY8Lr1EGLYk=",
+    "narSize": 3176,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:129d0r8sy2wgllqflp4icpxgi4jvx3cqsxz39wqbpbgcsx4485km",
+    "signatures": []
+  },
+  "/nix/store/jik02mkz72r2f6hhxnlhp6h5f0fi89gw-expand-response-params.c": {
+    "narHash": "sha256-XdaaUsxJLZPNz07AEkCE5nSou0IYb3mabpL/KH1nwIM=",
+    "narSize": 2728,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:10y0cxyjizwjdsd7jvqq8axshx76hi015h2frz6r6ba9ri99mmjx",
+    "signatures": []
+  },
+  "/nix/store/jiqacpdwjllsm8vl83aa5y0gykms068q-0005-Use-std-atomics-and-std-mutex-for-portability.patch": {
+    "narHash": "sha256-xRuGcptWXVjB5bb0KhmT6nDbvYlpe0Ri1cBA7PReaL8=",
+    "narSize": 7280,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1gv8bvsfqh60smi48yv9i6yxnw7ajccjmx5nwp0mhpankdr8c6y5",
+    "signatures": []
+  },
+  "/nix/store/jqg6d73zcfi5qz70qvnr4raxr336mb1c-lit-shell-script-runner-set-dyld-library-path.patch": {
+    "narHash": "sha256-YFPYjzwEgUv/NWneOTbz10/0sdCEH3UshukV8DcXwi4=",
+    "narSize": 664,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0bn22wvz05g9hqn7a7w4s2qz8kypycv3kpk96pzlp0847j7xhlv0",
+    "signatures": []
+  },
+  "/nix/store/jqhyhhgkcsfd665y7a4sk2f9iq77m2fh-0019-Prefer-OpenSSL-over-CommonCrypto-if-available.patch": {
+    "narHash": "sha256-18cSjiGC4rsXrLbBW9bOxbY1NftbDU+UZGxQbF1mOXQ=",
+    "narSize": 4416,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0x1rcrfnql3ccja4y3avzcskbdn5rvb5phdnmhbvpql246715iyp",
+    "signatures": []
+  },
+  "/nix/store/jr3ivp9a90ysqsii3f35h80jpsjdbd1j-000-nixpkgs-cmake-prefix-path.patch": {
+    "narHash": "sha256-UHlEayHPDQjWfWjP0PjBpMWpo9WERPSyCrI1+XnwNMI=",
+    "narSize": 816,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1hily1wzjddj1arg8i44sniskid4q7wd1kv8gpb0h3fg45ml8yah",
+    "signatures": []
+  },
+  "/nix/store/k6zrwaags57si3i0z1k5j6p2c5qq12ca-0011-Modify-vendored-libtapi-to-build-with-upstream-LLVM.patch": {
+    "narHash": "sha256-QudHpUJ5WrTnquA5F57UF7oXW8Sq9X/LHZpsMXOUyPw=",
+    "narSize": 4512,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1z68jirk2v4s3p5pzxdaqidigfhpsjg1ffg0mbkv8nkr8ajlgrs2",
+    "signatures": []
+  },
+  "/nix/store/kd4xwxjpjxi71jkm6ka0np72if9rm3y0-move-sbin.sh": {
+    "narHash": "sha256-exQDue2oXLDKVrh7CiPpj7WjA5qhZfskrLzpYkAFiy0=",
+    "narSize": 664,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0bcb0m065sdwmhjgnrd1k81s7dcgx4ihlyxqav5b0p58xnwh653v",
+    "signatures": []
+  },
+  "/nix/store/kfd720y3rwiy5q07kpxh6qkdh6khiw90-add-clang-cc-cflags-before.sh": {
+    "narHash": "sha256-mrj5N9GEYZvYzwxroQIRijVmkko/+Xb95+6nJl4xB7k=",
+    "narSize": 1360,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1f8765g2d9zfwzypdy9z9a96cdca241a2sqcrzc9nqc4s4vzkf4s",
+    "signatures": []
+  },
+  "/nix/store/kpkc0p7nm2x5iiy0km4pq4wwq1l0p8zy-0009-Add-useless-descriptions-to-AC_DEFINE.patch": {
+    "narHash": "sha256-CLsstf6AhpHppCAX9ptYGWqUxINoooFECBiiplIyzFk=",
+    "narSize": 3888,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0nfc699ad8hq112838k8hg298shrb2dzc5r0lklr31l0zssjrfq8",
+    "signatures": []
+  },
+  "/nix/store/kwibv3va0b70dyq6j41cpbrvh64fv2b2-meson.build.in": {
+    "narHash": "sha256-8w4qFjLcTmJ9Y3VfN0JioQByrAbcjL4MIzg7Ur5XmgY=",
+    "narSize": 4656,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:01lsayz54frq4c6bx36w0sn74051c913fpvmcdyn4knw68b2l3pk",
+    "signatures": []
+  },
+  "/nix/store/kzhs0iqzhs4iscivr27rbgz3hc27zyfc-lua-setup-hook": {
+    "narHash": "sha256-1o/BPmFC/rLxbOxHZbKmHn60jkk8RjPLCIwHaRmTHIA=",
+    "narSize": 184,
+    "references": [],
+    "deriver": null,
+    "ca": "text:sha256:1922nwjwgrikj5pm75x2im9yrdf6gr0yjqwida54kdbvaqpr4y03",
+    "signatures": []
+  },
+  "/nix/store/l622p70vy8k5sh7y5wizi5f2mic6ynpg-source-stdenv.sh": {
+    "narHash": "sha256-XtbkqLpGD+LK0h01ReriTG6AVfz98JBx+BNFGm+eVM0=",
+    "narSize": 216,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1kalkrpili8kz1qr1w7xziaq0vjcwbm4ad8xsb5f43s6palf9mjy",
+    "signatures": []
+  },
+  "/nix/store/lp2nnib5zm4vl8ydz81yns04vzyxw926-add-hardening.sh": {
+    "narHash": "sha256-JZiXV1See+CrSVOW6+0FIf/n/8BlHGOfRnCr1zaYhlQ=",
+    "narSize": 7808,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0m46k0vdgavh8sgn6735q3zygzr10pnyp5jk96my0ywyaibrg615",
+    "signatures": []
+  },
+  "/nix/store/lpfs02z2i2hamz9f50p4bz6v0fs0600j-mimetypes.patch": {
+    "narHash": "sha256-ii/NV1FIwxUkhTvUKrGVPc8WBfVYjfND+g2zMZh0qWs=",
+    "narSize": 832,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0sx9fjc33cqdz91z73aqyl2idkrxjnqjmm1vhlj1bhs8a5bwsbwa",
+    "signatures": []
+  },
+  "/nix/store/lpw1q2ska8qrwyc4fnwfb0iliklcygrv-bzip2-1.0.6.2-autoconfiscated.patch": {
+    "narHash": "sha256-u7ZKr9ipQByIyV2+S7xzA0ZllV8WAiopZRpFRHAOYtc=",
+    "narSize": 12984,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1mv21rq48i8sclljl0hnbyanaih3ffy4pgjxr641qh59v2plmdmv",
+    "signatures": []
+  },
+  "/nix/store/lrs8wfi7jl06d1dxpcdpqvhbzz17cfk5-0013-Enable-extended-attributes-for-btrfs.patch": {
+    "narHash": "sha256-l4rg0r5j4waqoXEJf/USNJWWGYGCgOlEkT4XN0nlSMA=",
+    "narSize": 1440,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1h28wm4kf5ryj52fk042h4crd59l2bspy2bil6m0dqv3pv9f12lp",
+    "signatures": []
+  },
+  "/nix/store/lypyhrdqir7lhwhsvrr1cp85ywh3dhas-pkg-config-wrapper.sh": {
+    "narHash": "sha256-EmmN92sDwatHZY7uNVjMtwLSQHHZB3F79eGGvrB0bQE=",
+    "narSize": 656,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:00bdfjqbx1p1ymxp21yrf50d40mpric3bvlfcm3sph83dgvqss8j",
+    "signatures": []
+  },
+  "/nix/store/m6ba0cx9xqdji0dr54prys33vlk8asrm-python-output-dist-hook.sh": {
+    "narHash": "sha256-ycTysJvuOH07XQm/9SjQf7RKhNWKS9VpT6NPmdYCooA=",
+    "narSize": 856,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:10520bb9jkx39xlxajwasn24md3zs0lgbgq9blxpsf7fkfqg5i69",
+    "signatures": []
+  },
+  "/nix/store/m82njs8mgyd81b5alyg5ic3p31d860il-builder.pl": {
+    "narHash": "sha256-iCcD0ccla/mt+PDqhYRsif9HWRitxsEC/YazA7gbS+Y=",
+    "narSize": 10408,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1rjb3fw07cw6zl1c3imd31clgzw9dj28bsphz2nzjsr5qz8h69w8",
+    "signatures": []
+  },
+  "/nix/store/m9171q7kn5bbp08hqmhfra41mmn6p5nk-CVE-2026-7598.patch": {
+    "narHash": "sha256-ubuA9nhwMZDI/F5nDLAvWPLt+UeSVB7m+TLHAY2W3Uo=",
+    "narSize": 1840,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0jnxjs6h3irjz7k1wm4j8zwyvwjq5yq0qrsyzk490cbhg3v81fxr",
+    "signatures": []
+  },
+  "/nix/store/m9qvr6m0bylrjqb5ind6hfzsax14xys9-gnu-binutils-strip-wrapper.sh": {
+    "narHash": "sha256-LCMd5R2prR470jKQJvUsLQu+8pjjBXHhWTv55QOsY7s=",
+    "narSize": 200,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1fv3mh1yby9vb7hp21g3k3rbw2rd5ksjd41js8xixbd93pjis8rc",
+    "signatures": []
+  },
+  "/nix/store/mcgd0wa6sv13ns20f9vh8pp5x5n730ll-gnulib-float-h-tests-port-to-C23-PowerPC-GCC.patch": {
+    "narHash": "sha256-Q8XOBrxl/iiAQlUNM2py9F7ji5x38bANPFMStLZUM7A=",
+    "narSize": 9888,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1c1kajvb84jk7h6v1wbpkj5y6pplf9m363am8a02izk5ph3cxia3",
+    "signatures": []
+  },
+  "/nix/store/mkr83pagcswpjv32k5zw6iz0yn7k31zx-setup-hook.sh": {
+    "narHash": "sha256-N40D6OZlgB57/7FP+EBN9oG1PKgRXTNxlqOKW9aAv/k=",
+    "narSize": 3240,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1ydzh3b5p2m3jrqk6p8im0ybb0gn9m0ghkxizxxix035wvl0739p",
+    "signatures": []
+  },
+  "/nix/store/mrzpfh0ml9k07sw019ydagbb2z1q4sxz-add-flags.sh": {
+    "narHash": "sha256-O+I6uFhUpkPTnJn0bqSo6+FYn7UFxaGR1m1/bphollQ=",
+    "narSize": 1168,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0m4nd2c6wzvdss8s3i85nngmiqgbm2j6xx4rkk9l79jlb2w3mqiv",
+    "signatures": []
+  },
+  "/nix/store/msf66qwbdwxl660wpd823crbf2jgf6m8-armv6-scudo-libatomic.patch": {
+    "narHash": "sha256-f6aImyHdi4yKqZIwMGLZtH9e1ynNMyQJLZj1DCvYBh8=",
+    "narSize": 2832,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:07q6v0mhrxcq5l4j8cyd57bmwzxlv5i30c4jm658r2yx46dqi9kz",
+    "signatures": []
+  },
+  "/nix/store/n2iajpbj02yn11j24jhbyzrb045i0wba-gnu-install-dirs-polly.patch": {
+    "narHash": "sha256-NSkOFrqgcEP0kjT433EwvT1y/FshnXWLiej+6QfMZhI=",
+    "narSize": 696,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:04k6rh3ykzp8i65pb791bgy74gdx61qxzy1ljbs46w50p8b0wa9m",
+    "signatures": []
+  },
+  "/nix/store/n315a3g9bcxlypqzbm36nzrrg40h6lcj-cpp-precomp.patch": {
+    "narHash": "sha256-iLN+RvBeThduRjrEE1M3K/w90BE/yKPSMDb+78yy1Tg=",
+    "narSize": 592,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0f6mnb6fzzin639a7j1z2783vz1b6x9i7i1s8rp1fkjyy137xcw8",
+    "signatures": []
+  },
+  "/nix/store/n5kkahb82ykkcjwakgx2h6jbs7d9avji-gcc-15.patch": {
+    "narHash": "sha256-merAsfiXXJQrimRpElzmuAkBk7zAoeJW1yYe6mINQwk=",
+    "narSize": 1176,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:02a31mifl7i6sxbf58f0pj9h22dqwrf14sb4i8mr8p4pz2qw1slr",
+    "signatures": []
+  },
+  "/nix/store/ncp4s7n5ghjmrfm58jpwhix42q0rkq01-python-imports-check-hook.sh": {
+    "narHash": "sha256-C0CJs5bPf0AK0egKHV7b49yL7KPbVcRqJuL3NMAHzAY=",
+    "narSize": 1360,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:01nc0z039xz24rmc8mfvlgn8pp73vdg1s2p8s4540zygjsrqjh0b",
+    "signatures": []
+  },
+  "/nix/store/nfw5ir2x8z81h8gkkg17b9ysk0h1zzh3-0013-Set-the-version-string-in-the-build.patch": {
+    "narHash": "sha256-8n/gCV4Cz35TzSXeXzCs+O1E2DSAJQiInxxWd6xD+OY=",
+    "narSize": 1200,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1rpq8fn7fmhwky40h9c06kc49vgqmhq5zpi5rm9pxkq2bq4y0zzj",
+    "signatures": []
+  },
+  "/nix/store/nkkdyw3igr31xcdypzlz99idkzjk2c21-fix-interactive-apps.patch": {
+    "narHash": "sha256-b6b+JMB6fGPYzPMAxM/1B3oZ4xNJ3DUcAWgsctpKjXU=",
+    "narSize": 5224,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0xcd9bd74b3804f3bp292giijyh7yp7w807krkc66z3sq0jgx9kg",
+    "signatures": []
+  },
+  "/nix/store/ns1g812fgrmpcw5r0yn980xvx3x47l56-remove-references-to": {
+    "narHash": "sha256-9TgbBVqPPnQcWfvVyH1M9AbH+gfw/sAUyR/RO2deKq8=",
+    "narSize": 928,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1brabrkkpl8zr4ac1zph0zxcf1pl9iywimgvb4f78glgb82inf7m",
+    "signatures": []
+  },
+  "/nix/store/ny42y6hs4p294rvnrwbmrpwzqghw2816-gettext-setup-hook.sh": {
+    "narHash": "sha256-J856GnBi5Lll1YoDgyVrMpXbj7Dg5c/Ptw39rLIDeZY=",
+    "narSize": 672,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:15kr0frarz8dnz7wzrg0n27xp59jdcjq60wasmjvkr32f0d7mki7",
+    "signatures": []
+  },
+  "/nix/store/nzlcdjcdg6cjwcp9ji5k2v9zx7sca0y5-0021-Support-text-based-stubs-with-compatible-architectur.patch": {
+    "narHash": "sha256-Wdrjijf3ngCV+nzYbLeA8gbbLpMswhvfoK2TGLxSedM=",
+    "narSize": 1256,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1lvraay1i4xdl3giphicjcpdn1pjh2vnrn3wzaah17pp6y5f7njr",
+    "signatures": []
+  },
+  "/nix/store/p2fp6i7hjx9af1wbwr32k217wp2dxmiw-absolute-paths.diff": {
+    "narHash": "sha256-/8eX+P1oFqUadhWMho6EIC1URR3KaiKbwJBzhmRWHlM=",
+    "narSize": 1096,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0lqyarj8cwwhq2dj4sna3m2m8b90hj78d30mfqdaa5k8zpw9gizz",
+    "signatures": []
+  },
+  "/nix/store/p3l1a5y7nllfyrjn2krlwgcc3z0cd3fq-make-symlinks-relative.sh": {
+    "narHash": "sha256-k5tloOeDGg4nsbolF2nQ8zSPuSOCJHmG/SnT48musDA=",
+    "narSize": 1168,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0c5hmv4y7lr9zn37j9424fwqyd7ks1lif9dsn4khw6l3wyh6b6wk",
+    "signatures": []
+  },
+  "/nix/store/p46prhgmv7ibjh9igfkbc6zfxbbi6sk5-dont-hardcode-cc.patch": {
+    "narHash": "sha256-l3xUuUkVzOprnM4Jt2VQKOhDJfr6QDz5HSUHOWiX5sk=",
+    "narSize": 504,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1jg6jxl3j1r53pwkqh7sz8jl7s18a1jvf2ffkimymk0m96wm8z4p",
+    "signatures": []
+  },
+  "/nix/store/p4gsvlm13gfwyabj3b8xfs5x5ccp0kg5-0003-Inline-missing-definitions-instead-of-using-private-.patch": {
+    "narHash": "sha256-+DMj3539L9P9irCaCFvqNBDjs373tuIgkskJ/+IDDhg=",
+    "narSize": 1864,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:060f0gigy2f9j8hf5dppgsry641lx9dhi6mhibyx6bzxkpgj6czq",
+    "signatures": []
+  },
+  "/nix/store/p51vwfqqg4mpcbx7clmc0ijdzh9j2x2m-0018-Use-STL-containers-instead-of-LLVM-containers.patch": {
+    "narHash": "sha256-p8kbuZJCiyp+Sw9wGD996IiVB0lf44TjI9koU44Ft1A=",
+    "narSize": 1192,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0l5p0n756a6r4giq9qsz943rb278glzihw0g9dz2m2s2jawipjd7",
+    "signatures": []
+  },
+  "/nix/store/p55a764pi2f4kkx3adb43bxb2dnb4z6r-CVE-2018-18384.patch": {
+    "narHash": "sha256-yGzuHZ2HBMhH/pewhSGjbAfSmUmmqRPO3VlRJz4XEN4=",
+    "narSize": 1736,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1phh2wz2flarvp717ad696cx41vclchqbc4pzr3wh147klfywv68",
+    "signatures": []
+  },
+  "/nix/store/p87ki1g93i9f1v6ksdz69kprvx6zzgdl-CVE-2022-28805.patch": {
+    "narHash": "sha256-wyEj+xgsOmxsH8cH2utBG/I8u1OUpwBkIlx8TFt0pbs=",
+    "narSize": 512,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1fx5fidlqz2w49j019wlafxkrwhv87mxl1y73xn6qfic33xj68f3",
+    "signatures": []
+  },
+  "/nix/store/p8b1z6n9qcgy4x6q3cmsdzx60yad9d1v-0001-Update-tests-for-Python-3-and-Nix-sandbox.patch": {
+    "narHash": "sha256-5WI13DtTu3tS4b5OjK+/TMT4LdNBBrNae7bNe87nmWw=",
+    "narSize": 36296,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0v4rwz77pkdngddb61j1scnzii2cpypqqkmyw597pfsk7gf3aqp5",
+    "signatures": []
+  },
+  "/nix/store/paaqz9ad8p8ravgs8hw3kzypqc3fwqws-ld-wrapper.sh": {
+    "narHash": "sha256-+7KCt9/eeuuzYuu4R2uPn7PwZxXv6uRns6z/lr40jOI=",
+    "narSize": 9928,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1qlc6jz9dzxcndky9spg2mkz1cwzixmlgf7bcarynynyvyvq5cpv",
+    "signatures": []
+  },
+  "/nix/store/pag6l61paj1dc9sv15l7bm5c17xn5kyk-move-systemd-user-units.sh": {
+    "narHash": "sha256-ApvZCwlSSuSA6bGuBQGi+EIncpLHju2Uhro27Mb8wMA=",
+    "narSize": 880,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1h60zk3fqdmshsafv3n7j9r2fhpql80hbbmix60f8jjj145xk6q2",
+    "signatures": []
+  },
+  "/nix/store/pai5pnd7z8b6mg4pgq44rqgx994ibpfh-0004-Fix-signatures-for-getenv-getopt.patch": {
+    "narHash": "sha256-T/DDsyxBMeyAeD0zDZjdngzhkGdtWmwgLhQryvALZmk=",
+    "narSize": 1696,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0sb61gqclaql5qh6qnkdcy8f234yvnc0scrxg20fqca15jrw7w2g",
+    "signatures": []
+  },
+  "/nix/store/pdcj2chp5c2gvm2jc3shbajfc62kbx1i-CVE-2014-9636.diff": {
+    "narHash": "sha256-NSO1P3kPJuzENRMaLBTs2GH0vHTOf2fIG3cfvIAIXsA=",
+    "narSize": 1616,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1h2y120bq7vp3g46fzyffjyg8qfqxha2q6hk6p2fq9hgg4zva8rm",
+    "signatures": []
+  },
+  "/nix/store/pdqbag9saj8i15pq5226i40gga55jnfy-sdk-hook.sh": {
+    "narHash": "sha256-oQV/VyccZp+CQ7jPEuMBlMhxsW96PKWkZB+Z/1WB/p4=",
+    "narSize": 728,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:17pyh5azz68zcjjaag3sdyqp3j4l07ii5kxq8f19yrhw4xbpy1d1",
+    "signatures": []
+  },
+  "/nix/store/pf7919pkd4r4rvngp1pwbgb5jvk4ag11-0011-Fix-missing-includes-and-silence-string-format-warni.patch": {
+    "narHash": "sha256-kf/wovy/bJzd9wIMakhd2iOdCAwpNDF6NiNdxABl+rQ=",
+    "narSize": 3208,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1d7scl0c8p936rx32d191h49s8ysbm46l302yzfrqv5zzjig1zwi",
+    "signatures": []
+  },
+  "/nix/store/ppm26x60zvaqzapqjnp540rislz3ml48-autoreconf.sh": {
+    "narHash": "sha256-4/vz1l/VVxEYigbgwEeWXlFGUytwf8P8poGSWdzx+cg=",
+    "narSize": 448,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1j7ry7f5k4l1lvyc6zvh5d9lclayjr3w1q06i8c12mymbzbg7yz3",
+    "signatures": []
+  },
+  "/nix/store/q14n7xivsfrsfvpkvf2id38cs4aj58yb-0017-Fix-time-format-for-musl.patch": {
+    "narHash": "sha256-YgrPUfApYCenYIYgqDj9tzVc1Nvdzwns0vSiHABUpBM=",
+    "narSize": 2512,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:04x4ah01r8plsbn0kkyxvga5qddpzlwah846c2kjfq19y18wy2k2",
+    "signatures": []
+  },
+  "/nix/store/qbdkkqwjhs3pn1av8nv426i1mbr72rs7-0017-Fix-dyldinfo-build.patch": {
+    "narHash": "sha256-2wrZMtUNY1cUMp5NHK3qpQe1ktzx+DHpfDXtOYT5g9o=",
+    "narSize": 1560,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1nl3z623kv9mgklk3y7ivj9ba1x5xaniqkcy68a5fqqdslrdj2nv",
+    "signatures": []
+  },
+  "/nix/store/qdi8jw1jiywvfbhz5f1qcl1vyryyys80-Architectures.xcspec": {
+    "narHash": "sha256-6q4uIdZsfAES0tox2fY/V0XsqOyuBdFfmt0lcssv93w=",
+    "narSize": 2128,
+    "references": [],
+    "deriver": null,
+    "ca": "text:sha256:1z5086blmn6rpdlgqrcci62ndiqbas16b7w0c2gbmmfz9fiv5rnz",
+    "signatures": []
+  },
+  "/nix/store/qi47d9yg05qkxim3m8rkhz3r9iclzcyw-setup.sh": {
+    "narHash": "sha256-gVVbaJWy9+qOIjyhQTSY8AVJVj4rpDMOAf7y0R6l/1k=",
+    "narSize": 58960,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0ngzllgd3wpy0473791b7rb4j1ghk0s4389w4a7fmxxjjml5nmc1",
+    "signatures": []
+  },
+  "/nix/store/qibwgql63779mj8q70zhggjp0qcil8yn-clang-at-least-16-LLVMgold-path.patch": {
+    "narHash": "sha256-UrxGk1TkL7LHQ4t7NfbKhuDzoxHxgdwm4VScUYWFnRE=",
+    "narSize": 808,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:04cxhn2m372lw4kdr0gi26iz7q46rbv3aywb8g3v4bz4aj9ldg2j",
+    "signatures": []
+  },
+  "/nix/store/qkn69idpy1s587nnvnbkqdla6xk1ckrf-0001-Always-use-write-instead-of-mmap.patch": {
+    "narHash": "sha256-7zQw2y9RjwSZjbnr5psUisDhEQnEeIWI8i9yqO8PDwI=",
+    "narSize": 1776,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:00hg1zpshwigya48ay64148y3h4a2jdydsxrinch93si5zdk0d7g",
+    "signatures": []
+  },
+  "/nix/store/qmaaibbcds3bccz8b959mz9f579mrxcp-004-unconditional-ksh-test.diff": {
+    "narHash": "sha256-ECpGGrAcOIwxMgU4lkbD2gY0MprMbHFrwXMoGEpV8NU=",
+    "narSize": 464,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1mgham51ha3kq5mp2v6ck8r381nsqd39cf0568qqqf0wn0d4cahh",
+    "signatures": []
+  },
+  "/nix/store/qvyl9jgm1a1mlix44qbsgrd1ipwciamk-X86-support-extension.patch": {
+    "narHash": "sha256-Sf0Um5afnjqmR5w6NAvrOh1d/Ah8yHMXkO9WKp5XCXg=",
+    "narSize": 800,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0y09ayg2lmpgj0bp7j3w13y5s79sxc5k8flw8yk3m7lzjsdi9za9",
+    "signatures": []
+  },
+  "/nix/store/r823b8kgr3rlzcb5jg1mqnadqmr6izxs-Use-system-toolchain-for-usr-bin.patch": {
+    "narHash": "sha256-s+mlpeFAO5S2ZjkiuKclUX9nve/0CkAoAgTzpPrAaBg=",
+    "narSize": 3688,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0638q3xa9wq408l402plxyynfzsi4nkvh8ircsv98fs0w6jsbsdk",
+    "signatures": []
+  },
+  "/nix/store/rbwlls4yc1l6169xzpf4nbyqgk7lzpx1-node-struct-without-gmp-mpfr.patch": {
+    "narHash": "sha256-bnKyIIeGfpW2cQ2bk/l+9pqbrrS16gkJz3kVpl8Q3vQ=",
+    "narSize": 2184,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1x6y21gsc5brrw4hksmmnjp9p6pngvwr76qdf6v9azl6hwhb4wkf",
+    "signatures": []
+  },
+  "/nix/store/rdkdki1f24q8mqgnbsyk7gmh28c027ks-CVE-2014-8139.diff": {
+    "narHash": "sha256-0/Kzh2lsq7X9YKPdygV3Bm/s7jnmWmREIkzkTtuY3J8=",
+    "narSize": 1984,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:17ywk3dlxr2c49268np677pfqvq6fw2wmpd3c3yvbavcd63v7wnk",
+    "signatures": []
+  },
+  "/nix/store/ri503nkqxyqg8j0dcqd8jd1jzhryszsk-CVE-2026-56392.patch": {
+    "narHash": "sha256-BGdElPTYXnVKXYZytQ0GXgogSpTLY5W27itXFT9T0zk=",
+    "narSize": 2176,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0ffkacziamrbxsv9aqybji5202jy0q6vawl6bm57apnqyja48rq4",
+    "signatures": []
+  },
+  "/nix/store/ri7f1z3gb0c5w1ah0zl6qzgma4mclwlx-remove-impure-search-paths.patch": {
+    "narHash": "sha256-VTTOzda1Eazm7PnwFjf88kxx+rUApYLRZSBcwF+O6l0=",
+    "narSize": 63320,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0pgairgw0p10cp8q5980npx72k7jzhvidw7rxkkaq4dmsv6wwd2m",
+    "signatures": []
+  },
+  "/nix/store/s046piarfqid5ry32kfdi2a7hrnjz5vi-meson.build.in": {
+    "narHash": "sha256-+ShEfS/CNSlfz8Q3yiCSwWy4jKBnsFDWseKwqUPNn88=",
+    "narSize": 1224,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1kwzrm1skc72n7b51c37l26bhv61j8hcldy4rxgjjdf25xyl8a7r",
+    "signatures": []
+  },
+  "/nix/store/s8q2xzixrsps9h64dpvpajv6pjy65kfl-0010-Update-configure.ac-for-openssl-libxml2-liblzma-and-.patch": {
+    "narHash": "sha256-8yU/emOpiOVzQlcJKGuryJaw04dK3Y4CrORAstxWmdg=",
+    "narSize": 4152,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1n4ravfb4h74mh18xpaahz9v15n8mdmjh2ap89ryb259cdx3y9gk",
+    "signatures": []
+  },
+  "/nix/store/shkw4qm9qcw5sc5n1k5jznc83ny02r39-default-builder.sh": {
+    "narHash": "sha256-g4iylkzyVczW3+hTZHknt6RNO9WDF1+TK5lVxU2GYjk=",
+    "narSize": 128,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0fb2hr6wamcr5f9my5w3slxlv95p4xwn8lz8vzbcqmgj9jbb5243",
+    "signatures": []
+  },
+  "/nix/store/sq4h6bqjx12v9whvm65pjss25hg1538q-nix-ssl-cert-file.patch": {
+    "narHash": "sha256-79g9mrDtLWVzfAgWve73Rin6/Yp8B5kFhOSgA4DxXrk=",
+    "narSize": 856,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1fayy6007874hh2rj1vwibyzlaa6yzpbs5h8girnabgdn2d3vn7g",
+    "signatures": []
+  },
+  "/nix/store/srnw34vbzgg0vrliaryijrc9ak4myjfp-0002-Add-compile_stubs.h-using-Clang-s-embed-extension-fo.patch": {
+    "narHash": "sha256-xnZwANiDcEoaG8C5gOIVaqmUTl8hh8cCiggYBQH3LVc=",
+    "narSize": 952,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0mrdyw0ha608i81cg1r1bx799aba2pi81ff03cd4lw43v0070xn6",
+    "signatures": []
+  },
+  "/nix/store/ssxs0kj7akqn4yjmin0y3j7gpr0kf0fk-catch_conflicts.py": {
+    "narHash": "sha256-oAaHzVQ03nl4M7e6/8+ZRkkh3ZBiAnCsEZjCxm0pxoE=",
+    "narSize": 3128,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:10f655nwdhlq26n700k2j3fj2ja6k77zzfmp6dw7kpilak6qf1m0",
+    "signatures": []
+  },
+  "/nix/store/sw2bfbv9jfz2b99c8qk178xx06qf1x5i-0002-Fix-ISO-2022-out-of-bounds-write-with-encoded-charac.patch": {
+    "narHash": "sha256-vgEb02/kDoB665/1s8pFhPaT39gWdIHRZQIaKF/HIlE=",
+    "narSize": 1424,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0l92qxgjh6h2cp8q2x0nv3gr7xl48p5b7xczxdx803p4dz9in0dy",
+    "signatures": []
+  },
+  "/nix/store/sx3mhm7h4dhqa4p3avrckcda69yg0fid-write-mirror-list.sh": {
+    "narHash": "sha256-8n/PdA6tqcLAs1s5BYqfPkyEc5Cd0I0yLxb2GJON1ik=",
+    "narSize": 184,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0afnin9iixhn5wr8vl4xj1rq8k1yky50afavng0c5add1rscyzzj",
+    "signatures": []
+  },
+  "/nix/store/sxi2lz19ry6v718w3yym08ycpypvnf32-fix-no-home-directory-crash.patch": {
+    "narHash": "sha256-4MijgEtmHIoNz95FK59RAj/9sWMvMcxNEDzuCcdB/c4=",
+    "narSize": 1288,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1kpx873hkviw216wqc9gcfqzsgq2a6gjnifyrw6ql7369f0a7j70",
+    "signatures": []
+  },
+  "/nix/store/v9034cqc4h5bm10z4vz3n1q2n55grv5y-role.bash": {
+    "narHash": "sha256-WoCCEibGna0OocyvN/sRX9qrohMyI6V6auTGeRc4qPI=",
+    "narSize": 2328,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1wm870bpkip4d9xaa8rj2fiapnjz27xkgbycl47av7f64q98502s",
+    "signatures": []
+  },
+  "/nix/store/vwddwz286f9smq4i2lrnqsyc256lqwdk-add-flags.sh": {
+    "narHash": "sha256-YyPoIGxS91OKQcgFGS1JImZICV8ABgaBoBKRlGKn1eg=",
+    "narSize": 3704,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1s6mlxi9948jl20hc1h0bw4lhri294nij1f886557xsjdhhfh8v3",
+    "signatures": []
+  },
+  "/nix/store/vxdnn960ra9if78giw220xrpvqcwi5n4-python-remove-bin-bytecode-hook.sh": {
+    "narHash": "sha256-LfldxLCvYW4bIeytG1YhmMHinhFU1X/SwXkOBzNfUzE=",
+    "narSize": 744,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0cakbwrhf3krq797zmal26gf5hcq45b1pbgc44dnwqdgn325vy9d",
+    "signatures": []
+  },
+  "/nix/store/w0sww33jgykmp9j2z26xcg8zffm5wkr9-0001-Support-setting-an-upper-bound-on-versions.patch": {
+    "narHash": "sha256-Qi/qqMWq8sUN+9GXJNy1S3Oicm94j1lTtoO/FigwlO4=",
+    "narSize": 14112,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1vll60l1dgw3nr9mk3vqdxra4wsbnpf295yizc6wbwmaqnlflbs2",
+    "signatures": []
+  },
+  "/nix/store/w3pm1ypv02i8skmnv1h1iagpqf3r75ll-CVE-2021-4217.patch": {
+    "narHash": "sha256-L0A3gvLQSxz8eJ6o/WUFgDl/DH4a+HpXQmWZGgtXeTc=",
+    "narSize": 1920,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0dvraw5im6b589bpmy0sgq67yfc00mjzva4yg3y1qjyhya13fh1g",
+    "signatures": []
+  },
+  "/nix/store/w7aq6m42kd88631s5gbkj8bjzid5ag0b-add-nixpkgs-libc-paths.patch": {
+    "narHash": "sha256-P1vjQxvsDmztLMzYUL4q8lJt5MPpfMRNj7KH3tRcHUI=",
+    "narSize": 2088,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0hhxbkadx1xjix6w8z79qgj6slpj5az51n6c5knnq3pc3d1y6nrz",
+    "signatures": []
+  },
+  "/nix/store/wjhzc9ql2bqw954pffvfhm3ljbxnli9n-0018-Replace-memcpy-with-memmove-for-musl.patch": {
+    "narHash": "sha256-lrr0Gi3iChXmCROwsvq1o4jBICwL68h/ja4gT+DNq8I=",
+    "narSize": 888,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1hmbrph4y85fimzwisqb5hhc3253npxb5c0k17k1a2p25ldg9fln",
+    "signatures": []
+  },
+  "/nix/store/wl8lzf0dqnzbbhn18llpq4yzpfvkvizi-ToolchainInfo.plist": {
+    "narHash": "sha256-jzLMc1uK+hWAm5I+uQl8vTN1y/Kx2oYxTdqab0gq1Pc=",
+    "narSize": 392,
+    "references": [],
+    "deriver": null,
+    "ca": "text:sha256:1jh4r27cqg05gpv56campi5242ir0hly0i63qvyaz5k2ighgynhn",
+    "signatures": []
+  },
+  "/nix/store/wpap61z19ch5drvyg814sl5acik6cjgr-0002-Remove-impure-dirs.patch": {
+    "narHash": "sha256-GPYgC34CBNKypY86jX2v678Mp4qVm2xuhj1qCtvG42Y=",
+    "narSize": 1272,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0rp3qvdhlsixhrp6r6wmiakhrgzbmxyqsflglnrd4102gq5j1xhq",
+    "signatures": []
+  },
+  "/nix/store/ws4flbcbcaq2cvyqvb5ysizfdf6k40m9-0019-Deduplicate-RPATH-entries.patch": {
+    "narHash": "sha256-ByqE4CgH6jM2Nfg2BjkXbAb+mmuN42GVGxZnlTa1Ahw=",
+    "narSize": 2184,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0702nlv9arqn3fan3qwddfdgw1kc2wwhcdpq6lv37sh753h88ah7",
+    "signatures": []
+  },
+  "/nix/store/wys5hz3ivnir7q9mzdgrhyi7rhyinr2b-0004-Fix-compatibility-with-openssl-1.0.patch": {
+    "narHash": "sha256-WN4nruXl6oszN3Y6NcAsF8l/Sm/8fiLAoZ7vyi5vNk0=",
+    "narSize": 2144,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0k9ndwpcmvwyl7024zpwdx57zj8p5k03afkn6wrqpsp5wnp2gpjq",
+    "signatures": []
+  },
+  "/nix/store/x4dkss3ik4dkacak2sdky6r52wri5pck-setup-hook.sh": {
+    "narHash": "sha256-a00UGFZCbL0ZMqlfwp93sLtLoAEkNxhrWL2eyagTfIk=",
+    "narSize": 1992,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:12bw2flck7mxb1mihdr406h4pfxhfygw4px968cvsv22aqc18kbb",
+    "signatures": []
+  },
+  "/nix/store/x8c40nfigps493a07sdr2pm5s9j1cdc0-patch-shebangs.sh": {
+    "narHash": "sha256-Y+mTMb/qaZCpgiEEn+WlqfPOp7xeZhIPZttAN+9F/tI=",
+    "narSize": 6032,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1lpy8ppkfh6vcq7i4rjypjkwxwx9lpjry111halr0sgapwqr7sb3",
+    "signatures": []
+  },
+  "/nix/store/x8cdwcfr5a8kws371n2lgkhisgqc7l31-0012-Fix-char-signedness-for-ARM-and-PowerPC.patch": {
+    "narHash": "sha256-MqzNmSMrdXoa8zDUDgkK1Bf3GDtfaKyIyL9xcvIIU2k=",
+    "narSize": 1688,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0sak13r74wdzr24aqs2z7ccgf5yl184hxm1hycd7lx9b4fcwvb1j",
+    "signatures": []
+  },
+  "/nix/store/xifn6dk9zl2ccmghsjnyqp2f8i9ny16m-CVE-2026-41992.patch": {
+    "narHash": "sha256-5zQujp1RIcmaCTBz5bJAjsL5/o/C/HCJCkkpjA7ZBqo=",
+    "narSize": 1232,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1ah6v478qaa91a4p1z62izzgkhlf82rfawrh16dcj8aikn72wd77",
+    "signatures": []
+  },
+  "/nix/store/xn7sbm29b0ri3ky8sl3ilc43ad989m5v-002-clear-old-rpath.patch": {
+    "narHash": "sha256-lgOTi0N1jQNo3WhwpJGiQ4+CUnxa7T+b2JY/VPdkT4I=",
+    "narSize": 1008,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:10jgckvm8gwnv2dkzvasgi9853s3la8s8w38vml073bm8f5r60wn",
+    "signatures": []
+  },
+  "/nix/store/xp44d2n12ax777agfzgwqigzmsxndrwa-0010-Add-vendored-libtapi-to-the-ld64-build.patch": {
+    "narHash": "sha256-2u2GSHV3nX+kEAHoL6Y0g6IKCKf/THT35fRImwgDVfo=",
+    "narSize": 2816,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1yjm0c49nj7lwpvp8k7zlw40m8l36jk2zs0122j7z7bpfm48dvfs",
+    "signatures": []
+  },
+  "/nix/store/xrvbfm0ahaiik1vlxzn3vsp5gyhksy2n-setup-hook.sh": {
+    "narHash": "sha256-oUP1nCMp7jslexaXfBqLk58wNsnlpmnzRB78Q1UdCcQ=",
+    "narSize": 376,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1i093mal7z0y8krnk9p5r4v317wkicd7r5qngcjkpvi94ffgahx1",
+    "signatures": []
+  },
+  "/nix/store/xsmki2ajqh9pz280h7lyr9j1n6gs68qb-setup-hook.sh": {
+    "narHash": "sha256-lvFMlc2qIX9MavecWOK+7W81wviavHNXemssffZJS+Y=",
+    "narSize": 3336,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1rjb97v7sb3bg9bp7g4sz313avzdpvi5i77pd967y8darnalrwcn",
+    "signatures": []
+  },
+  "/nix/store/xv9nsfdcadbj9965lkwf4b2cqyv2j4hp-CVE-2026-42250.patch": {
+    "narHash": "sha256-0J3+dI0YXSMVVqFg0w/1ZLjFuAduSwVIpstbDXfvqVg=",
+    "narSize": 1280,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0n59xxvhsnyblr40ajvf0ywcbf34yl7x6q51aqaj6p8qimsgx7fh",
+    "signatures": []
+  },
+  "/nix/store/xyff06pkhki3qy1ls77w10s0v79c9il0-reproducible-builds.sh": {
+    "narHash": "sha256-9TquSNTf3+sENOwMmBFmniGPTzbIX9Sn2PFfuJ4i0UA=",
+    "narSize": 608,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0h6i4agbhpziv2kx8py86r7qy8cycq8rh37c6h2fppyzsi4awfpm",
+    "signatures": []
+  },
+  "/nix/store/xzkmf9nskd1ab8vqdh80dr3mfn4q3wgx-python-namespaces-hook.sh": {
+    "narHash": "sha256-Oy//UjZ+kAzu4Rs+hcL46rYjO4R+6GGIhw5ItH3VNu4=",
+    "narSize": 2504,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1vinsmyv8j0fhy463s3yhhxj7dpaz318aghvw7p0r43y6r9gybrv",
+    "signatures": []
+  },
+  "/nix/store/y4vv5fm874y0wbq5qpj6wzn7kbigrpp3-ProductTypes.xcspec": {
+    "narHash": "sha256-XAiZNTzkEp6ngUXrY8kQEvx32H3J5Y80MKgpb/iW8z8=",
+    "narSize": 6088,
+    "references": [],
+    "deriver": null,
+    "ca": "text:sha256:08vrlpjh0lmnv4si3p74lfmm5zfks0f4lj7qzsmfgsaxca7jxqqw",
+    "signatures": []
+  },
+  "/nix/store/ydc2aq6ykhwbj9vs0anp6si15f6l1skw-0002-Rely-on-libcd_is_blob_a_linker_signature.patch": {
+    "narHash": "sha256-SVbrgsOF5cxU3/PRmlJCVejJ418SFl+9eUttesUzTXI=",
+    "narSize": 1064,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0wjd6g2plvabg6ymy5hjbziwks2m8999mlgkvxacrrc5qf1fnmj9",
+    "signatures": []
+  },
+  "/nix/store/yndags23r8fss0a8ib4dxrq2jyhqqxaw-fix-darwin-dylib-names.sh": {
+    "narHash": "sha256-ltPwI5iM6w+q+Q4TlrjvF4qbv7aLJeFSntnrrSED5c4=",
+    "narSize": 1664,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1kp50chsvsyrkr9f29cbnszrp2hpxyw9c4qfz6m0zswck0iz1lwn",
+    "signatures": []
+  },
+  "/nix/store/yp52g0wbhcr26dfwbbn0663qml3hfwfd-0015-Fix-segfault-in-xar_attrcopy_from_heap.patch": {
+    "narHash": "sha256-TRC7bFD7gme/N/ZgefzUvLHEt2UquGzchmswa4lhwGM=",
+    "narSize": 2296,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0qy0c64nnc3bhvf6rf1acnvw9cdwsky7jq7n6yzng0pva1nbn42d",
+    "signatures": []
+  },
+  "/nix/store/yq0lz1byj4v2rym2ng23a3nj4n6pvqdj-pgrp-pipe-5.patch": {
+    "narHash": "sha256-sp8Qgh+X454Oz5leB36FiaOXYxAhsw1CdnrsLY5B7DI=",
+    "narSize": 728,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0cpc8672vv3sfr10vcr121irg8w9hmz0fplrrw79xqwp3y1117xj",
+    "signatures": []
+  },
+  "/nix/store/yqwx9yln5i68nw61mmp9gz066yz3ri99-0001-msginit-Do-not-use-POT-Creation-Date.patch": {
+    "narHash": "sha256-BezIPRUb3qImyk1kqoVWzuuZXbuTGQbRsKW6PCRUQmc=",
+    "narSize": 1248,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0rs2ahj3rfm5n38hc6ckpdfrksyfas2slr2dr8ka5phv2lywiv05",
+    "signatures": []
+  },
+  "/nix/store/yrfmvci2hn064xvdyypq90arn6vw2f3p-0001-fix-build-with-gcc.patch": {
+    "narHash": "sha256-DpiE2EYlWFMUibb3YNHa/0rW0ExF9e///uS8fEObPRE=",
+    "narSize": 584,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:049xkd1prg74zvzyzxa59k8dcjpzvb8n1xxni4a56n158vc8960f",
+    "signatures": []
+  },
+  "/nix/store/z4719jv8zsczymcwz4za1fx00pd9gi84-conditionalize-security-transition-shims.patch": {
+    "narHash": "sha256-PGidbewKr9wKBChn04xN7GbHOlFoYrDTK54ZX9bfNwc=",
+    "narSize": 1320,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:01rpvzb5y6cy5g9v0qk8a4xcfrpc9n6d6rr80h5drbqaxinrss1w",
+    "signatures": []
+  },
+  "/nix/store/z7k98578dfzi6l3hsvbivzm7hfqlk0zc-set-source-date-epoch-to-latest.sh": {
+    "narHash": "sha256-O6Gjn5FQzTLFmOLmXU5J4i6ei4gvLK7fo6vA+C0lmn0=",
+    "narSize": 1696,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:0zcs4lnzih5blggswb1gi25rwbp29575vrp2k32k5kahj6gs789v",
+    "signatures": []
+  },
+  "/nix/store/zi0m9pfmvy5lw89x7a8x674rm99i8qiq-setup-hook.sh": {
+    "narHash": "sha256-JToJ+AVdI+/owXPklTaA6VyUUAJF6E2IgshxT0KqUgQ=",
+    "narSize": 952,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:012jm914ywf8ha44vs2509898p79h0v9br3kq7lfy8sx0pw0jfi5",
+    "signatures": []
+  },
+  "/nix/store/zmjg2cgh3l8wh26wa2mfa9ynn6qlq370-PackageTypes.xcspec": {
+    "narHash": "sha256-XxDq/T6BEKjon+5gLmuumvbboIZdXyFU+tqwU05tTxs=",
+    "narSize": 6184,
+    "references": [],
+    "deriver": null,
+    "ca": "text:sha256:1pqjwqcwgcgm77c75g84yyaza4qah853p6jma1wp293f5598hazk",
+    "signatures": []
+  },
+  "/nix/store/znnnjr9ym1v5am6adg4x3pl0l6zx6xqk-setup-hook.sh": {
+    "narHash": "sha256-ZsQL40WLtEpPQbbWqJY7BgBiU4S5LUugvFmkKh/3O9c=",
+    "narSize": 5056,
+    "references": [],
+    "deriver": null,
+    "ca": "fixed:r:sha256:1mrvywgjm92rpjh4nbdrhi9n40067fbaimmn857lmd4b8pihpi36",
+    "signatures": []
+  }
+}

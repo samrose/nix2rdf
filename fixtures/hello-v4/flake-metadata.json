@@ -1,0 +1,57 @@
+{
+  "description": "nix2rdf test fixture: a flake with one package",
+  "dirtyRevision": "d8593647e419c6d0be1b46dd4910bc24101fa609-dirty",
+  "fingerprint": "15e9e45b1e7aa5496c6d8c6ccc7d7c68fe60a968ae2ebaafdf998757a6d6d4ef",
+  "lastModified": 1788996083,
+  "locked": {
+    "__final": true,
+    "dir": "fixtures/flake",
+    "dirtyRev": "d8593647e419c6d0be1b46dd4910bc24101fa609-dirty",
+    "dirtyShortRev": "d859364-dirty",
+    "lastModified": 1788996083,
+    "narHash": "sha256-SQ3hkVBnFmwtP+Fm37j3BzoLvVyhL/hNQ+bhyV66zxQ=",
+    "type": "git",
+    "url": "file:///Users/samrose/nix2rdf"
+  },
+  "locks": {
+    "nodes": {
+      "nixpkgs": {
+        "locked": {
+          "lastModified": 1788881743,
+          "narHash": "sha256-2V9GZGvPfrNzxFozhI9dcqV+c3QdA8YZrvAAzqEB+dI=",
+          "owner": "NixOS",
+          "repo": "nixpkgs",
+          "rev": "d6524aaca2ff07876657ae2b323f24be4874944b",
+          "type": "github"
+        },
+        "original": {
+          "owner": "NixOS",
+          "ref": "nixos-unstable",
+          "repo": "nixpkgs",
+          "type": "github"
+        }
+      },
+      "root": {
+        "inputs": {
+          "nixpkgs": "nixpkgs"
+        }
+      }
+    },
+    "root": "root",
+    "version": 7
+  },
+  "original": {
+    "dir": "fixtures/flake",
+    "type": "git",
+    "url": "file:///Users/samrose/nix2rdf"
+  },
+  "originalUrl": "git+file:///Users/samrose/nix2rdf?dir=fixtures/flake",
+  "path": "/nix/store/81pl19mlwxdrp0rsxhdk1ak6d4ml7zk3-source",
+  "resolved": {
+    "dir": "fixtures/flake",
+    "type": "git",
+    "url": "file:///Users/samrose/nix2rdf"
+  },
+  "resolvedUrl": "git+file:///Users/samrose/nix2rdf?dir=fixtures/flake",
+  "url": "git+file:///Users/samrose/nix2rdf?dir=fixtures/flake"
+}

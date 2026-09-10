@@ -149,6 +149,27 @@
             program = "${nix2rdf}/bin/nix2rdf";
           };
 
+          # Live smoke test: runs the real flake front-end (Nix evaluation, the
+          # wrapped Nix version) on the fixture flake, outside the sandbox.
+          # `nix run .#smoke` — for CI runners that have Nix.
+          apps.smoke = {
+            type = "app";
+            program = toString (pkgs.writeShellScript "nix2rdf-smoke" ''
+              set -euo pipefail
+              tmp=$(mktemp -d)
+              trap 'rm -rf "$tmp"' EXIT
+              cd ${toString ./fixtures/flake}
+              ${nix2rdf}/bin/nix2rdf --store "$tmp/a" flake '.#' --meta
+              ${nix2rdf}/bin/nix2rdf --store "$tmp/b" flake '.#hello'
+              cd "$tmp/a" && find drv src -name '*.nq.zst' | sort > "$tmp/list"
+              while read -r f; do cmp "$tmp/a/$f" "$tmp/b/$f"; done < "$tmp/list"
+              ${nix2rdf}/bin/nix2rdf --store "$tmp/a" load --all
+              ${nix2rdf}/bin/nix2rdf --store "$tmp/a" reason --pack core --all-snapshots --input-closure
+              ${nix2rdf}/bin/nix2rdf --store "$tmp/a" query ${./queries}/blast-radius.rq --format csv | head -3
+              echo "smoke ok: $(wc -l < "$tmp/list") fragments, live Nix $(${pkgs.nix}/bin/nix --version)"
+            '');
+          };
+
           checks = {
             build = nix2rdf-unwrapped;
             # Rust: formatting, clippy with warnings as errors, license/ban audit.
@@ -186,6 +207,17 @@
               nix2rdf --store $TMPDIR/s check ${./fixtures/hello/checks/hello-in-closure.rq} && exit 1 || true
               nix2rdf --store $TMPDIR/s query ${./queries/pin-membership.rq} > $TMPDIR/out.json
               grep -q hello $TMPDIR/out.json
+            '';
+            # The same flake recorded with Nix 2.24 (fixtures/hello) and Nix 2.34
+            # (fixtures/hello-v4, schema version 4) must yield byte-identical
+            # derivation and source fragments.
+            schema-compat = mkCheck "schema-compat" ''
+              nix2rdf --store $TMPDIR/old flake --from-recorded ${./fixtures/hello} --attr packages.aarch64-darwin.hello
+              nix2rdf --store $TMPDIR/new flake --from-recorded ${./fixtures/hello-v4} --attr packages.aarch64-darwin.hello
+              cd $TMPDIR/old && find drv src -name '*.nq.zst' | sort > $TMPDIR/list
+              [ "$(wc -l < $TMPDIR/list)" -gt 100 ]
+              while read f; do cmp "$TMPDIR/old/$f" "$TMPDIR/new/$f"; done < $TMPDIR/list
+              echo "byte-identical across Nix schemas: $(wc -l < $TMPDIR/list) fragments"
             '';
             k8s-determinism = mkCheck "k8s-determinism" ''
               nix2rdf --store $TMPDIR/a k8s snapshot --cluster-id fixture --manifests ${./fixtures/k8s/manifests} --observed-at 2026-01-01T00:00:00Z

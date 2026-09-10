@@ -376,16 +376,23 @@ impl NixSource for Recording {
         installables: &[String],
         recursive: bool,
     ) -> nix2rdf_core::Result<BTreeMap<String, nix2rdf_core::nix::DrvInfo>> {
-        let r = self.inner.derivation_show(installables, recursive)?;
+        // Record Nix's raw JSON (whatever schema version this Nix prints), not
+        // the normalized form, so replaying exercises the same parsing path.
+        let mut args: Vec<&str> = vec!["derivation", "show"];
+        if recursive {
+            args.push("-r");
+        }
+        args.extend(installables.iter().map(|s| s.as_str()));
+        let raw = self.inner.run_json(&args)?;
         let name = if recursive {
             "derivation-show.json"
         } else {
             "derivation-show-roots.json"
         };
         if recursive || !self.dir.join(name).exists() {
-            RecordedNix::write_json(&self.dir, name, &serde_json::to_value(&r)?)?;
+            RecordedNix::write_json(&self.dir, name, &raw)?;
         }
-        Ok(r)
+        Ok(nix2rdf_core::nix::model::parse_derivation_show(raw)?)
     }
     fn path_info(
         &self,

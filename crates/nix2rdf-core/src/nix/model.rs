@@ -97,6 +97,136 @@ impl DrvInfo {
     }
 }
 
+/// The store directory used to turn the base names Nix ≥ 2.34 prints back
+/// into full paths.
+pub fn store_dir() -> String {
+    std::env::var("NIX_STORE_DIR").unwrap_or_else(|_| "/nix/store".to_string())
+}
+
+fn full_path(name: &str) -> String {
+    if name.starts_with('/') {
+        name.to_string()
+    } else {
+        format!("{}/{name}", store_dir())
+    }
+}
+
+/// Parse `nix derivation show` output of any schema Nix has shipped into the
+/// classic shape:
+/// - Nix ≤ 2.33: `{"/nix/store/<h>-x.drv": {name, env (with __json), inputDrvs, inputSrcs, outputs{path: full}}}`
+/// - Nix ≥ 2.34: `{"version": 4, "derivations": {"<h>-x.drv": {inputs{drvs,srcs}, structuredAttrs, outputs{path: basename}}}}`
+///
+/// Every derived fragment must be byte-identical regardless of the Nix
+/// version that produced the JSON, so the new shape is normalized to the old
+/// one: base names get the store directory back, and `structuredAttrs` goes
+/// into `env.__json` serialized the way Nix itself does (sorted keys, no
+/// whitespace), which is what the .drv file holds.
+pub fn parse_derivation_show(
+    v: serde_json::Value,
+) -> Result<BTreeMap<String, DrvInfo>, serde_json::Error> {
+    let obj = match v.as_object() {
+        Some(o) => o,
+        None => return serde_json::from_value(v),
+    };
+    if !obj.contains_key("version") || !obj.contains_key("derivations") {
+        return serde_json::from_value(v);
+    }
+    let mut out = BTreeMap::new();
+    let Some(drvs) = obj.get("derivations").and_then(|d| d.as_object()) else {
+        return Ok(out);
+    };
+    for (key, e) in drvs {
+        let mut d = DrvInfo {
+            name: e
+                .get("name")
+                .and_then(|n| n.as_str())
+                .map(String::from)
+                .unwrap_or_default(),
+            system: e
+                .get("system")
+                .and_then(|n| n.as_str())
+                .map(String::from)
+                .unwrap_or_default(),
+            builder: e
+                .get("builder")
+                .and_then(|n| n.as_str())
+                .map(String::from)
+                .unwrap_or_default(),
+            args: e
+                .get("args")
+                .map(|a| serde_json::from_value(a.clone()))
+                .transpose()?
+                .unwrap_or_default(),
+            env: e
+                .get("env")
+                .map(|a| serde_json::from_value(a.clone()))
+                .transpose()?
+                .unwrap_or_default(),
+            ..Default::default()
+        };
+        if let Some(sa) = e.get("structuredAttrs").filter(|x| x.is_object()) {
+            d.env
+                .insert("__json".into(), crate::hash::canonical_json(sa));
+        }
+        if let Some(inputs) = e.get("inputs") {
+            if let Some(drvs) = inputs.get("drvs").and_then(|x| x.as_object()) {
+                for (p, spec) in drvs {
+                    d.input_drvs
+                        .insert(full_path(p), serde_json::from_value(spec.clone())?);
+                }
+            }
+            if let Some(srcs) = inputs.get("srcs").and_then(|x| x.as_array()) {
+                d.input_srcs = srcs
+                    .iter()
+                    .filter_map(|s| s.as_str())
+                    .map(full_path)
+                    .collect();
+            }
+        }
+        if let Some(outs) = e.get("outputs").and_then(|x| x.as_object()) {
+            for (name, o) in outs {
+                let mut info: OutputInfo = serde_json::from_value(o.clone())?;
+                if let Some(p) = &info.path {
+                    info.path = Some(full_path(p));
+                }
+                // Nix ≥ 2.34 omits the path of fixed-output derivations (it is
+                // derivable from the hash) but still exports it as the output's
+                // environment variable. Floating content-addressed outputs have a
+                // placeholder there instead, which is not a store path.
+                if info.path.is_none() && info.hash.is_some() {
+                    if let Some(p) = d.env.get(name) {
+                        if p.starts_with(&store_dir()) && crate::iri::store_path_hash(p).is_some() {
+                            info.path = Some(p.clone());
+                        }
+                    }
+                }
+                // Hash as `<algo>-<base64>` (SRI) → hex plus hashAlgo, the classic form.
+                if let Some(h) = info.hash.clone() {
+                    if let Some((algo, b64)) = h.split_once('-') {
+                        if info.hash_algo.is_none() {
+                            use base64::Engine;
+                            if let Ok(bytes) = base64::engine::general_purpose::STANDARD.decode(b64)
+                            {
+                                info.hash = Some(hex::encode(bytes));
+                                info.hash_algo = Some(algo.to_string());
+                            }
+                        }
+                    }
+                }
+                d.outputs.insert(name.clone(), info);
+            }
+        }
+        if d.name.is_empty() {
+            d.name = crate::iri::store_path_name(key)
+                .unwrap_or_default()
+                .trim_end_matches(".drv")
+                .to_string();
+        }
+        out.insert(full_path(key), d);
+    }
+    Ok(out)
+}
+
 /// One entry of `nix path-info --json` (Nix ≥ 2.19 object form).
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
@@ -214,5 +344,67 @@ impl Meta {
             m.source_provenance.sort();
         }
         m
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const V3: &str = r#"{"/nix/store/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-x-1.drv": {
+      "args": ["-e"], "builder": "/nix/store/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb-bash/bin/bash",
+      "env": {"__json": "{\"a\":[1,2],\"name\":\"x-1\",\"pname\":\"x\",\"version\":\"1\"}", "out": "/nix/store/cccccccccccccccccccccccccccccccc-x-1"},
+      "inputDrvs": {"/nix/store/dddddddddddddddddddddddddddddddd-y.drv": {"dynamicOutputs": {}, "outputs": ["out"]}},
+      "inputSrcs": ["/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-s.sh"],
+      "name": "x-1", "outputs": {"out": {"path": "/nix/store/cccccccccccccccccccccccccccccccc-x-1"}}, "system": "x86_64-linux"}}"#;
+
+    const V4: &str = r#"{"version": 4, "derivations": {"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-x-1.drv": {
+      "args": ["-e"], "builder": "/nix/store/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb-bash/bin/bash",
+      "env": {"out": "/nix/store/cccccccccccccccccccccccccccccccc-x-1"},
+      "inputs": {"drvs": {"dddddddddddddddddddddddddddddddd-y.drv": {"dynamicOutputs": {}, "outputs": ["out"]}}, "srcs": ["eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-s.sh"]},
+      "name": "x-1", "outputs": {"out": {"path": "cccccccccccccccccccccccccccccccc-x-1"}},
+      "structuredAttrs": {"version": "1", "pname": "x", "name": "x-1", "a": [1, 2]}, "system": "x86_64-linux", "version": 4}}}"#;
+
+    const V3_FIXED: &str = r#"{"/nix/store/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-source.drv": {
+      "args": [], "builder": "builtin:fetchurl", "env": {"out": "/nix/store/cccccccccccccccccccccccccccccccc-source"},
+      "inputDrvs": {}, "inputSrcs": [], "name": "source", "system": "builtin",
+      "outputs": {"out": {"hash": "2949042b3da342af35e65b36e6ed0931899a77870df4f4bf9c2dc4e5e575f5ca", "hashAlgo": "sha256", "method": "nar", "path": "/nix/store/cccccccccccccccccccccccccccccccc-source"}}}}"#;
+    const V4_FIXED: &str = r#"{"version": 4, "derivations": {"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-source.drv": {
+      "args": [], "builder": "builtin:fetchurl", "env": {"out": "/nix/store/cccccccccccccccccccccccccccccccc-source"},
+      "inputs": {"drvs": {}, "srcs": []}, "name": "source", "system": "builtin",
+      "outputs": {"out": {"hash": "sha256-KUkEKz2jQq815ls25u0JMYmad4cN9PS/nC3E5eV19co=", "method": "nar"}}, "version": 4}}}"#;
+
+    #[test]
+    fn fixed_output_path_is_recovered_from_env() {
+        let a = parse_derivation_show(serde_json::from_str(V3_FIXED).unwrap()).unwrap();
+        let b = parse_derivation_show(serde_json::from_str(V4_FIXED).unwrap()).unwrap();
+        let (x, y) = (a.values().next().unwrap(), b.values().next().unwrap());
+        assert_eq!(
+            serde_json::to_value(x).unwrap(),
+            serde_json::to_value(y).unwrap()
+        );
+        assert!(!y.is_content_addressed());
+        assert_eq!(
+            y.outputs["out"].path.as_deref(),
+            Some("/nix/store/cccccccccccccccccccccccccccccccc-source")
+        );
+    }
+
+    #[test]
+    fn v3_and_v4_normalize_to_the_same_derivation() {
+        let a = parse_derivation_show(serde_json::from_str(V3).unwrap()).unwrap();
+        let b = parse_derivation_show(serde_json::from_str(V4).unwrap()).unwrap();
+        assert_eq!(a.keys().collect::<Vec<_>>(), b.keys().collect::<Vec<_>>());
+        let (x, y) = (a.values().next().unwrap(), b.values().next().unwrap());
+        assert_eq!(
+            serde_json::to_value(x).unwrap(),
+            serde_json::to_value(y).unwrap()
+        );
+        assert_eq!(x.attr("pname").as_deref(), Some("x"));
+        assert!(x.uses_structured_attrs());
+        assert_eq!(
+            x.input_srcs,
+            vec!["/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-s.sh"]
+        );
     }
 }

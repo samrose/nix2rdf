@@ -106,7 +106,7 @@ impl NixSource for CliNix {
         }
         args.extend(installables.iter().map(|s| s.as_str()));
         let v = self.run_json(&args)?;
-        Ok(serde_json::from_value(v)?)
+        Ok(super::model::parse_derivation_show(v)?)
     }
 
     fn path_info(&self, paths: &[String]) -> Result<BTreeMap<String, Option<PathInfo>>> {
@@ -184,7 +184,7 @@ impl NixSource for CliNix {
     }
 
     fn flake_show(&self, flake_ref: &str) -> Result<serde_json::Value> {
-        self.run_json(&["flake", "show", "--json", "--legacy", flake_ref])
+        self.run_json(&["flake", "show", "--json", flake_ref])
     }
 
     fn version(&self) -> String {

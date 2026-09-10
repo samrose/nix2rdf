@@ -1,0 +1,114 @@
+{
+  "derivations": {
+    "7rnrwhl2b91gb9b7na73q6c4cvvv1hi8-hello-2.12.3.drv": {
+      "args": [
+        "-e",
+        "/nix/store/l622p70vy8k5sh7y5wizi5f2mic6ynpg-source-stdenv.sh",
+        "/nix/store/shkw4qm9qcw5sc5n1k5jznc83ny02r39-default-builder.sh"
+      ],
+      "builder": "/nix/store/yqk6qhawnigv832m2zhcbs25nb37r73i-bash-5.3p15/bin/bash",
+      "env": {
+        "out": "/nix/store/85py0qgpd9llilbkgjpcwc4svrx056ld-hello-2.12.3"
+      },
+      "inputs": {
+        "drvs": {
+          "22y3rdbb6d343wgpl4nk8xip04zz4dnj-stdenv-darwin.drv": {
+            "dynamicOutputs": {},
+            "outputs": [
+              "out"
+            ]
+          },
+          "jlk9zr5iy6g2hffmpd960b82x35syrid-bash-5.3p15.drv": {
+            "dynamicOutputs": {},
+            "outputs": [
+              "out"
+            ]
+          },
+          "shfb1ccw76fkc61sd8ipl7vrg7v9ag37-version-check-hook.drv": {
+            "dynamicOutputs": {},
+            "outputs": [
+              "out"
+            ]
+          },
+          "xgbga64rlh3p34jyw9bp7b90fdrz6bx4-hello-2.12.3.tar.gz.drv": {
+            "dynamicOutputs": {},
+            "outputs": [
+              "out"
+            ]
+          }
+        },
+        "srcs": [
+          "l622p70vy8k5sh7y5wizi5f2mic6ynpg-source-stdenv.sh",
+          "shkw4qm9qcw5sc5n1k5jznc83ny02r39-default-builder.sh"
+        ]
+      },
+      "name": "hello-2.12.3",
+      "outputs": {
+        "out": {
+          "path": "85py0qgpd9llilbkgjpcwc4svrx056ld-hello-2.12.3"
+        }
+      },
+      "structuredAttrs": {
+        "NIX_LDFLAGS": "-liconv",
+        "NIX_MAIN_PROGRAM": "hello",
+        "__darwinAllowLocalNetworking": false,
+        "__impureHostDeps": [
+          "/bin/sh",
+          "/usr/lib/libSystem.B.dylib",
+          "/usr/lib/system/libunc.dylib",
+          "/dev/zero",
+          "/dev/random",
+          "/dev/urandom",
+          "/bin/sh"
+        ],
+        "__propagatedImpureHostDeps": [],
+        "__propagatedSandboxProfile": [
+          ""
+        ],
+        "__sandboxProfile": "",
+        "buildInputs": [],
+        "builder": "/nix/store/yqk6qhawnigv832m2zhcbs25nb37r73i-bash-5.3p15/bin/bash",
+        "cmakeFlags": [],
+        "configureFlags": [],
+        "depsBuildBuild": [],
+        "depsBuildBuildPropagated": [],
+        "depsBuildTarget": [],
+        "depsBuildTargetPropagated": [],
+        "depsHostHost": [],
+        "depsHostHostPropagated": [],
+        "depsTargetTarget": [],
+        "depsTargetTargetPropagated": [],
+        "doCheck": true,
+        "doInstallCheck": true,
+        "env": {
+          "NIX_LDFLAGS": "-liconv",
+          "NIX_MAIN_PROGRAM": "hello"
+        },
+        "mesonFlags": [],
+        "name": "hello-2.12.3",
+        "nativeBuildInputs": [
+          "/nix/store/6g32sm8nq3b0vk2bq2sbw6b2qgha9s95-version-check-hook"
+        ],
+        "outputChecks": {
+          "out": {}
+        },
+        "outputs": [
+          "out"
+        ],
+        "patches": [],
+        "pname": "hello",
+        "postInstallCheck": "stat \"${!outputBin}/bin/hello\"\n",
+        "propagatedBuildInputs": [],
+        "propagatedNativeBuildInputs": [],
+        "src": "/nix/store/wj7phsmi7ncidl8k00p489krqss7n9sd-hello-2.12.3.tar.gz",
+        "stdenv": "/nix/store/xl18q8v89ccl7isk9dfnlbrlzv1za59j-stdenv-darwin",
+        "strictDeps": false,
+        "system": "aarch64-darwin",
+        "version": "2.12.3"
+      },
+      "system": "aarch64-darwin",
+      "version": 4
+    }
+  },
+  "version": 4
+}

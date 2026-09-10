@@ -33,6 +33,21 @@ pub struct FlakeOptions {
     pub extract: ExtractOptions,
 }
 
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn quoting() {
+        use super::quote_attr_component;
+        assert_eq!(quote_attr_component("hello"), "hello");
+        assert_eq!(
+            quote_attr_component("cargo-pgrx_0_11_3"),
+            "cargo-pgrx_0_11_3"
+        );
+        assert_eq!(quote_attr_component("psql_15/bin"), "\"psql_15/bin\"");
+        assert_eq!(quote_attr_component("a.b"), "\"a.b\"");
+    }
+}
+
 #[derive(Debug)]
 pub struct FlakeExtraction {
     pub root_nar_hash: String,
@@ -259,7 +274,27 @@ pub fn lock_graph(
     Ok(extra)
 }
 
-/// Default installables: `packages.<system>.*` from `nix flake show`.
+/// Quote an attribute-path component when it is not a plain identifier
+/// (nixpkgs has names like `psql_15/bin`).
+pub fn quote_attr_component(c: &str) -> String {
+    let plain = !c.is_empty()
+        && c.bytes().enumerate().all(|(i, b)| {
+            b.is_ascii_alphanumeric()
+                || b == b'_'
+                || b == b'-'
+                || b == b'\''
+                || (i > 0 && b == b'.')
+        })
+        && !c.contains('.');
+    if plain {
+        c.to_string()
+    } else {
+        format!("\"{}\"", c.replace('\\', "\\\\").replace('"', "\\\""))
+    }
+}
+
+/// Default installables: the derivation-typed entries of `packages.<system>`
+/// from `nix flake show` (nested attribute sets are skipped).
 fn default_attrs(nix: &dyn NixSource, flake_ref: &str, system: &str) -> Result<Vec<String>> {
     let show = nix.flake_show(flake_ref)?;
     let mut attrs = Vec::new();
@@ -268,13 +303,15 @@ fn default_attrs(nix: &dyn NixSource, flake_ref: &str, system: &str) -> Result<V
         .and_then(|p| p.get(system))
         .and_then(|s| s.as_object())
     {
-        for name in pk.keys() {
-            attrs.push(format!("packages.{system}.{name}"));
+        for (name, entry) in pk {
+            if entry.get("type").and_then(|t| t.as_str()) == Some("derivation") {
+                attrs.push(format!("packages.{system}.{}", quote_attr_component(name)));
+            }
         }
     }
     if attrs.is_empty() {
         return Err(Error::Other(format!(
-            "no packages.{system}.* in {flake_ref}; pass --attr"
+            "no derivations under packages.{system} in {flake_ref}; pass --attr"
         )));
     }
     Ok(attrs)

@@ -57,7 +57,7 @@ impl NixSource for RecordedNix {
         recursive: bool,
     ) -> Result<BTreeMap<String, DrvInfo>> {
         let all: BTreeMap<String, DrvInfo> =
-            serde_json::from_value(self.read_json("derivation-show.json")?)?;
+            super::model::parse_derivation_show(self.read_json("derivation-show.json")?)?;
         if recursive {
             return Ok(all);
         }
@@ -74,7 +74,7 @@ impl NixSource for RecordedNix {
                 .collect());
         }
         match self.read_json_opt("derivation-show-roots.json")? {
-            Some(v) => Ok(serde_json::from_value(v)?),
+            Some(v) => Ok(super::model::parse_derivation_show(v)?),
             None => Ok(all),
         }
     }
