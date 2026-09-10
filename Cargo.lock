@@ -1969,6 +1969,7 @@ dependencies = [
  "indexmap",
  "k8s-openapi",
  "kube",
+ "libc",
  "nemo",
  "nemo-physical",
  "oxigraph",

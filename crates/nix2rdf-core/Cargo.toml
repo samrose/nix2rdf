@@ -34,5 +34,6 @@ k8s-openapi.workspace = true
 chrono.workspace = true
 indexmap.workspace = true
 regex.workspace = true
+libc.workspace = true
 
 [dev-dependencies]

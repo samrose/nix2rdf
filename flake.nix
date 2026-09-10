@@ -202,8 +202,10 @@
             e2e = mkCheck "e2e" ''
               nix2rdf --store $TMPDIR/s flake --from-recorded ${./fixtures/hello} --attr packages.aarch64-darwin.hello \
                 --commit 0123456789abcdef0123456789abcdef01234567 --repo fixture --committed-at 2026-01-01T00:00:00Z
-              nix2rdf --store $TMPDIR/s load --all
-              nix2rdf --store $TMPDIR/s reason --pack core --input-closure --all-snapshots
+              # Load under macOS's default open-file limit (regression: EMFILE on commit).
+              (ulimit -n 256; nix2rdf --store $TMPDIR/s load --all)
+              # Reason with a relative store path (regression: store/store/... joins).
+              (cd $TMPDIR && nix2rdf --store s reason --pack core --input-closure --all-snapshots)
               nix2rdf --store $TMPDIR/s check ${./fixtures/hello/checks/hello-in-closure.rq} && exit 1 || true
               nix2rdf --store $TMPDIR/s query ${./queries/pin-membership.rq} > $TMPDIR/out.json
               grep -q hello $TMPDIR/out.json

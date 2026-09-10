@@ -36,6 +36,9 @@ impl Store {
     pub fn open(root: impl Into<PathBuf>) -> Result<Self> {
         let root = root.into();
         std::fs::create_dir_all(&root).map_err(|e| Error::io(&root, e))?;
+        // Absolute root: every path derived from it (fragment listings, input
+        // selection, relative() ) then round-trips without double joins.
+        let root = std::fs::canonicalize(&root).map_err(|e| Error::io(&root, e))?;
         Ok(Store { root })
     }
 

@@ -22,8 +22,33 @@ pub enum QueryOutput {
     Text(Vec<u8>),
 }
 
+/// Raise the soft open-file limit to the hard limit. RocksDB keeps many SST
+/// files open; the macOS default soft limit (256) is far too low for a
+/// store of thousands of fragments.
+pub fn raise_open_file_limit() {
+    // SAFETY: plain getrlimit/setrlimit calls on a local struct.
+    unsafe {
+        let mut lim = libc::rlimit {
+            rlim_cur: 0,
+            rlim_max: 0,
+        };
+        if libc::getrlimit(libc::RLIMIT_NOFILE, &mut lim) == 0 {
+            let target = if lim.rlim_max == libc::RLIM_INFINITY {
+                65536
+            } else {
+                lim.rlim_max.min(65536)
+            };
+            if lim.rlim_cur < target {
+                lim.rlim_cur = target;
+                let _ = libc::setrlimit(libc::RLIMIT_NOFILE, &lim);
+            }
+        }
+    }
+}
+
 impl Graph {
     pub fn open(store: &Store) -> Result<Graph> {
+        raise_open_file_limit();
         let dir = store.oxigraph_dir();
         std::fs::create_dir_all(&dir).map_err(|e| Error::io(&dir, e))?;
         Ok(Graph {
@@ -32,6 +57,7 @@ impl Graph {
     }
 
     pub fn open_read_only(store: &Store) -> Result<Graph> {
+        raise_open_file_limit();
         let dir = store.oxigraph_dir();
         Ok(Graph {
             inner: OxStore::open_read_only(&dir)?,
@@ -54,14 +80,26 @@ impl Graph {
         self.load_paths(std::slice::from_ref(&path.to_path_buf()))
     }
 
-    /// Bulk-load many fragment files with one loader and one commit.
+    /// Bulk-load many fragment files. Fragments are concatenated into large
+    /// batches before they reach the bulk loader: one loader call per small
+    /// file leaves RocksDB with thousands of files to ingest at commit and
+    /// trips the open-file limit (macOS defaults to 256).
     pub fn load_paths(&self, paths: &[std::path::PathBuf]) -> Result<usize> {
+        const BATCH_BYTES: usize = 64 * 1024 * 1024;
         let mut total = 0;
         let mut loader = self.inner.bulk_loader();
+        let mut batch = String::with_capacity(BATCH_BYTES + 1024 * 1024);
         for p in paths {
             let text = fragment::read_nquads_zst(p)?;
             total += text.lines().count();
-            loader.load_from_reader(RdfFormat::NQuads, text.as_bytes())?;
+            batch.push_str(&text);
+            if batch.len() >= BATCH_BYTES {
+                loader.load_from_reader(RdfFormat::NQuads, batch.as_bytes())?;
+                batch.clear();
+            }
+        }
+        if !batch.is_empty() {
+            loader.load_from_reader(RdfFormat::NQuads, batch.as_bytes())?;
         }
         loader.commit()?;
         info!(target: "nix2rdf::graph", files = paths.len(), quads = total, "bulk load done");

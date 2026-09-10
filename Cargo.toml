@@ -47,6 +47,7 @@ k8s-openapi = { version = "0.28", features = ["v1_34"] }
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 indexmap = { version = "2", features = ["serde"] }
 regex = "1"
+libc = "0.2"
 
 [profile.release]
 lto = "thin"
