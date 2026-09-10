@@ -96,14 +96,19 @@ the index is Oxigraph's RocksDB store after `nix2rdf rebuild`):
 | `hello` closure: 541 derivations, 259 sources, pin, commit | 21.8k | 576 KiB (803 files) | 65 MB (incl. ~50 MB RocksDB baseline) |
 | `core` pack derived graph for that closure | 94k | 265 KiB | ~19 MB |
 | All derived graphs of the fixture (core, rdfs, identifiers, k8s, policies) | 477k | 1.3 MiB | ~40 MB |
+| A real application flake (supabase/postgres, 75 packages): 12,440 derivations, 806 sources, 20 pins | 497k | 11.7 MiB (13,266 files) | (with derived, below) |
+| `core` pack derived graph for that flake | 6.6 M | 34 MiB (1 file) | 1.08 GB total index for 7.1 M quads |
 | Layer 0: nixpkgs-multiverse index, all history (1,547 revisions, 310,577 package versions) | 1.28 M | 7.2 MiB (1 file; 323 MB uncompressed) | 180–400 MB |
 | One Kubernetes snapshot of the fixture cluster (20 objects) | ~300 | 2 KiB (3 files) | negligible |
 
-Rules of thumb that follow: **~1 KiB per derivation on disk, ~200 bytes per
-quad in the index** (Oxigraph keeps several orderings of every quad), and
-derived closure graphs (`dependsOnTransitively`, `closureContains`) are
-roughly `derivations × average depth`, four to five quads per asserted quad
-on the fixture.
+Rules of thumb that follow: **~1 KiB per derivation on disk, 150–200 bytes
+per quad in the index** (Oxigraph keeps several orderings of every quad;
+the more terms repeat, the lower the figure), and derived closure graphs
+(`dependsOnTransitively`, `closureContains`) are roughly `derivations ×
+average depth`: 4–5 derived quads per asserted quad on the small fixture,
+13 on the application flake (530 transitive dependencies per derivation).
+The derived closure is the dominant cost of a store: 93% of the index in
+the application example.
 
 Extrapolation (estimates, not measurements):
 
