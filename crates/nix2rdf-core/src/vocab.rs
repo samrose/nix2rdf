@@ -86,8 +86,14 @@ mod tests {
 
     #[test]
     fn raw_identifier_terms_have_no_prefix() {
-        assert_eq!(nix_terms::r#ref().as_str(), "https://w3id.org/nix/ns#ref");
-        assert_eq!(nix_terms::name().as_str(), "https://w3id.org/nix/ns#name");
+        assert_eq!(
+            nix_terms::r#ref().as_str(),
+            "https://w3id.org/nix2rdf/ns#ref"
+        );
+        assert_eq!(
+            nix_terms::name().as_str(),
+            "https://w3id.org/nix2rdf/ns#name"
+        );
         for t in nix_terms::ALL.iter().chain(k8s_terms::ALL) {
             assert!(!t.trim_start_matches("r#").contains('#'), "{t}");
         }

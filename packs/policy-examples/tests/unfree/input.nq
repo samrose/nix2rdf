@@ -1,7 +1,7 @@
-<https://w3id.org/nix/id/gen/g> <https://w3id.org/nix/ns#hasRoot> <https://w3id.org/nix/id/drv/top> <https://w3id.org/nix/id/gen/g> .
-<https://w3id.org/nix/id/drv/top> <https://w3id.org/nix/ns#hasOutput> <https://w3id.org/nix/id/out/top> <https://w3id.org/nix/id/drv/top> .
-<https://w3id.org/nix/id/out/top> <https://w3id.org/nix/ns#references> <https://w3id.org/nix/id/out/blob> <https://w3id.org/nix/id/fragment/out/top> .
-<https://w3id.org/nix/id/drv/blob> <https://w3id.org/nix/ns#hasOutput> <https://w3id.org/nix/id/out/blob> <https://w3id.org/nix/id/drv/blob> .
-<https://w3id.org/nix/id/drv/blob> <https://w3id.org/nix/ns#unfree> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> <https://w3id.org/nix/id/gen/g> .
-<https://w3id.org/nix/id/drv/free> <https://w3id.org/nix/ns#hasOutput> <https://w3id.org/nix/id/out/free> <https://w3id.org/nix/id/drv/free> .
-<https://w3id.org/nix/id/drv/free> <https://w3id.org/nix/ns#unfree> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> <https://w3id.org/nix/id/gen/g> .
+<https://w3id.org/nix2rdf/id/gen/g> <https://w3id.org/nix2rdf/ns#hasRoot> <https://w3id.org/nix2rdf/id/drv/top> <https://w3id.org/nix2rdf/id/gen/g> .
+<https://w3id.org/nix2rdf/id/drv/top> <https://w3id.org/nix2rdf/ns#hasOutput> <https://w3id.org/nix2rdf/id/out/top> <https://w3id.org/nix2rdf/id/drv/top> .
+<https://w3id.org/nix2rdf/id/out/top> <https://w3id.org/nix2rdf/ns#references> <https://w3id.org/nix2rdf/id/out/blob> <https://w3id.org/nix2rdf/id/fragment/out/top> .
+<https://w3id.org/nix2rdf/id/drv/blob> <https://w3id.org/nix2rdf/ns#hasOutput> <https://w3id.org/nix2rdf/id/out/blob> <https://w3id.org/nix2rdf/id/drv/blob> .
+<https://w3id.org/nix2rdf/id/drv/blob> <https://w3id.org/nix2rdf/ns#unfree> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> <https://w3id.org/nix2rdf/id/gen/g> .
+<https://w3id.org/nix2rdf/id/drv/free> <https://w3id.org/nix2rdf/ns#hasOutput> <https://w3id.org/nix2rdf/id/out/free> <https://w3id.org/nix2rdf/id/drv/free> .
+<https://w3id.org/nix2rdf/id/drv/free> <https://w3id.org/nix2rdf/ns#unfree> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> <https://w3id.org/nix2rdf/id/gen/g> .

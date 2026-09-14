@@ -1,3 +1,3 @@
-<https://w3id.org/nix/id/k8s/c1/Deployment/shop/worker> <https://w3id.org/nix/k8s#effectiveReachability> <https://w3id.org/nix/id/k8s/c1/Deployment/shop/api> .
-<https://w3id.org/nix/id/k8s/c1/Deployment/shop/api> <https://w3id.org/nix/k8s#effectiveReachability> <https://w3id.org/nix/id/k8s/c1/Deployment/shop/open> .
-<https://w3id.org/nix/id/k8s/c1/Deployment/shop/other> <https://w3id.org/nix/k8s#effectiveReachability> <https://w3id.org/nix/id/k8s/c1/Deployment/shop/open> .
+<https://w3id.org/nix2rdf/id/k8s/c1/Deployment/shop/worker> <https://w3id.org/nix2rdf/k8s#effectiveReachability> <https://w3id.org/nix2rdf/id/k8s/c1/Deployment/shop/api> .
+<https://w3id.org/nix2rdf/id/k8s/c1/Deployment/shop/api> <https://w3id.org/nix2rdf/k8s#effectiveReachability> <https://w3id.org/nix2rdf/id/k8s/c1/Deployment/shop/open> .
+<https://w3id.org/nix2rdf/id/k8s/c1/Deployment/shop/other> <https://w3id.org/nix2rdf/k8s#effectiveReachability> <https://w3id.org/nix2rdf/id/k8s/c1/Deployment/shop/open> .

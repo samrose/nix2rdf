@@ -1,8 +1,8 @@
 %% identifiers/mapping.rls — PURLs and CPEs as derived, correctable guesses.
 
-@prefix nix: <https://w3id.org/nix/ns#> .
+@prefix nix: <https://w3id.org/nix2rdf/ns#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix ids: <https://w3id.org/nix/identifiers#> .
+@prefix ids: <https://w3id.org/nix2rdf/identifiers#> .
 
 % Narrow helper relations first: Nemo joins are far cheaper over these
 % than over repeated self-joins of the whole triple set.

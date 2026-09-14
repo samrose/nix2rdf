@@ -1,16 +1,16 @@
 //! The IRI scheme. See IRI.md for the guarantees.
 //!
 //! Two namespaces hold vocabulary (`nix:`, `k8s:`); every instance lives under
-//! the single base `https://w3id.org/nix/id/`, partitioned by the first path
+//! the single base `https://w3id.org/nix2rdf/id/`, partitioned by the first path
 //! segment. Nothing here is ever minted from non-deterministic input.
 
 use base64::Engine;
 use oxrdf::NamedNode;
 
-pub const NIX_NS: &str = "https://w3id.org/nix/ns#";
-pub const K8S_NS: &str = "https://w3id.org/nix/k8s#";
-pub const ID_BASE: &str = "https://w3id.org/nix/id/";
-pub const POLICY_BASE: &str = "https://w3id.org/nix/policy/";
+pub const NIX_NS: &str = "https://w3id.org/nix2rdf/ns#";
+pub const K8S_NS: &str = "https://w3id.org/nix2rdf/k8s#";
+pub const ID_BASE: &str = "https://w3id.org/nix2rdf/id/";
+pub const POLICY_BASE: &str = "https://w3id.org/nix2rdf/policy/";
 pub const RDF_TYPE: &str = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 pub const XSD: &str = "http://www.w3.org/2001/XMLSchema#";
 
@@ -21,13 +21,13 @@ pub const PREFIXES: &[(&str, &str)] = &[
     ("nix", NIX_NS),
     ("k8s", K8S_NS),
     ("nixid", ID_BASE),
-    ("git", "https://w3id.org/nix/id/git/"),
-    ("oci", "https://w3id.org/nix/id/oci/"),
-    ("pack", "https://w3id.org/nix/id/pack/"),
-    ("derived", "https://w3id.org/nix/id/derived/"),
-    ("frag", "https://w3id.org/nix/id/fragment/"),
-    ("k8sid", "https://w3id.org/nix/id/k8s/"),
-    ("org", "https://w3id.org/nix/id/org/"),
+    ("git", "https://w3id.org/nix2rdf/id/git/"),
+    ("oci", "https://w3id.org/nix2rdf/id/oci/"),
+    ("pack", "https://w3id.org/nix2rdf/id/pack/"),
+    ("derived", "https://w3id.org/nix2rdf/id/derived/"),
+    ("frag", "https://w3id.org/nix2rdf/id/fragment/"),
+    ("k8sid", "https://w3id.org/nix2rdf/id/k8s/"),
+    ("org", "https://w3id.org/nix2rdf/id/org/"),
     ("policy", POLICY_BASE),
     ("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
     ("rdfs", "http://www.w3.org/2000/01/rdf-schema#"),

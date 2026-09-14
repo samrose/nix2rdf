@@ -57,7 +57,7 @@ new(?s, ?p, ?o) :- out(?s, ?p, ?o) .
 - Prefixes `nix:`, `k8s:`, `rdf:`, `rdfs:`, `owl:`, `xsd:` and the ones in
   `iri::PREFIXES` are always available; declare your own with `@prefix`.
 - IRIs with `/` in the local part (`policy:pack/name`) do not lex as prefixed
-  names; write them in full: `<https://w3id.org/nix/policy/k8s/no-pdb>`.
+  names; write them in full: `<https://w3id.org/nix2rdf/policy/k8s/no-pdb>`.
 
 ## Performance: extract narrow relations, then join
 

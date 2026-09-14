@@ -1,5 +1,5 @@
-@prefix k8s:  <https://w3id.org/nix/k8s#> .
-@prefix nix:  <https://w3id.org/nix/ns#> .
+@prefix k8s:  <https://w3id.org/nix2rdf/k8s#> .
+@prefix nix:  <https://w3id.org/nix2rdf/ns#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -19,14 +19,14 @@
 # Secrets: identity and references only, never values.
 # ---------------------------------------------------------------------------
 
-<https://w3id.org/nix/k8s> a owl:Ontology ;
+<https://w3id.org/nix2rdf/k8s> a owl:Ontology ;
     dcterms:title "The Kubernetes deployment vocabulary for nix2rdf" ;
     dcterms:description "Identity, references, placement and ownership of Kubernetes objects at the image-digest level, so build-time rules and queries also govern deployments." ;
-    owl:versionIRI <https://w3id.org/nix/k8s/0.1.0> ;
+    owl:versionIRI <https://w3id.org/nix2rdf/k8s/0.1.0> ;
     owl:versionInfo "0.1.0" ;
-    owl:imports <https://w3id.org/nix/ns> ;
+    owl:imports <https://w3id.org/nix2rdf/ns> ;
     vann:preferredNamespacePrefix "k8s" ;
-    vann:preferredNamespaceUri "https://w3id.org/nix/k8s#" .
+    vann:preferredNamespaceUri "https://w3id.org/nix2rdf/k8s#" .
 
 # ============================== Classes ====================================
 
@@ -173,7 +173,7 @@ k8s:danglingRef a rdf:Property, owl:DatatypeProperty ; rdfs:label "danglingRef" 
 k8s:exemptSingleDomain a rdf:Property, owl:DatatypeProperty ; rdfs:label "exemptSingleDomain" ; rdfs:domain k8s:Workload ; rdfs:range xsd:boolean ;
     rdfs:comment "Explicit exemption from the single-failure-domain policy, from the nix2rdf.io/exempt-single-domain annotation." .
 
-@prefix k8s:  <https://w3id.org/nix/k8s#> .
+@prefix k8s:  <https://w3id.org/nix2rdf/k8s#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .

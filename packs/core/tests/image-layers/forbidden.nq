@@ -1,1 +1,1 @@
-<https://w3id.org/nix/id/oci/sha256/img2> <https://w3id.org/nix/ns#runtimeClosureContains> <https://w3id.org/nix/id/out/app> .
+<https://w3id.org/nix2rdf/id/oci/sha256/img2> <https://w3id.org/nix2rdf/ns#runtimeClosureContains> <https://w3id.org/nix2rdf/id/out/app> .

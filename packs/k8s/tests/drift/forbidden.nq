@@ -1,1 +1,1 @@
-_:x <https://w3id.org/nix/k8s#driftKind> "replicas" .
+_:x <https://w3id.org/nix2rdf/k8s#driftKind> "replicas" .

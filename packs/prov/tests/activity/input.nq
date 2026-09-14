@@ -1,4 +1,4 @@
-<https://w3id.org/nix/id/drv/h> <https://w3id.org/nix/ns#drvPath> "/nix/store/h.drv" <https://w3id.org/nix/id/drv/h> .
-<https://w3id.org/nix/id/drv/h> <https://w3id.org/nix/ns#hasOutput> <https://w3id.org/nix/id/out/h> <https://w3id.org/nix/id/drv/h> .
-<https://w3id.org/nix/id/drv/h> <https://w3id.org/nix/ns#inputSrc> <https://w3id.org/nix/id/src/s> <https://w3id.org/nix/id/drv/h> .
-<https://w3id.org/nix/id/drv/h> <https://w3id.org/nix/ns#builder> "/nix/store/b/bin/bash" <https://w3id.org/nix/id/drv/h> .
+<https://w3id.org/nix2rdf/id/drv/h> <https://w3id.org/nix2rdf/ns#drvPath> "/nix/store/h.drv" <https://w3id.org/nix2rdf/id/drv/h> .
+<https://w3id.org/nix2rdf/id/drv/h> <https://w3id.org/nix2rdf/ns#hasOutput> <https://w3id.org/nix2rdf/id/out/h> <https://w3id.org/nix2rdf/id/drv/h> .
+<https://w3id.org/nix2rdf/id/drv/h> <https://w3id.org/nix2rdf/ns#inputSrc> <https://w3id.org/nix2rdf/id/src/s> <https://w3id.org/nix2rdf/id/drv/h> .
+<https://w3id.org/nix2rdf/id/drv/h> <https://w3id.org/nix2rdf/ns#builder> "/nix/store/b/bin/bash" <https://w3id.org/nix2rdf/id/drv/h> .

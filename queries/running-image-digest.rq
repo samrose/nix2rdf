@@ -1,7 +1,7 @@
 # What is running this image digest right now, anywhere: latest live snapshot
 # per cluster, workloads whose containers run the digest.
 SELECT ?cluster ?workload ?observedAt WHERE {
-  VALUES ?image { <https://w3id.org/nix/id/oci/sha256/1111111111111111111111111111111111111111111111111111111111111111> }
+  VALUES ?image { <https://w3id.org/nix2rdf/id/oci/sha256/1111111111111111111111111111111111111111111111111111111111111111> }
   ?container k8s:runsImage ?image .
   GRAPH ?snap { ?workload k8s:hasContainer ?container }
   ?snap k8s:snapshotKind k8s:liveState .

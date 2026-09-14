@@ -1,5 +1,5 @@
 %% unresolved-image: a container spec with a mutable tag and no resolvable digest.
-@prefix nix: <https://w3id.org/nix/ns#> .
+@prefix nix: <https://w3id.org/nix2rdf/ns#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/k8s/unresolved-image>), out(!v, nix:subject, ?c), out(!v, nix:message, ?ref) :-
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix2rdf/policy/k8s/unresolved-image>), out(!v, nix:subject, ?c), out(!v, nix:message, ?ref) :-
     kUnresolvedImage(?c, ?ref) .

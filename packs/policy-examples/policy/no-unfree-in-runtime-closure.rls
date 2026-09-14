@@ -1,7 +1,7 @@
 %% no-unfree-in-runtime-closure: a snapshot ships an output whose derivation is unfree.
-@prefix nix: <https://w3id.org/nix/ns#> .
+@prefix nix: <https://w3id.org/nix2rdf/ns#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/policy-examples/no-unfree-in-runtime-closure>), out(!v, nix:subject, ?d), out(!v, nix:inSnapshot, ?s) :-
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix2rdf/policy/policy-examples/no-unfree-in-runtime-closure>), out(!v, nix:subject, ?d), out(!v, nix:inSnapshot, ?s) :-
     t(?s, nix:runtimeClosureContains, ?o), t(?d, nix:hasOutput, ?o), t(?d, nix:unfree, "true"^^xsd:boolean) .

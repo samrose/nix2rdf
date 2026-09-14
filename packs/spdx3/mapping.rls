@@ -1,7 +1,7 @@
 %% spdx3/mapping.rls — project nix: ground truth onto SPDX 3.0.1.
 %% Never the other way round: nix: stays lossless, SPDX is a view.
 
-@prefix nix:  <https://w3id.org/nix/ns#> .
+@prefix nix:  <https://w3id.org/nix2rdf/ns#> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix spdx: <https://spdx.org/rdf/3.0.1/terms/Core/> .
 @prefix sw:   <https://spdx.org/rdf/3.0.1/terms/Software/> .

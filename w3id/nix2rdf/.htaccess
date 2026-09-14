@@ -1,0 +1,36 @@
+# /nix2rdf
+#
+# Permanent identifiers for the RDF vocabulary of nix2rdf, a tool that turns
+# Nix build artifacts into a content-addressed RDF dataset.
+#   https://w3id.org/nix2rdf/ns#        core vocabulary
+#   https://w3id.org/nix2rdf/k8s#       Kubernetes companion vocabulary
+#   https://w3id.org/nix2rdf/id/        instance namespace
+#   https://w3id.org/nix2rdf/ontology/  versioned ontology documents
+# Source: https://github.com/samrose/nix2rdf
+#
+# ## Contact
+# Sam Rose <samuel.rose@gmail.com>
+# GitHub username: samrose
+
+RewriteEngine On
+Options +FollowSymLinks
+
+# Versioned documents: https://w3id.org/nix2rdf/ontology/<semver>
+RewriteRule ^ontology/([0-9.]+)$ https://samrose.github.io/nix2rdf-ontology/versions/$1/ns.ttl [R=302,L]
+RewriteRule ^k8s/([0-9.]+)$ https://samrose.github.io/nix2rdf-ontology/versions/$1/k8s.ttl [R=302,L]
+
+# Namespace documents: Turtle for machines, HTML for humans
+RewriteCond %{HTTP_ACCEPT} text/turtle [OR]
+RewriteCond %{HTTP_ACCEPT} application/rdf\+xml [OR]
+RewriteCond %{HTTP_ACCEPT} application/n-triples
+RewriteRule ^ns$ https://samrose.github.io/nix2rdf-ontology/ns.ttl [R=303,L]
+RewriteRule ^ns$ https://samrose.github.io/nix2rdf-ontology/ns.html [R=303,L]
+
+RewriteCond %{HTTP_ACCEPT} text/turtle [OR]
+RewriteCond %{HTTP_ACCEPT} application/rdf\+xml [OR]
+RewriteCond %{HTTP_ACCEPT} application/n-triples
+RewriteRule ^k8s$ https://samrose.github.io/nix2rdf-ontology/k8s.ttl [R=303,L]
+RewriteRule ^k8s$ https://samrose.github.io/nix2rdf-ontology/k8s.html [R=303,L]
+
+# Instance IRIs (https://w3id.org/nix2rdf/id/...) and everything else: the docs.
+RewriteRule ^(.*)$ https://samrose.github.io/nix2rdf-ontology/$1 [R=302,L]

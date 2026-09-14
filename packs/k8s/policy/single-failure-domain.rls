@@ -1,9 +1,9 @@
 %% single-failure-domain: replicas > 1 all in one zone, or a stateful workload
 %% whose volume is pinned to a node, without an explicit exemption.
-@prefix nix: <https://w3id.org/nix/ns#> .
+@prefix nix: <https://w3id.org/nix2rdf/ns#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/k8s/single-failure-domain>), out(!v, nix:subject, ?w) :-
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix2rdf/policy/k8s/single-failure-domain>), out(!v, nix:subject, ?w) :-
     kReplicas(?w, ?r), ?r > 1, domainCount(?w, 1), ~kExempt(?w) .
 pinnedVolume(?w) :- kStatefulSet(?w), kMounts(?w, ?pvc), kBoundTo(?pvc, ?pv), kPinnedToNode(?pv, ?n) .
-out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/k8s/single-failure-domain>), out(!v, nix:subject, ?w), out(!v, nix:message, "volume pinned to a node") :-
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix2rdf/policy/k8s/single-failure-domain>), out(!v, nix:subject, ?w), out(!v, nix:message, "volume pinned to a node") :-
     pinnedVolume(?w), ~kExempt(?w) .

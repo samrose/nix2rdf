@@ -5,9 +5,9 @@
 %% in a rule body is therefore extracted ONCE into a narrow relation below,
 %% and all rules (including the policies) join those. Keep it that way.
 
-@prefix nix: <https://w3id.org/nix/ns#> .
-@prefix k8s: <https://w3id.org/nix/k8s#> .
-@prefix ids: <https://w3id.org/nix/identifiers#> .
+@prefix nix: <https://w3id.org/nix2rdf/ns#> .
+@prefix k8s: <https://w3id.org/nix2rdf/k8s#> .
+@prefix ids: <https://w3id.org/nix2rdf/identifiers#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 

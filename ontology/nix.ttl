@@ -1,4 +1,4 @@
-@prefix nix:  <https://w3id.org/nix/ns#> .
+@prefix nix:  <https://w3id.org/nix2rdf/ns#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -23,15 +23,15 @@
 # and provide a mapping rule from the old term to the new one.
 # ---------------------------------------------------------------------------
 
-<https://w3id.org/nix/ns> a owl:Ontology ;
+<https://w3id.org/nix2rdf/ns> a owl:Ontology ;
     dcterms:title "The Nix vocabulary" ;
     dcterms:description "A small, lossless RDF vocabulary for Nix derivations, outputs, sources, flakes, nixpkgs revisions, NixOS configurations and OCI images built with Nix. OWL/RDFS terms are notation only; semantics are given by Nemo rule packs." ;
-    owl:versionIRI <https://w3id.org/nix/ontology/0.1.0> ;
+    owl:versionIRI <https://w3id.org/nix2rdf/ontology/0.1.0> ;
     owl:versionInfo "0.1.0" ;
     vann:preferredNamespacePrefix "nix" ;
-    vann:preferredNamespaceUri "https://w3id.org/nix/ns#" ;
-    rdfs:seeAlso <https://w3id.org/nix/k8s> ;
-    rdfs:comment "Instance IRIs live under https://w3id.org/nix/id/ (see IRI.md). This namespace holds vocabulary only." .
+    vann:preferredNamespaceUri "https://w3id.org/nix2rdf/ns#" ;
+    rdfs:seeAlso <https://w3id.org/nix2rdf/k8s> ;
+    rdfs:comment "Instance IRIs live under https://w3id.org/nix2rdf/id/ (see IRI.md). This namespace holds vocabulary only." .
 
 # ============================== Classes ====================================
 

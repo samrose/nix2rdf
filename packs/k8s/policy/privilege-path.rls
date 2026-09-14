@@ -1,6 +1,6 @@
 %% privilege-path: a ServiceAccount outside kube-* namespaces with
 %% cluster-admin-equivalent verbs, or able to read Secrets cluster-wide.
-@prefix nix: <https://w3id.org/nix/ns#> .
+@prefix nix: <https://w3id.org/nix2rdf/ns#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 systemNs(?ns) :- kNamespace(?ns), kName(?ns, ?n), STRSTARTS(?n, "kube-") .
 userSa(?sa) :- kServiceAccount(?sa), kInNamespace(?sa, ?ns), ~systemNs(?ns) .
@@ -10,7 +10,7 @@ secretRead(?p) :- kResource(?p, "secrets"), kVerb(?p, "list") .
 secretRead(?p) :- kResource(?p, "secrets"), kVerb(?p, "*") .
 secretRead(?p) :- kResource(?p, "*"), kVerb(?p, "get") .
 clusterWide(?sa, ?perm) :- kClusterRoleBinding(?b), kSubjectOf(?b, ?sa), roleOf(?b, ?r), kPermits(?r, ?perm) .
-out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/k8s/privilege-path>), out(!v, nix:subject, ?sa), out(!v, nix:message, "cluster-admin-equivalent") :-
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix2rdf/policy/k8s/privilege-path>), out(!v, nix:subject, ?sa), out(!v, nix:message, "cluster-admin-equivalent") :-
     userSa(?sa), effPerm(?sa, ?p), adminPerm(?p) .
-out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/k8s/privilege-path>), out(!v, nix:subject, ?sa), out(!v, nix:message, "reads secrets cluster-wide") :-
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix2rdf/policy/k8s/privilege-path>), out(!v, nix:subject, ?sa), out(!v, nix:message, "reads secrets cluster-wide") :-
     userSa(?sa), clusterWide(?sa, ?p), secretRead(?p) .

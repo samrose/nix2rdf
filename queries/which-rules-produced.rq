@@ -1,7 +1,7 @@
 # Which rules produced this fact: the RuleRun (derived graph) that holds it,
 # with the packs (by content hash) and when it ran.
 SELECT ?graph ?pack ?packName ?packVersion ?ranAt WHERE {
-  GRAPH ?graph { <https://w3id.org/nix/id/drv/7rnrwhl2b91gb9b7na73q6c4cvvv1hi8> nix:dependsOnTransitively ?x }
+  GRAPH ?graph { <https://w3id.org/nix2rdf/id/drv/7rnrwhl2b91gb9b7na73q6c4cvvv1hi8> nix:dependsOnTransitively ?x }
   ?graph nix:usesPack ?pack .
   ?pack nix:packName ?packName .
   ?pack nix:packVersion ?packVersion .

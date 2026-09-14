@@ -1,2 +1,2 @@
-<https://w3id.org/nix/id/gen/g1> <https://w3id.org/nix/ns#runtimeClosureContains> <https://w3id.org/nix/id/out/doc> .
-<https://w3id.org/nix/id/drv/top> <https://w3id.org/nix/ns#runtimeDependsOn> <https://w3id.org/nix/id/drv/doc> .
+<https://w3id.org/nix2rdf/id/gen/g1> <https://w3id.org/nix2rdf/ns#runtimeClosureContains> <https://w3id.org/nix2rdf/id/out/doc> .
+<https://w3id.org/nix2rdf/id/drv/top> <https://w3id.org/nix2rdf/ns#runtimeDependsOn> <https://w3id.org/nix2rdf/id/drv/doc> .

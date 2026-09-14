@@ -1,1 +1,1 @@
-_:v <https://w3id.org/nix/ns#subject> <https://w3id.org/nix/id/k8s/c1/ServiceAccount/kube-system/sys> .
+_:v <https://w3id.org/nix2rdf/ns#subject> <https://w3id.org/nix2rdf/id/k8s/c1/ServiceAccount/kube-system/sys> .

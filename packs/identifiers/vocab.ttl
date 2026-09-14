@@ -1,9 +1,9 @@
-@prefix ids:  <https://w3id.org/nix/identifiers#> .
+@prefix ids:  <https://w3id.org/nix2rdf/identifiers#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 
-<https://w3id.org/nix/identifiers> a owl:Ontology ;
+<https://w3id.org/nix2rdf/identifiers> a owl:Ontology ;
     rdfs:comment "Heuristic identifiers (PURL, CPE) and the vulnerability join point. All ids:purl / ids:cpe triples are derived by the identifiers pack; none are asserted by nix2rdf." .
 
 ids:purl a owl:DatatypeProperty ; rdfs:label "purl" ; rdfs:range xsd:string ;

@@ -1,2 +1,2 @@
-<https://w3id.org/nix/id/pin/sha256-root> <https://w3id.org/nix/ns#closureContains> <https://w3id.org/nix/id/drv/x> .
-<https://w3id.org/nix/id/drv/c> <https://w3id.org/nix/ns#dependsOnTransitively> <https://w3id.org/nix/id/drv/a> .
+<https://w3id.org/nix2rdf/id/pin/sha256-root> <https://w3id.org/nix2rdf/ns#closureContains> <https://w3id.org/nix2rdf/id/drv/x> .
+<https://w3id.org/nix2rdf/id/drv/c> <https://w3id.org/nix2rdf/ns#dependsOnTransitively> <https://w3id.org/nix2rdf/id/drv/a> .

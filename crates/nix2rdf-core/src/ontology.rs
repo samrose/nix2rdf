@@ -165,7 +165,8 @@ pub fn rust_terms() -> Vec<String> {
 pub fn rule_terms(rule_text: &str) -> BTreeSet<String> {
     let mut out = BTreeSet::new();
     let re = regex::Regex::new(r"\b(nix|k8s):([A-Za-z_][A-Za-z0-9_]*)").unwrap();
-    let re_iri = regex::Regex::new(r"<(https://w3id\.org/nix/(?:ns|k8s)#[A-Za-z0-9_]+)>").unwrap();
+    let re_iri =
+        regex::Regex::new(r"<(https://w3id\.org/nix2rdf/(?:ns|k8s)#[A-Za-z0-9_]+)>").unwrap();
     for line in rule_text.lines() {
         let line = line.split('%').next().unwrap_or("");
         for c in re.captures_iter(line) {

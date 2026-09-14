@@ -1,7 +1,7 @@
 # Fleet drift: which NixOS generations diverge from a reference generation,
 # and by how many derivations (build closure). Reference first: selective.
 SELECT ?gen (COUNT(?drv) AS ?extraDerivations) WHERE {
-  VALUES ?ref { <https://w3id.org/nix/id/gen/REFERENCE> }
+  VALUES ?ref { <https://w3id.org/nix2rdf/id/gen/REFERENCE> }
   ?gen a nix:NixosGeneration .
   FILTER(?gen != ?ref)
   ?gen nix:closureContains ?drv .

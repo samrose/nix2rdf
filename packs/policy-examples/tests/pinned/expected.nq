@@ -1,2 +1,2 @@
-_:v <https://w3id.org/nix/ns#violates> <https://w3id.org/nix/policy/policy-examples/pinned-inputs> .
-_:v <https://w3id.org/nix/ns#subject> <https://w3id.org/nix/id/pin/sha256-root/input/root/local> .
+_:v <https://w3id.org/nix2rdf/ns#violates> <https://w3id.org/nix2rdf/policy/policy-examples/pinned-inputs> .
+_:v <https://w3id.org/nix2rdf/ns#subject> <https://w3id.org/nix2rdf/id/pin/sha256-root/input/root/local> .

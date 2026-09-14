@@ -1,6 +1,6 @@
 %% dangling-reference: a typed reference whose target is not in the same snapshot.
-@prefix nix: <https://w3id.org/nix/ns#> .
-@prefix k8s: <https://w3id.org/nix/k8s#> .
+@prefix nix: <https://w3id.org/nix2rdf/ns#> .
+@prefix k8s: <https://w3id.org/nix2rdf/k8s#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 typedIn(?s, ?x) :- q(?s, ?x, rdf:type, ?c) .
 refIn(?s, ?from, ?to) :- q(?s, ?from, k8s:mounts, ?to) .
@@ -12,5 +12,5 @@ refIn(?s, ?from, ?to) :- q(?s, ?from, k8s:routesTo, ?to) .
 refIn(?s, ?from, ?to) :- q(?s, ?from, k8s:subjectOf, ?to) .
 dangling(?s, ?from, ?msg) :- refIn(?s, ?from, ?to), kSnapshot(?s), ~typedIn(?s, ?to), ?msg = fullStr(?to) .
 out(?from, k8s:danglingRef, ?msg) :- dangling(?s, ?from, ?msg) .
-out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/k8s/dangling-reference>), out(!v, nix:subject, ?from), out(!v, nix:inSnapshot, ?s), out(!v, nix:message, ?msg) :-
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix2rdf/policy/k8s/dangling-reference>), out(!v, nix:subject, ?from), out(!v, nix:inSnapshot, ?s), out(!v, nix:message, ?msg) :-
     dangling(?s, ?from, ?msg) .

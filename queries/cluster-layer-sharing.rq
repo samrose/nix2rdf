@@ -1,7 +1,7 @@
 # Layer sharing across a cluster's running images: how many running images
 # share each layer (a proxy for pull/cache efficiency).
 SELECT ?layer (COUNT(DISTINCT ?image) AS ?images) WHERE {
-  VALUES ?cluster { <https://w3id.org/nix/id/k8s/cluster/fixture> }
+  VALUES ?cluster { <https://w3id.org/nix2rdf/id/k8s/cluster/fixture> }
   ?workload k8s:inCluster ?cluster .
   ?workload k8s:hasContainer ?container .
   ?container k8s:runsImage ?image .

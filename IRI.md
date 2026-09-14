@@ -9,22 +9,22 @@ two machines produce the same IRIs for the same things.
 
 | Prefix | Expands to | Holds |
 |---|---|---|
-| `nix:` | `https://w3id.org/nix/ns#` | the Nix vocabulary (classes, properties) |
-| `k8s:` | `https://w3id.org/nix/k8s#` | the Kubernetes vocabulary |
-| `nixid:` | `https://w3id.org/nix/id/` | **every instance**, partitioned by first path segment |
-| `git:` | `https://w3id.org/nix/id/git/` | consumer commits |
-| `oci:` | `https://w3id.org/nix/id/oci/` | images and layers |
-| `pack:` | `https://w3id.org/nix/id/pack/` | rule packs by content hash |
-| `derived:` | `https://w3id.org/nix/id/derived/` | derived graphs (rule runs) |
-| `frag:` | `https://w3id.org/nix/id/fragment/` | fragments that are not themselves an entity |
-| `k8sid:` | `https://w3id.org/nix/id/k8s/` | Kubernetes objects |
-| `org:` | `https://w3id.org/nix/id/org/` | owners |
-| `policy:` | `https://w3id.org/nix/policy/` | policy identifiers used by `nix:violates` |
+| `nix:` | `https://w3id.org/nix2rdf/ns#` | the Nix vocabulary (classes, properties) |
+| `k8s:` | `https://w3id.org/nix2rdf/k8s#` | the Kubernetes vocabulary |
+| `nixid:` | `https://w3id.org/nix2rdf/id/` | **every instance**, partitioned by first path segment |
+| `git:` | `https://w3id.org/nix2rdf/id/git/` | consumer commits |
+| `oci:` | `https://w3id.org/nix2rdf/id/oci/` | images and layers |
+| `pack:` | `https://w3id.org/nix2rdf/id/pack/` | rule packs by content hash |
+| `derived:` | `https://w3id.org/nix2rdf/id/derived/` | derived graphs (rule runs) |
+| `frag:` | `https://w3id.org/nix2rdf/id/fragment/` | fragments that are not themselves an entity |
+| `k8sid:` | `https://w3id.org/nix2rdf/id/k8s/` | Kubernetes objects |
+| `org:` | `https://w3id.org/nix2rdf/id/org/` | owners |
+| `policy:` | `https://w3id.org/nix2rdf/policy/` | policy identifiers used by `nix:violates` |
 
 The design note writes instances as `nix:drv/<hash>`; in the dataset that is
 `nixid:drv/<hash>`, because one prefix cannot expand to both the vocabulary
 (`#`) and the instance base (`/`). Both `nix:` and `nixid:` are permanent
-identifiers under `w3id.org/nix` (registration: see `w3id/README.md`).
+identifiers under `w3id.org/nix2rdf` (registration: see `w3id/README.md`).
 
 ## Instance IRIs
 

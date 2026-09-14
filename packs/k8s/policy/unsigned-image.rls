@@ -1,9 +1,9 @@
 %% unsigned-image: only active when some attestation data is loaded, so that a
 %% store without an attestation pack is not flagged wholesale.
-@prefix nix: <https://w3id.org/nix/ns#> .
+@prefix nix: <https://w3id.org/nix2rdf/ns#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix attest: <https://w3id.org/nix/attest#> .
+@prefix attest: <https://w3id.org/nix2rdf/attest#> .
 signed(?img) :- t(?img, attest:verifiedBy, ?who) .
 attestationsLoaded(1) :- signed(?img) .
-out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/k8s/unsigned-image>), out(!v, nix:subject, ?img) :-
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix2rdf/policy/k8s/unsigned-image>), out(!v, nix:subject, ?img) :-
     attestationsLoaded(1), kRunsImage(?c, ?img), ~signed(?img) .

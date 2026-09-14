@@ -1,5 +1,5 @@
-@prefix attest: <https://w3id.org/nix/attest#> .
-@prefix policy: <https://w3id.org/nix/policy/policy-examples/> .
+@prefix attest: <https://w3id.org/nix2rdf/attest#> .
+@prefix policy: <https://w3id.org/nix2rdf/policy/policy-examples/> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 

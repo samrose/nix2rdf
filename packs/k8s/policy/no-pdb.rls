@@ -1,6 +1,6 @@
 %% no-pdb: a multi-replica production workload without a PodDisruptionBudget.
-@prefix nix: <https://w3id.org/nix/ns#> .
+@prefix nix: <https://w3id.org/nix2rdf/ns#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 hasPdb(?w) :- kHasPDB(?w, ?p) .
-out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix/policy/k8s/no-pdb>), out(!v, nix:subject, ?w) :-
+out(!v, rdf:type, nix:Violation), out(!v, nix:violates, <https://w3id.org/nix2rdf/policy/k8s/no-pdb>), out(!v, nix:subject, ?w) :-
     prodWorkload(?w), kReplicas(?w, ?r), ?r > 1, ~hasPdb(?w) .

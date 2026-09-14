@@ -21,7 +21,7 @@ Documents: [DESIGN.md](DESIGN.md) (architecture and every decision),
 [IRI.md](IRI.md) (identity scheme), [PACKS.md](PACKS.md) (writing rules),
 [QUERIES.md](QUERIES.md) (starter queries), `ONTOLOGY.md` (generated),
 [docs/k8s](docs/k8s/README.md) (Kubernetes/k3s), [w3id](w3id/README.md)
-(namespace registration).
+(namespace registration), [ROADMAP.md](ROADMAP.md) (open work).
 
 ## Build
 

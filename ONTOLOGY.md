@@ -6,9 +6,9 @@ OWL and RDFS terms in these vocabularies are **notation only**: they record inte
 
 ## The Nix vocabulary (`nix:`)
 
-Namespace: `https://w3id.org/nix/ns#`  
+Namespace: `https://w3id.org/nix2rdf/ns#`  
 Version: 0.1.0  
-Version IRI: https://w3id.org/nix/ontology/0.1.0
+Version IRI: https://w3id.org/nix2rdf/ontology/0.1.0
 
 A small, lossless RDF vocabulary for Nix derivations, outputs, sources, flakes, nixpkgs revisions, NixOS configurations and OCI images built with Nix. OWL/RDFS terms are notation only; semantics are given by Nemo rule packs.
 
@@ -762,9 +762,9 @@ The policy IRI (a term in a pack's policy namespace) that the subject violates.
 
 ## The Kubernetes deployment vocabulary for nix2rdf (`k8s:`)
 
-Namespace: `https://w3id.org/nix/k8s#`  
+Namespace: `https://w3id.org/nix2rdf/k8s#`  
 Version: 0.1.0  
-Version IRI: https://w3id.org/nix/k8s/0.1.0
+Version IRI: https://w3id.org/nix2rdf/k8s/0.1.0
 
 Identity, references, placement and ownership of Kubernetes objects at the image-digest level, so build-time rules and queries also govern deployments.
 
