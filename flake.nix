@@ -127,7 +127,7 @@
           lintTools = [ pkgs.nixpkgs-fmt pkgs.statix pkgs.deadnix pkgs.yamllint ];
           lintSrc = lib.fileset.toSource {
             root = ./.;
-            fileset = lib.fileset.unions [ ./flake.nix ./nix ./docs ./fixtures ./statix.toml ./deny.toml ];
+            fileset = lib.fileset.unions [ ./flake.nix ./nix ./docs ./fixtures ./statix.toml ./deny.toml ./.github ];
           };
           yamllintConfig = pkgs.writeText "yamllint.yaml" ''
             extends: default
@@ -161,7 +161,7 @@
               nixpkgs-fmt --check flake.nix nix/*.nix fixtures/flake/flake.nix
               statix check .
               deadnix --fail .
-              yamllint -c ${yamllintConfig} docs fixtures/k8s
+              yamllint -c ${yamllintConfig} docs fixtures/k8s .github
               touch $out
             '';
 
