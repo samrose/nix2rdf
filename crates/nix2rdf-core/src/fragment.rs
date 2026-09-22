@@ -53,6 +53,11 @@ pub enum FragmentKind {
         hash: String,
         observed_at: String,
     },
+    /// A kind owned by a downstream tool that stores its own fragments beside
+    /// these (rdf2nix: `trace`). `ext/<kind>/<id>.nq.zst`; the graph IRI is
+    /// the entity `nixid:<kind>/<id>`, so the fragment IS the entity, as with
+    /// `Drv`. `id` must be a function of the content, like every other kind.
+    Ext { kind: String, id: String },
 }
 
 impl FragmentKind {
@@ -74,6 +79,7 @@ impl FragmentKind {
             FragmentKind::K8sSnapshot { .. } => "k8s-snapshot",
             FragmentKind::K8sNodes { .. } => "k8s-nodes",
             FragmentKind::K8sObserved { .. } => "k8s-observed",
+            FragmentKind::Ext { .. } => "ext",
         }
     }
 
@@ -111,6 +117,7 @@ impl FragmentKind {
                     seg(observed_at)
                 )
             }
+            FragmentKind::Ext { kind, id } => format!("ext/{}/{}.nq.zst", seg(kind), seg(id)),
         };
         PathBuf::from(p)
     }
@@ -149,6 +156,11 @@ impl FragmentKind {
                     iri::encode_segment(observed_at)
                 ),
             ),
+            FragmentKind::Ext { kind, id } => iri::id(&format!(
+                "{}/{}",
+                iri::encode_segment(kind),
+                iri::encode_segment(id)
+            )),
         }
     }
 }
